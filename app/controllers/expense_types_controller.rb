@@ -3,7 +3,7 @@ class ExpenseTypesController < ApplicationController
 
   # GET /expense_types or /expense_types.json
   def index
-    @expense_types = ExpenseType.all
+    @expense_types = ExpenseType.search(params).page(params[:page]).per(20)
   end
 
   # GET /expense_types/1 or /expense_types/1.json
@@ -13,19 +13,21 @@ class ExpenseTypesController < ApplicationController
   # GET /expense_types/new
   def new
     @expense_type = ExpenseType.new
+    @categories = ExpenseCategory.all
   end
 
   # GET /expense_types/1/edit
   def edit
+    @categories = ExpenseCategory.all
   end
 
   # POST /expense_types or /expense_types.json
   def create
     @expense_type = ExpenseType.new(expense_type_params)
-
+    @categories = ExpenseCategory.all
     respond_to do |format|
       if @expense_type.save
-        format.html { redirect_to @expense_type, notice: "Expense type was successfully created." }
+        format.html { redirect_to expense_types_path, notice: "Expense type was successfully created." }
         format.json { render :show, status: :created, location: @expense_type }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,9 +38,10 @@ class ExpenseTypesController < ApplicationController
 
   # PATCH/PUT /expense_types/1 or /expense_types/1.json
   def update
+    @categories = ExpenseCategory.all
     respond_to do |format|
       if @expense_type.update(expense_type_params)
-        format.html { redirect_to @expense_type, notice: "Expense type was successfully updated." }
+        format.html { redirect_to expense_types_path, notice: "Expense type was successfully updated." }
         format.json { render :show, status: :ok, location: @expense_type }
       else
         format.html { render :edit, status: :unprocessable_entity }
