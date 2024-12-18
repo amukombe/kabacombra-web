@@ -1,0 +1,2 @@
+class SaleType < ApplicationRecord
+end

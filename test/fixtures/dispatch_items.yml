@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nile_product: one
+  beer_dispatch: MyString
+  quantity_dispatched: 9.99
+
+two:
+  nile_product: two
+  beer_dispatch: MyString
+  quantity_dispatched: 9.99

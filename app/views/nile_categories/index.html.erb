@@ -1,0 +1,90 @@
+<%= render "nav"%>
+<div class="px-4 pt-4 bg-white dark:bg-gray-900">
+<div class="grid w-full grid-cols-2 gap-4 mb-3">
+  <div class="col-span-1">
+    <h1 class="text-gray-800 text-md dark:text-gray-100">nile_categories</h1>
+  </div>
+  <div class="col-span-1 text-right">
+    <%= link_to new_nile_category_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> New nile_category<%end%>
+  </div>  
+</div>
+
+<div class="mb-3">
+    <%= form_tag nile_categories_path, class:"flex items-start max-w-sm", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do |form| %>
+    <label for="simple-search" class="sr-only">Search</label>
+    <div class="relative w-full">
+        <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+            <span class="sr-only">Search</span>
+        </div>
+        <%= text_field_tag "query", nil, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder:"Search nile_category ..." %>
+        
+    </div>
+    <%end%>
+</div>
+<!-- Table -->
+<div class="flex flex-col mt-6">
+  <div class="overflow-x-auto rounded-lg">
+    <div class="inline-block min-w-full align-middle">
+      <div class="overflow-hidden shadow sm:rounded-lg">
+        <div id="nile_categorys">
+        <%= turbo_frame_tag "search_results" do%>
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  #
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  nile_category
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800">
+            <% @nile_categories.each_with_index do |nile_category, index| %>
+              <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <span class="font-semibold"><%=index+1%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <span class="font-semibold"><%=nile_category.name%></span><br/>
+                  <span class="text-xs"><%=nile_category.description%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                  <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="nile_category-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=nile_category.id%>" data-dropdown-placement="bottom">
+                    <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
+                    <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+            
+                <!-- Dropdown menu -->
+                <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=nile_category.id%>">
+                    
+                    <ul class="py-2" aria-labelledby="nile_category-menu-button">
+                        <li>
+                            <%= link_to edit_nile_category_path(nile_category), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                        </li>
+                        <li>
+                            <button data-modal-target="popup-modal-<%=nile_category.id%>" data-modal-toggle="popup-modal-<%=nile_category.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
+                        </li>
+                    </ul>
+                </div>
+                </td>
+              </tr>
+              <%= render "confirm_delete_modal", nile_category: nile_category%>
+            <%end%>
+            </tbody>
+          </table>
+          <%= render "pagination" %>
+        <%end%>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

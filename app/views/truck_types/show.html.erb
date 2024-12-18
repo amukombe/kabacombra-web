@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @truck_type %>
+
+<div>
+  <%= link_to "Edit this truck type", edit_truck_type_path(@truck_type) %> |
+  <%= link_to "Back to truck types", truck_types_path %>
+
+  <%= button_to "Destroy this truck type", @truck_type, method: :delete %>
+</div>

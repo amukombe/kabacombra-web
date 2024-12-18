@@ -1,0 +1,31 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  expense_type: one
+  expense_category: one
+  user: one
+  territory: one
+  status: one
+  expense_title: MyString
+  received_by: 1
+  authorized_by: 1
+  reason: MyString
+  description: MyString
+  expese_date: 2024-12-17
+  amount: 9.99
+  source_of_income: MyString
+
+two:
+  expense_type: two
+  expense_category: two
+  user: two
+  territory: two
+  status: two
+  expense_title: MyString
+  received_by: 1
+  authorized_by: 1
+  reason: MyString
+  description: MyString
+  expese_date: 2024-12-17
+  amount: 9.99
+  source_of_income: MyString

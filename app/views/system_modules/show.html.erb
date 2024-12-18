@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @system_module %>
+
+<div>
+  <%= link_to "Edit this system module", edit_system_module_path(@system_module) %> |
+  <%= link_to "Back to system modules", system_modules_path %>
+
+  <%= button_to "Destroy this system module", @system_module, method: :delete %>
+</div>

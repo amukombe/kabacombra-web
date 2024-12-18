@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @unit_of_measurement %>
+
+<div>
+  <%= link_to "Edit this unit of measurement", edit_unit_of_measurement_path(@unit_of_measurement) %> |
+  <%= link_to "Back to unit of measurements", unit_of_measurements_path %>
+
+  <%= button_to "Destroy this unit of measurement", @unit_of_measurement, method: :delete %>
+</div>

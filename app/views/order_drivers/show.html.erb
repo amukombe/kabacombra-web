@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @order_driver %>
+
+<div>
+  <%= link_to "Edit this order driver", edit_order_driver_path(@order_driver) %> |
+  <%= link_to "Back to order drivers", order_drivers_path %>
+
+  <%= button_to "Destroy this order driver", @order_driver, method: :delete %>
+</div>

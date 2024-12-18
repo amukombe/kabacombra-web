@@ -1,0 +1,89 @@
+
+<div class="px-4 pt-4 bg-white dark:bg-gray-900">
+<div class="grid w-full grid-cols-2 gap-4 mb-3">
+  <div class="col-span-1">
+    <h1 class="text-gray-800 text-md dark:text-gray-100">My approvals</h1>
+  </div> 
+</div>
+<div class="mb-3">
+    <%= form_tag loading_orders_path, class:"flex items-start max-w-sm", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do |form| %>
+    <label for="simple-search" class="sr-only">Search</label>
+    <div class="relative w-full">
+        <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+            <span class="sr-only">Search</span>
+        </div>
+        <%= text_field_tag "query", nil, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder:"Search product ..." %>  
+    </div>
+    <%end%>
+</div>
+<!-- Table -->
+<div class="flex flex-col mt-6">
+  <div class="overflow-x-auto rounded-lg">
+    <div class="inline-block min-w-full align-middle">
+      <div class="overflow-hidden shadow sm:rounded-lg">
+        <div id="beer_dispatches">
+        <%= turbo_frame_tag "search_results" do%>
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  #
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Product.
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Route
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Approvals
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Status
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800">
+            <% @loading_orders.each_with_index do |item, index| %>
+              <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
+                  <span class="font-semibold"><%=index+1%></span>
+                </td>
+                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+                  <%item.loading_order_items.each do |product|%>
+                  <span class="font-semibold"><%=product.nile_product.name%></span>
+                  (<span class="font-normal"><%=product.quantity_loaded%></span>)
+                  <%end%>
+                </td>
+                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+                  <span class="font-normal">Vehicle: <%=item.driver_name%></span><br/>
+                  <span class="font-normal">Route: <%=item.driver_name%></span><br/>
+                </td>
+                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+                  <span class="font-normal">Sales Agent: <%=Employee.find_by(id: item.sales_man).fullname%></span><br/>
+                  <span class="font-normal">Driver: <%=item.driver_name%></span><br/>
+                  <span class="font-normal">Authorizing Manager: <%=Employee.find_by(id: item.authorized_by).fullname%></span><br/>
+                </td>
+                <td class="p-4 text-xs font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <%= render "order_status", order: item%>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                  <%= button_to "Approve", approve_loading_order_path(item), method: :patch, class: "text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500" %>
+                </td>
+              </tr>
+            <%end%>
+            </tbody>
+          </table>
+          <%= render "pagination" %>
+        <%end%>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

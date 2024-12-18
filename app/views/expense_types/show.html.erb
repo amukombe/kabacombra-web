@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @expense_type %>
+
+<div>
+  <%= link_to "Edit this expense type", edit_expense_type_path(@expense_type) %> |
+  <%= link_to "Back to expense types", expense_types_path %>
+
+  <%= button_to "Destroy this expense type", @expense_type, method: :delete %>
+</div>

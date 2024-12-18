@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Expense types" %>
+
+<h1>Expense types</h1>
+
+<div id="expense_types">
+  <% @expense_types.each do |expense_type| %>
+    <%= render expense_type %>
+    <p>
+      <%= link_to "Show this expense type", expense_type %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New expense type", new_expense_type_path %>

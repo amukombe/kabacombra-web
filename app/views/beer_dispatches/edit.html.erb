@@ -1,0 +1,12 @@
+<% content_for :title, "Editing beer dispatch" %>
+
+<h1>Editing beer dispatch</h1>
+
+<%= render "form", beer_dispatch: @beer_dispatch %>
+
+<br>
+
+<div>
+  <%= link_to "Show this beer dispatch", @beer_dispatch %> |
+  <%= link_to "Back to beer dispatches", beer_dispatches_path %>
+</div>

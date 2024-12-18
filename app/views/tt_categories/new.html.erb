@@ -1,0 +1,11 @@
+<% content_for :title, "New tt category" %>
+
+<h1>New tt category</h1>
+
+<%= render "form", tt_category: @tt_category %>
+
+<br>
+
+<div>
+  <%= link_to "Back to tt categories", tt_categories_path %>
+</div>

@@ -1,0 +1,56 @@
+<div class="flex justify-center">
+  <div class="col-span-1">
+    <span class="flex justify-left">FDN Number: <%= @dispatch.fdn_number%></span>
+  </div>
+  <div class="col-span-1">
+    
+  </div>
+</div>
+<div class="flex justify-center">
+  
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+      <thead class="bg-gray-50 dark:bg-gray-700">
+        <tr>
+          <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+            #
+          </th>
+          <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+            Product
+          </th>
+          <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+            Quantity Ordered
+          </th>
+          <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+            Quantity Dispatched
+          </th>
+          <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+            Unit Price
+          </th>
+          <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+            Total
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800">
+      <% @dispatch.dispatch_items.each do |item, index|%>
+        <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+          <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+            <span class="font-semibold"></span>
+          </td>
+          <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+            <span class="font-semibold"><%=item.order_item.nile_product.name%></span>
+          </td>
+          <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+            <span class="font-semibold"><%=item.quantity_ordered%></span>
+          </td>
+          <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+            <span class="font-semibold"><%=item.quantity_dispatched%></span>
+          </td>
+          <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+            <span class="font-semibold"></span>
+          </td>
+        </tr>
+      <%end%>
+      </tbody>
+    </table>
+</div>

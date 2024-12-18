@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  driver: one
+  user: one
+  territory: one
+  vehicle_numperplate: MyString
+  destination: MyString
+  loading_date: 2024-12-13 08:48:22
+  order_number: MyString
+  sales_man: 1
+  authorized_by: 1
+  verified_by: 1
+
+two:
+  driver: two
+  user: two
+  territory: two
+  vehicle_numperplate: MyString
+  destination: MyString
+  loading_date: 2024-12-13 08:48:22
+  order_number: MyString
+  sales_man: 1
+  authorized_by: 1
+  verified_by: 1

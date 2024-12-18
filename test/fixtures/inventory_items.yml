@@ -1,0 +1,35 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  inventory: one
+  nile_product: one
+  quantity_ordered: 9.99
+  quantity_dispatched: 9.99
+  quantity_received: 9.99
+  quantity_sold: 9.99
+  purchase_price: 9.99
+  selling_price: 9.99
+  is_active: false
+  is_closed: false
+  is_deleted: false
+  user: one
+  manufacture_date: 2024-12-11
+  expiry_date: 2024-12-11
+  delivery_time: 2024-12-11 18:40:57
+
+two:
+  inventory: two
+  nile_product: two
+  quantity_ordered: 9.99
+  quantity_dispatched: 9.99
+  quantity_received: 9.99
+  quantity_sold: 9.99
+  purchase_price: 9.99
+  selling_price: 9.99
+  is_active: false
+  is_closed: false
+  is_deleted: false
+  user: two
+  manufacture_date: 2024-12-11
+  expiry_date: 2024-12-11
+  delivery_time: 2024-12-11 18:40:57

@@ -1,0 +1,12 @@
+<% content_for :title, "Editing loading order" %>
+
+<h1>Editing loading order</h1>
+
+<%= render "form", loading_order: @loading_order %>
+
+<br>
+
+<div>
+  <%= link_to "Show this loading order", @loading_order %> |
+  <%= link_to "Back to loading orders", loading_orders_path %>
+</div>

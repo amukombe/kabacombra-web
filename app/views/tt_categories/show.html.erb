@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @tt_category %>
+
+<div>
+  <%= link_to "Edit this tt category", edit_tt_category_path(@tt_category) %> |
+  <%= link_to "Back to tt categories", tt_categories_path %>
+
+  <%= button_to "Destroy this tt category", @tt_category, method: :delete %>
+</div>

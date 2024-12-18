@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @nile_category %>
+
+<div>
+  <%= link_to "Edit this nile category", edit_nile_category_path(@nile_category) %> |
+  <%= link_to "Back to nile categories", nile_categories_path %>
+
+  <%= button_to "Destroy this nile category", @nile_category, method: :delete %>
+</div>

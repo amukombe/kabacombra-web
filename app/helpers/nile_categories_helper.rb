@@ -1,0 +1,2 @@
+module NileCategoriesHelper
+end

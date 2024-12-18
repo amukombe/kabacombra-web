@@ -1,0 +1,22 @@
+
+<div class="flex flex-col flex-1 overflow-y-auto scrollbar scrollbar-w-2 scrollbar-thumb-rounded-[0.1667rem] scrollbar-thumb-slate-200 scrollbar-track-gray-400 dark:scrollbar-thumb-slate-900 dark:scrollbar-track-gray-800">
+    <div class="flex-1 px-3 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+        <ul class="py-2 pt-3">
+            <% @um = current_user.user_modules %>
+            <% if @um.present?%>
+                <% @um.each do |user_m| %>
+                    <% if user_m.territory.department.name == "Beer"%>
+
+                        <ul class="">
+                            <li>
+                                <a href="<%=user_m.system_module.module_url%>" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"><%= user_m.system_module.name%></a>
+                            </li>
+                        </ul>
+                    <%end%>
+                <%end%>
+            <%end%>
+        </ul>
+    </div>
+</div>
+		
+		

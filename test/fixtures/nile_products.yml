@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  crate_size: 1
+  bottle_size: MyString
+  description: MyString
+  nile_category: one
+
+two:
+  name: MyString
+  crate_size: 1
+  bottle_size: MyString
+  description: MyString
+  nile_category: two

@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  fdn_number: MyString
+  truck_numberplate: MyString
+  trailer_plate: MyString
+  second_trailer: MyString
+  delivery_plant: MyString
+  shipping_point: MyString
+  loading_time: 2024-12-09 01:02:49
+  delivery_plant: MyString
+  driver: one
+  order: one
+  dispatch_no: MyString
+  user: one
+
+two:
+  fdn_number: MyString
+  truck_numberplate: MyString
+  trailer_plate: MyString
+  second_trailer: MyString
+  delivery_plant: MyString
+  shipping_point: MyString
+  loading_time: 2024-12-09 01:02:49
+  delivery_plant: MyString
+  driver: two
+  order: two
+  dispatch_no: MyString
+  user: two

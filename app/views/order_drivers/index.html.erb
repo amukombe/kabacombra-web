@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Order drivers" %>
+
+<h1>Order drivers</h1>
+
+<div id="order_drivers">
+  <% @order_drivers.each do |order_driver| %>
+    <%= render order_driver %>
+    <p>
+      <%= link_to "Show this order driver", order_driver %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New order driver", new_order_driver_path %>

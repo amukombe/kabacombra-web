@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @nile_product %>
+
+<div>
+  <%= link_to "Edit this nile product", edit_nile_product_path(@nile_product) %> |
+  <%= link_to "Back to nile products", nile_products_path %>
+
+  <%= button_to "Destroy this nile product", @nile_product, method: :delete %>
+</div>

@@ -1,0 +1,12 @@
+<% content_for :title, "Editing order driver" %>
+
+<h1>Editing order driver</h1>
+
+<%= render "form", order_driver: @order_driver %>
+
+<br>
+
+<div>
+  <%= link_to "Show this order driver", @order_driver %> |
+  <%= link_to "Back to order drivers", order_drivers_path %>
+</div>
