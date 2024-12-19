@@ -1,11 +1,20 @@
 Rails.application.routes.draw do
-  resources :expenses
+  get "approvals/loading_order"
+  get "approvals/epenses"
+  get "expense_approvals",to: "expenses#approvals"
+  resources :expenses do
+    member do
+      patch :approve
+      patch :acknowledge
+    end
+  end
   resources :expense_types
   resources :expense_categories
   resources :tt_categories
   resources :tt_products
   
   get "approvals",to: "loading_orders#approvals"
+  get "expense_approvals",to: "expenses#approvals"
   resources :loading_orders do
     member do
       patch :approve

@@ -1,0 +1,5 @@
+<%if expense.status.id == 8%>
+    <span class="bg-orange-100 text-orange-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-orange-100 dark:bg-gray-700 dark:border-orange-300 dark:text-orange-300"><%=expense.status.name%></span>
+<%elsif expense.status.id == 9%>
+    <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-blue-100 dark:bg-gray-700 dark:border-blue-300 dark:text-blue-300"><%=expense.status.name%></span>
+<%end%>

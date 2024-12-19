@@ -2,7 +2,7 @@
 <div class="px-4 pt-4 bg-white dark:bg-gray-900">
 <div class="grid w-full grid-cols-2 gap-4 mb-3">
   <div class="col-span-1">
-    <h1 class="text-gray-800 text-md dark:text-gray-100">nile_categories</h1>
+    <h1 class="text-gray-800 text-md dark:text-gray-100">Expenses</h1>
   </div>
   <div class="col-span-1 text-right">
     <%= link_to new_expense_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> New expense<%end%>
@@ -38,7 +38,19 @@
                   #
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  expense
+                  Date
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Expense
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Amount
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Details
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Status
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Action
@@ -52,29 +64,52 @@
                   <span class="font-semibold"><%=index+1%></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <span class="font-semibold"><%=expense.expense_date%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
                   <span class="font-semibold"><%=expense.expense_title%></span><br/>
-                  <span class="text-xs"><%=expense.description%></span>
+                  <span class="text-xs"><%=expense.expense_type.name%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
+                  <span class="font-semibold"><%=expense.amount%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <span class="text-xs">Authorizer: <%= Employee.find(expense.authorized_by).fullname%></span><br/>
+                  <span class="text-xs">Received By: <%= Employee.find(expense.received_by).fullname%></span><br/>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <%= render "expense_status", expense: expense%>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                  <%if expense.status.name=="Money Received"%>
+                    <%= link_to edit_expense_path(expense), data:{turbo: false}, class:"block px-4 py-2 text-sm text-blue-700 hover:bg-blue-100 dark:hover:bg-blue-600 dark:text-blue-200 dark:hover:text-white" do %>Print & Sign<%end%>
+                  <%else%>
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="expense-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=expense.id%>" data-dropdown-placement="bottom">
                     <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
                     <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
                     </svg>
-                </button>
+                  </button>
             
-                <!-- Dropdown menu -->
-                <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=expense.id%>">
-                    
-                    <ul class="py-2" aria-labelledby="expense-menu-button">
-                        <li>
-                            <%= link_to edit_expense_path(expense), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
-                        </li>
-                        <li>
-                            <button data-modal-target="popup-modal-<%=expense.id%>" data-modal-toggle="popup-modal-<%=expense.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
-                        </li>
-                    </ul>
-                </div>
+                  <!-- Dropdown menu -->
+                  <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=expense.id%>">
+                      
+                      <ul class="py-2" aria-labelledby="expense-menu-button">
+                        <%if expense.status.name=="Expense Approved"%>
+                          <li>
+                              <%= button_to "Acknowledge Receipt", acknowledge_expense_path(expense), method: :patch, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
+                          </li>
+                        <%else%>
+                          <li>
+                              <%= link_to edit_expense_path(expense), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                          </li>
+                          <li>
+                              <button data-modal-target="popup-modal-<%=expense.id%>" data-modal-toggle="popup-modal-<%=expense.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
+                          </li>
+                        <%end%>
+                      </ul>
+                  </div>
+                  <%end%>
                 </td>
               </tr>
               <%= render "confirm_delete_modal", expense: expense%>

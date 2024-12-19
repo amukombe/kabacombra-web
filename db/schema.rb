@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_17_220457) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_18_125921) do
   create_table "beer_dispatches", force: :cascade do |t|
     t.string "fdn_number"
     t.string "truck_numberplate"
@@ -147,9 +147,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_17_220457) do
     t.string "expense_title"
     t.integer "received_by"
     t.integer "authorized_by"
-    t.string "reason"
     t.string "description"
-    t.date "expese_date"
+    t.date "expense_date"
     t.decimal "amount"
     t.string "source_of_income"
     t.datetime "created_at", null: false

@@ -61,6 +61,23 @@ class ExpensesController < ApplicationController
     end
   end
 
+  def  approvals
+    status_id = 8
+    @expenses = Expense.my_approvals(params, current_territory.id, current_user.id, status_id).page(params[:page]).per(20)
+  end
+
+  def approve
+    @expense = Expense.find(params[:id])
+    @expense.update(status_id: 9)
+    redirect_to "/expense_approvals", notice: "Expense successfully approved"
+  end
+
+  def acknowledge
+    @expense = Expense.find(params[:id])
+    @expense.update(status_id: 11)
+    redirect_to "/expense_approvals", notice: "Money receipt successfully akcnowledged"
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_expense
@@ -69,6 +86,6 @@ class ExpensesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def expense_params
-      params.require(:expense).permit(:expense_type_id, :expense_category_id, :user_id, :territory_id, :status_id, :expense_title, :received_by, :authorized_by, :reason, :description, :expese_date, :amount, :source_of_income)
+      params.require(:expense).permit(:expense_type_id, :user_id, :territory_id, :status_id, :expense_title, :received_by, :authorized_by, :reason, :description, :expense_date, :amount, :source_of_income)
     end
 end
