@@ -21,12 +21,15 @@ class OrdersController < ApplicationController
   # GET /orders/1/edit
   def edit
     @products = NileProduct.all
+    @units = UnitOfMeasurement.all
   end
 
   # POST /orders or /orders.json
   def create
     @order = Order.new(order_params)
     @routes = Route.all
+    @products = NileProduct.all
+    @units = UnitOfMeasurement.all
     respond_to do |format|
       if @order.save
         format.html { redirect_to orders_path, notice: "Order was successfully created." }
@@ -41,6 +44,7 @@ class OrdersController < ApplicationController
   # PATCH/PUT /orders/1 or /orders/1.json
   def update
     @products = NileProduct.all
+    @units = UnitOfMeasurement.all
     respond_to do |format|
       if @order.update(order_params)
         format.html { redirect_to orders_path, notice: "Order was successfully updated." }
