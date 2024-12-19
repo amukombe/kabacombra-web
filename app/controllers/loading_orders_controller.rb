@@ -3,6 +3,7 @@ class LoadingOrdersController < ApplicationController
 
   # GET /loading_orders or /loading_orders.json
   def index
+    @active_link = "loading_orders"
     @loading_orders = LoadingOrder.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
@@ -74,6 +75,7 @@ class LoadingOrdersController < ApplicationController
   end
 
   def  approvals
+    @active_link = "approvals"
     status_id = 6
     @loading_orders = LoadingOrder.my_approvals(params, current_territory.id, current_user.id, status_id).page(params[:page]).per(20)
   end

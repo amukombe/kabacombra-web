@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_18_125921) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_19_162921) do
   create_table "beer_dispatches", force: :cascade do |t|
     t.string "fdn_number"
     t.string "truck_numberplate"
@@ -19,14 +19,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_18_125921) do
     t.string "delivery_plant"
     t.string "shipping_point"
     t.datetime "loading_time"
-    t.integer "driver_id", null: false
     t.integer "order_id", null: false
     t.string "dispatch_no"
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "territory_id", null: false
-    t.index ["driver_id"], name: "index_beer_dispatches_on_driver_id"
+    t.string "driver_name"
+    t.string "driver_mobile"
     t.index ["order_id"], name: "index_beer_dispatches_on_order_id"
     t.index ["territory_id"], name: "index_beer_dispatches_on_territory_id"
     t.index ["user_id"], name: "index_beer_dispatches_on_user_id"
@@ -199,6 +199,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_18_125921) do
     t.string "stock_no"
     t.integer "dispatch_item_id", null: false
     t.decimal "breakages"
+    t.decimal "missing_bottles"
+    t.decimal "complaints"
     t.index ["dispatch_item_id"], name: "index_inventory_items_on_dispatch_item_id"
     t.index ["inventory_id"], name: "index_inventory_items_on_inventory_id"
   end
@@ -249,6 +251,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_18_125921) do
     t.integer "nile_category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "buying_price"
+    t.string "selling_price"
+    t.string "empty_type"
     t.index ["nile_category_id"], name: "index_nile_products_on_nile_category_id"
   end
 
@@ -447,7 +452,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_18_125921) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "beer_dispatches", "drivers"
   add_foreign_key "beer_dispatches", "orders"
   add_foreign_key "beer_dispatches", "territories"
   add_foreign_key "beer_dispatches", "users"

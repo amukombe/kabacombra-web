@@ -25,7 +25,6 @@ class BeerDispatchesController < ApplicationController
       )
     end
     #@beer_dispatch.dispatch_items.build
-    @drivers = @order.drivers
     @order_items = @order.order_items
 
   end
@@ -34,7 +33,6 @@ class BeerDispatchesController < ApplicationController
   def edit
     #@beer_dispatch.dispatch_items.build(beer_dispatch_params)
     @order = Order.find(@beer_dispatch.order_id)
-    @drivers = @order.drivers
     @order_items = @order.order_items
   end
 
@@ -43,7 +41,6 @@ class BeerDispatchesController < ApplicationController
     order_id = beer_dispatch_params[:order_id]
     @order = Order.find(order_id)
     @beer_dispatch = BeerDispatch.new(beer_dispatch_params)
-    @drivers = @order.drivers
     @order_items = @order.order_items
     respond_to do |format|
       if @beer_dispatch.save
@@ -61,7 +58,6 @@ class BeerDispatchesController < ApplicationController
   def update
     @order = Order.find(params[:id])
     @beer_dispatch.dispatch_items.build(beer_dispatch_params)
-    @drivers = @order.drivers
     @order_items = @order.order_items
     respond_to do |format|
       if @beer_dispatch.update(beer_dispatch_params)
@@ -102,7 +98,7 @@ class BeerDispatchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def beer_dispatch_params
-      params.require(:beer_dispatch).permit(:fdn_number, :truck_numberplate, :trailer_plate, :second_trailer, :delivery_plant, :shipping_point, :loading_time, :delivery_plant, :driver_id, :order_id, :dispatch_no, :user_id,:territory_id,
+      params.require(:beer_dispatch).permit(:fdn_number, :truck_numberplate, :trailer_plate, :second_trailer, :delivery_plant, :shipping_point, :loading_time, :delivery_plant, :order_id, :dispatch_no, :user_id,:territory_id, :driver_name, :driver_mobile,
       dispatch_items_attributes: [:id,:beer_dispatch_id, :order_item_id, :quantity_dispatched, :quantity_ordered, :_destroy])
     end
 end

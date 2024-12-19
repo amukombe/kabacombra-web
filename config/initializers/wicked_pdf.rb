@@ -9,7 +9,7 @@
 # https://github.com/mileszs/wicked_pdf/blob/master/README.md
 
 WickedPdf.configure do |config|
-    config.exe_path = '/home/david/.asdf/shims/wkhtmltopdf'
+    config.exe_path= '/usr/bin/wkhtmltopdf'
     config.enable_local_file_access = true
   # Path to the wkhtmltopdf executable: This usually isn't needed if using
   # one of the wkhtmltopdf-binary family of gems.

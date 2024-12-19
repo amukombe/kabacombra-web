@@ -1,8 +1,8 @@
-<%if order.status.id == 1%>
+<%if order.status.code == "ODD"%>
     <span class="bg-orange-100 text-orange-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-orange-100 dark:bg-gray-700 dark:border-orange-300 dark:text-orange-300"><%=order.status.name%></span>
-<%elsif order.status.id == 2%>
+<%elsif order.status.code == "OS"%>
     <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-blue-100 dark:bg-gray-700 dark:border-blue-300 dark:text-blue-300"><%=order.status.name%></span>
-<%elsif order.status.id == 3%>
+<%elsif order.status.code == "ODS"%>
     <span class="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-purple-100 dark:bg-gray-700 dark:border-purple-300 dark:text-purple-300"><%=order.status.name%></span>
     <%= link_to dispatch_pdf_order_path(order, format: :pdf) do %>
         <span class="mr-2 px-2.5 py-0.5 rounded-md text-purple-200 bg-purple-700 dark:text-purple-700 dark:bg-purple-200 hover:bg-purple-300 hover:text-purple-800"><i class="fas fa-print"></i>Print</span>

@@ -42,7 +42,10 @@
                   nile_product
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Type
+                  Category
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Prices
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Status
@@ -60,7 +63,12 @@
                   <span class="text-xs"><%=nile_product.bottle_size%>, <%=nile_product.pcode%></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=nile_product.nile_category.name%></span>
+                  Category: <span class="font-semibold"><%=nile_product.nile_category.name%></span><br/>
+                  Empty Type: <span class="font-semibold"><%=nile_product.empty_type%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  BP: <span class="font-normal"><%=nile_product.buying_price%></span><br/>
+                  SP: <span class="font-normal"><%=nile_product.selling_price%></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="nile_product-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=nile_product.id%>" data-dropdown-placement="bottom">

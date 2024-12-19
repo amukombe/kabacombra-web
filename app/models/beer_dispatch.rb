@@ -1,12 +1,11 @@
 class BeerDispatch < ApplicationRecord
-  belongs_to :driver
   belongs_to :order
   belongs_to :user
   has_one :inventory
   has_many :dispatch_items, dependent: :destroy
   accepts_nested_attributes_for :dispatch_items, allow_destroy: true, reject_if: :all_blank
   before_validation :generate_dispatch_number, on: :create
-  validates :fdn_number, :driver_id, :truck_numberplate, :delivery_plant, :shipping_point, :loading_time, presence: true
+  validates :fdn_number, :driver_name, :driver_mobile, :truck_numberplate, :delivery_plant, :shipping_point, :loading_time, presence: true
   
   def self.search(params, territory_id)
     if params[:query].present?

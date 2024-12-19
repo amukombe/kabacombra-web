@@ -24,7 +24,6 @@ class InventoriesController < ApplicationController
         purchase_price: item.order_item.unit_price
       )
     end
-    @drivers = @dispatch.order.drivers
     @dispatch_items = @dispatch.dispatch_items
   end
 
@@ -37,12 +36,9 @@ class InventoriesController < ApplicationController
     dispatch_id = inventory_params[:beer_dispatch_id]
     @dispatch = BeerDispatch.find(dispatch_id)
     @inventory = Inventory.new(inventory_params)
-    @drivers = @dispatch.order.drivers
     @dispatch_items = @dispatch.dispatch_items
     respond_to do |format|
       if @inventory.save
-        @driver = @dispatch.driver
-        @driver.update(is_available: true)
         @dispatch.order.update(status_id: 4)
         format.html { redirect_to beer_dispatches_path, notice: "Inventory was successfully created." }
         format.json { render :show, status: :created, location: @inventory }
@@ -85,6 +81,6 @@ class InventoriesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def inventory_params
       params.require(:inventory).permit(:beer_dispatch_id, :total,:delivery_time,:user_id,:territory_id, 
-      inventory_items_attributes: [:id, :inventory_id, :dispatch_item_id, :quantity_ordered, :quantity_dispatched, :quantity_received, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :_destroy])
+      inventory_items_attributes: [:id, :inventory_id, :dispatch_item_id, :quantity_ordered, :quantity_dispatched, :quantity_received, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :missing_bottles, :complaints, :_destroy])
     end
 end

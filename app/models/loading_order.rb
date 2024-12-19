@@ -15,10 +15,12 @@ class LoadingOrder < ApplicationRecord
   end
 
   def self.my_approvals(params, territory_id, user_id, status_id)
+    query = where("status_id IN (?) AND territory_id = ? AND authorized_by = ?", [6], territory_id, user_id)
+  
     if params[:query].present?
-      where("order_number LIKE ? AND status_id IN (?) AND territory_id = ? authorized_by = ?", "%#{sanitize_sql_like(params[:query])}%", [6], territory_id, user_id)
-    else
-      where(status_id: 6, territory_id: territory_id, authorized_by: user_id)
+      query = query.where("order_number LIKE ?", "%#{sanitize_sql_like(params[:query])}%")
     end
+  
+    query
   end
 end
