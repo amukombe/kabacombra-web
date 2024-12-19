@@ -20,14 +20,8 @@ class DashboardController < ApplicationController
     employee_territories = current_user.employee.employee_territories.joins(:territory).where(territories: { department_id: params[:id] })
 
     puts "===============#{employee_territories}"
-    if employee_territories.count == 1
-      #redirect_to root_path, alert: "You do not have any branches assigened to you, Please contact admin"
-      emp_territory = EmployeeTerritory.joins(:territory).find_by(employee_id: current_user.employee.id, territories: {department_id: params[:id]})
-      session[:current_territory_id] = emp_territory.id
-      redirect_to "/welcome/beer?id=#{emp_territory.id}"
-    else
-      get_user_department_dashboard(params[:id])
-    end
+    puts "===============#{employee_territories.count}"
+    get_user_department_dashboard(params[:id])
   end
   def energy
     get_user_department_dashboard(params[:id])
@@ -45,8 +39,8 @@ class DashboardController < ApplicationController
   private
   def get_user_department_dashboard(id)
     @employee_territories = current_user.employee.employee_territories.joins(:territory).where(territories: { department_id: id })
-    if !@employee_territories.present?
-      redirect_to dashboard_path, alert: "You do not have any branches assigned to you in the department"
-    end
+    #if !@employee_territories.present?
+      #redirect_to dashboard_path, alert: "You do not have any branches assigned to you in the department"
+    #end
   end
 end
