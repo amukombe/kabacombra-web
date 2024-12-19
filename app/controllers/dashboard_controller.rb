@@ -46,7 +46,7 @@ class DashboardController < ApplicationController
   def get_user_department_dashboard(id)
     @employee_territories = current_user.employee.employee_territories.joins(:territory).where(territories: { department_id: id })
     if !@employee_territories.present?
-      redirect_to dashboard_path, alert: "You do not have any branches assigned to you in the '#{Department.find(id).name}' department"
+      redirect_to dashboard_path, alert: "You do not have any branches assigned to you in the department"
     end
   end
 end
