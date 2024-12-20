@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_19_162921) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_20_131717) do
   create_table "beer_dispatches", force: :cascade do |t|
     t.string "fdn_number"
     t.string "truck_numberplate"
@@ -47,6 +47,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_19_162921) do
     t.datetime "updated_at", null: false
     t.index ["status_id"], name: "index_comments_on_status_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "mobile"
+    t.string "location"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "territory_id", null: false
+    t.index ["territory_id"], name: "index_customers_on_territory_id"
   end
 
   create_table "department_modules", force: :cascade do |t|
@@ -254,6 +265,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_19_162921) do
     t.string "buying_price"
     t.string "selling_price"
     t.string "empty_type"
+    t.decimal "empty_price"
     t.index ["nile_category_id"], name: "index_nile_products_on_nile_category_id"
   end
 
@@ -320,10 +332,39 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_19_162921) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "sale_items", force: :cascade do |t|
+    t.integer "loading_order_item_id", null: false
+    t.decimal "quantity_sold"
+    t.decimal "amount"
+    t.decimal "total"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "empties_returned"
+    t.decimal "cash_for_empties"
+    t.integer "sale_id", null: false
+    t.index ["loading_order_item_id"], name: "index_sale_items_on_loading_order_item_id"
+    t.index ["sale_id"], name: "index_sale_items_on_sale_id"
+  end
+
   create_table "sale_types", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "sales", force: :cascade do |t|
+    t.integer "customer_id", null: false
+    t.integer "user_id", null: false
+    t.string "sale_type"
+    t.string "mode_of_payment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "receipt_no"
+    t.integer "territory_id", null: false
+    t.integer "verified_by"
+    t.index ["customer_id"], name: "index_sales_on_customer_id"
+    t.index ["territory_id"], name: "index_sales_on_territory_id"
+    t.index ["user_id"], name: "index_sales_on_user_id"
   end
 
   create_table "statuses", force: :cascade do |t|
@@ -457,6 +498,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_19_162921) do
   add_foreign_key "beer_dispatches", "users"
   add_foreign_key "comments", "statuses"
   add_foreign_key "comments", "users"
+  add_foreign_key "customers", "territories"
   add_foreign_key "department_modules", "departments"
   add_foreign_key "dispatch_items", "beer_dispatches"
   add_foreign_key "dispatch_items", "order_items"
@@ -495,6 +537,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_19_162921) do
   add_foreign_key "orders", "statuses"
   add_foreign_key "orders", "territories"
   add_foreign_key "orders", "users"
+  add_foreign_key "sale_items", "loading_order_items"
+  add_foreign_key "sale_items", "sales"
+  add_foreign_key "sales", "customers"
+  add_foreign_key "sales", "territories"
+  add_foreign_key "sales", "users"
   add_foreign_key "stock_stores", "inventory_items"
   add_foreign_key "stock_stores", "stores"
   add_foreign_key "stores", "territories"

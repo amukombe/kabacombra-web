@@ -4,6 +4,7 @@ class Territory < ApplicationRecord
   has_many :employee_territories
   has_many :employees, through: :employee_territories
   has_many :stores
+  has_many :customers
   def self.search(params)
     params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
   end

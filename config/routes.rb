@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :sale_items
+  resources :customers
+  resources :sales
   get "approvals/loading_order"
   get "approvals/epenses"
   get "expense_approvals",to: "expenses#approvals"
