@@ -38,6 +38,9 @@ class LoadingOrdersController < ApplicationController
     @sale_types = SaleType.all
     respond_to do |format|
       if @loading_order.save
+        @loading_order.loading_order_items.each do |item|
+          InventoryAllocator.new(item.nile_product, item.quantity_loaded, current_territory.id).allocate
+        end
         format.html { redirect_to loading_orders_path, notice: "Loading order was successfully created." }
         format.json { render :show, status: :created, location: @loading_order }
       else
@@ -77,7 +80,7 @@ class LoadingOrdersController < ApplicationController
   def  approvals
     @active_link = "approvals"
     status_id = 6
-    @loading_orders = LoadingOrder.my_approvals(params, current_territory.id, current_user.id, status_id).page(params[:page]).per(20)
+    @loading_orders = LoadingOrder.my_approvals(params, current_territory.id, current_user.employee.id, status_id).page(params[:page]).per(20)
   end
 
   def approve

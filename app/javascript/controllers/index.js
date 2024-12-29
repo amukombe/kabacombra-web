@@ -10,8 +10,14 @@ application.register("alert", AlertController)
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 
+import InventoryController from "./inventory_controller"
+application.register("inventory", InventoryController)
+
 import NestedFormController from "./nested_form_controller"
 application.register("nested-form", NestedFormController)
+
+import OrderController from "./order_controller"
+application.register("order", OrderController)
 
 import ProductController from "./product_controller"
 application.register("product", ProductController)

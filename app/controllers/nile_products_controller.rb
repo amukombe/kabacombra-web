@@ -72,6 +72,32 @@ class NileProductsController < ApplicationController
   render json: { available_stock: total_available_stock }
   end
 
+  def details
+    product = NileProduct.find_by(id: params[:id])
+    if product
+      render json: {
+        unit_price: product.buying_price,
+        selling_price: product.selling_price
+      }
+    else
+      render json: { error: 'Product not found' }, status: :not_found
+    end
+  end
+
+  def dispatchdetails
+    dispatch_item = DispatchItem.find_by(id: params[:id])
+    product = dispatch_item.order_item.nile_product #NileProduct.find_by(id: params[:id])
+    if product
+      render json: {
+        unit_price: product.buying_price,
+        selling_price: product.selling_price
+      }
+    else
+      render json: { error: 'Product not found' }, status: :not_found
+    end
+  end
+  
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_nile_product

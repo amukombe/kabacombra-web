@@ -1,7 +1,8 @@
 class InventoryItem < ApplicationRecord
+  scope :oldest, -> { order(created_at: :asc) }
   belongs_to :inventory
   belongs_to :dispatch_item
-
+  before_save :initialize_quantity_sold
   before_validation :generate_stock_number, on: :create
   validate :validate_quantity
   has_many :inventory_item_stores
@@ -14,6 +15,10 @@ class InventoryItem < ApplicationRecord
     else
       joins(:inventory).where("inventories.territory_id=?", territory_id)
     end
+  end
+
+  def quantity
+    return (self.quantity_received - self.quantity_sold)
   end
 
   private
@@ -30,5 +35,10 @@ class InventoryItem < ApplicationRecord
       if total_qty != self.quantity_dispatched
         errors.add(:quantity_dispatched, "must be equal to received + breakages")
       end
+  end
+  
+
+  def initialize_quantity_sold
+    self.quantity_sold ||= 0
   end
 end

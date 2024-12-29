@@ -21,7 +21,8 @@ class InventoriesController < ApplicationController
         dispatch_item_id: item.id, 
         quantity_dispatched: item.quantity_dispatched,
         quantity_received: item.quantity_dispatched,
-        purchase_price: item.order_item.unit_price
+        purchase_price: item.order_item.unit_price,
+        selling_price: item.order_item.nile_product.selling_price
       )
     end
     @dispatch_items = @dispatch.dispatch_items

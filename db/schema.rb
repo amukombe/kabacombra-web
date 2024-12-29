@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_20_131717) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_29_174440) do
   create_table "beer_dispatches", force: :cascade do |t|
     t.string "fdn_number"
     t.string "truck_numberplate"
@@ -197,7 +197,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_20_131717) do
     t.decimal "quantity_ordered"
     t.decimal "quantity_dispatched"
     t.decimal "quantity_received"
-    t.decimal "quantity_sold"
+    t.decimal "quantity_sold", default: "0.0"
     t.decimal "purchase_price"
     t.decimal "selling_price"
     t.boolean "is_active", default: false
@@ -212,6 +212,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_20_131717) do
     t.decimal "breakages"
     t.decimal "missing_bottles"
     t.decimal "complaints"
+    t.decimal "remaining_quantity", default: "0.0"
     t.index ["dispatch_item_id"], name: "index_inventory_items_on_dispatch_item_id"
     t.index ["inventory_id"], name: "index_inventory_items_on_inventory_id"
   end

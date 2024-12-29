@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   get "approvals/loading_order"
   get "approvals/epenses"
   get "expense_approvals",to: "expenses#approvals"
+  get 'nile_products/:id/details', to: 'nile_products#details', as: :product_details
+  get 'nile_products/:id/dispatchdetails', to: 'nile_products#dispatchdetails', as: :product_dispatchdetails
+
   resources :expenses do
     member do
       patch :approve

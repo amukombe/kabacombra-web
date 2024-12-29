@@ -5,7 +5,7 @@ class Sale < ApplicationRecord
   belongs_to :loading_order_item
   belongs_to :customer
   belongs_to :user
-  has_many :sale_items
+  has_many :sale_items, dependent: :destroy
   accepts_nested_attributes_for :sale_items, allow_destroy: true, reject_if: :all_blank
   def self.search(params)
     params[:query].blank? ? all : where("receipt_no LIKE?", "%#{sanitize_sql_like(params[:query])}%")

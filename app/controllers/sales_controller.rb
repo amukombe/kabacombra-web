@@ -4,6 +4,7 @@ class SalesController < ApplicationController
   # GET /sales or /sales.json
   def index
     @sales = Sale.search(params).page(params[:page]).per(20)
+    @active_link = "sales"
   end
 
   # GET /sales/1 or /sales/1.json
@@ -13,7 +14,7 @@ class SalesController < ApplicationController
   # GET /sales/new
   def new
     @sale = Sale.new
-    @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.id})
+    @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
     @customers = current_territory.customers
     @employees = current_territory.employees
     @sale.sale_items.build
@@ -21,15 +22,18 @@ class SalesController < ApplicationController
 
   # GET /sales/1/edit
   def edit
+    @customers = current_territory.customers
+    @employees = current_territory.employees
   end
 
   # POST /sales or /sales.json
   def create
     @sale = Sale.new(sale_params)
-
+    @customers = current_territory.customers
+    @employees = current_territory.employees
     respond_to do |format|
       if @sale.save
-        format.html { redirect_to @sale, notice: "Sale was successfully created." }
+        format.html { redirect_to sales_path, notice: "Sale was successfully created." }
         format.json { render :show, status: :created, location: @sale }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -40,6 +44,8 @@ class SalesController < ApplicationController
 
   # PATCH/PUT /sales/1 or /sales/1.json
   def update
+    @customers = current_territory.customers
+    @employees = current_territory.employees
     respond_to do |format|
       if @sale.update(sale_params)
         format.html { redirect_to @sale, notice: "Sale was successfully updated." }
