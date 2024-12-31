@@ -16,6 +16,14 @@
         <%= f.text_field :total, step: 0.01 , class:"itemtotal-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",data: { sale_target: "itemtotal" }%>
     </div>
     <div>
+        <%= f.label :empties_returned , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+        <%= f.text_field :empties_returned, step: 0.01 , class:"itemtotal-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",data: { sale_target: "itemtotal" }%>
+    </div>
+    <div>
+        <%= f.label :cash_for_empties , class:"text-xs text-gray-600 dark:text-gray-400"%>
+        <%= f.text_field :cash_for_empties, step: 0.01 , class:"itemtotal-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",data: { sale_target: "itemtotal" }%>
+    </div>
+    <div>
         <span class="px-2 py-1 text-xs text-red-200 bg-red-700 rounded dark:text-red-700 dark:bg-red-200">
         <button type="button" data-action="nested-form#remove">Remove <i class="fas fa-trash"></i></button>
         </span>

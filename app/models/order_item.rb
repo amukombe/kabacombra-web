@@ -3,6 +3,7 @@ class OrderItem < ApplicationRecord
   belongs_to :nile_product
   before_save :calculate_total
   has_one :dispatch_item
+  
   def name
     return "#{nile_product.name}"
   end

@@ -92,7 +92,7 @@ class SalesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def sale_params
       params.require(:sale).permit(:customer_name, :user_id, :sale_type, :mode_of_payment,:sale_date, :customer_tin,:territory_id, :receipt_no,:status_id,
-      sale_items_attributes: [:id,:sale_id, :loading_order_item_id, :quantity_sold, :amount, :total, :_destroy])
+      sale_items_attributes: [:id,:sale_id, :loading_order_item_id, :quantity_sold, :amount, :total,:empties_returned,:cash_for_empties, :_destroy])
     end
 
     def deduct_quantity(sale_item)
