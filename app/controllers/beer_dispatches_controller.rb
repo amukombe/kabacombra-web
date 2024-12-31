@@ -98,7 +98,7 @@ class BeerDispatchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def beer_dispatch_params
-      params.require(:beer_dispatch).permit(:fdn_number, :truck_numberplate, :trailer_plate, :second_trailer, :delivery_plant, :shipping_point, :loading_time, :delivery_plant, :order_id, :dispatch_no, :user_id,:territory_id, :driver_name, :driver_mobile,
+      params.require(:beer_dispatch).permit(:fdn_number, :invoice_no, :truck_numberplate, :trailer_plate, :second_trailer, :delivery_plant, :shipping_point, :loading_time, :delivery_plant, :order_id, :dispatch_no, :user_id,:territory_id, :driver_name, :driver_mobile,
       dispatch_items_attributes: [:id,:beer_dispatch_id, :order_item_id, :quantity_dispatched, :quantity_ordered, :_destroy])
     end
 end

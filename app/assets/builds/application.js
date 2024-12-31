@@ -16021,7 +16021,7 @@ var hello_controller_default = class extends Controller {
 
 // app/javascript/controllers/inventory_controller.js
 var inventory_controller_default = class extends Controller {
-  static targets = ["sellingPrice"];
+  static targets = ["sellingPrice", "quatity", "breakages", "missing"];
   connect() {
     console.log("order connected");
     console.log("unit price", this.priceTarget);
@@ -16047,6 +16047,31 @@ var inventory_controller_default = class extends Controller {
       console.error(error2);
       alert("Could not load product details.");
     }
+  }
+  async getTotal(event) {
+    console.log("Total method loaded:::");
+    const row = event.target.closest(".order-item-row");
+    if (!row) {
+      console.error("Row not found for product selection");
+      return;
+    }
+    const breakagesField = row.querySelector('[data-inventory-target="breakages"]');
+    const quantityField = row.querySelector('[data-inventory-target="quantity"]');
+    const missingField = row.querySelector('[data-inventory-target="missing"]');
+    if (!breakagesField || !quantityField || !missingField) {
+      console.error("One or more required fields not found in this row");
+      return;
+    }
+    let originalQuantity = parseFloat(quantityField.dataset.originalValue);
+    if (!originalQuantity) {
+      originalQuantity = parseFloat(quantityField.value) || 0;
+      quantityField.dataset.originalValue = originalQuantity;
+    }
+    const breakages = parseFloat(breakagesField.value) || 0;
+    const missing = parseFloat(missingField.value) || 0;
+    const newQuantity = originalQuantity - (breakages + missing);
+    quantityField.value = newQuantity.toFixed(2);
+    console.log(`Updated Quantity: ${newQuantity}`);
   }
 };
 

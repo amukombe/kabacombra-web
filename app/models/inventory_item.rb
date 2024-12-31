@@ -31,9 +31,9 @@ class InventoryItem < ApplicationRecord
   end
 
   def validate_quantity
-      total_qty = self.quantity_received + self.breakages
+      total_qty = self.quantity_received + self.breakages + self.missing_bottles
       if total_qty != self.quantity_dispatched
-        errors.add(:quantity_dispatched, "must be equal to received + breakages")
+        errors.add(:quantity_dispatched, "must be equal to received + breakages + missing bottles")
       end
   end
   

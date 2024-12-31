@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_31_064913) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_31_105708) do
   create_table "bank_accounts", force: :cascade do |t|
     t.integer "bank_id", null: false
     t.integer "territory_id", null: false
@@ -85,6 +85,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_31_064913) do
     t.integer "territory_id", null: false
     t.string "driver_name"
     t.string "driver_mobile"
+    t.string "invoice_no"
     t.index ["order_id"], name: "index_beer_dispatches_on_order_id"
     t.index ["territory_id"], name: "index_beer_dispatches_on_territory_id"
     t.index ["user_id"], name: "index_beer_dispatches_on_user_id"
