@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_31_001937) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_31_064913) do
   create_table "bank_accounts", force: :cascade do |t|
     t.integer "bank_id", null: false
     t.integer "territory_id", null: false
@@ -425,6 +425,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_31_001937) do
     t.string "customer_name"
     t.string "tin"
     t.string "payment_ref"
+    t.integer "status_id", null: false
+    t.index ["status_id"], name: "index_sales_on_status_id"
     t.index ["territory_id"], name: "index_sales_on_territory_id"
     t.index ["user_id"], name: "index_sales_on_user_id"
   end
@@ -610,6 +612,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_31_001937) do
   add_foreign_key "orders", "users"
   add_foreign_key "sale_items", "loading_order_items"
   add_foreign_key "sale_items", "sales"
+  add_foreign_key "sales", "statuses"
   add_foreign_key "sales", "territories"
   add_foreign_key "sales", "users"
   add_foreign_key "stock_stores", "inventory_items"

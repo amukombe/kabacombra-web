@@ -71,8 +71,12 @@
                   <span class="font-normal"><%=sale.total_price%></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <%if sale.status.id == 12%>
+                      <span class="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-purple-100 dark:bg-gray-700 dark:border-purple-300 dark:text-purple-300"><%=sale.status.name%></span>
+                      
+                  <%end%>
                   <%= link_to sale_pdf_sale_path(sale, format: :pdf) do %>
-                          <span class="mr-2 px-2.5 py-0.5 rounded-md text-purple-200 bg-purple-700 dark:text-purple-700 dark:bg-purple-200 hover:bg-purple-300 hover:text-purple-800"><i class="fas fa-print"></i>Print</span>
+                          <span class="mr-2 px-2.5 py-0.5 rounded-md text-purple-200 bg-purple-700 dark:text-purple-700 dark:bg-purple-200 hover:bg-purple-300 hover:text-purple-800"><i class="fas fa-print"></i>Print Recipt</span>
                       <%end%>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
@@ -86,12 +90,18 @@
                 <!-- Dropdown menu -->
                 <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=sale.id%>">
                     
-                    <ul class="py-2" aria-labelledby="order-menu-button">
-                        
+                    <ul class="py-2" aria-labelledby="nile_product-menu-button">
+                        <li>
+                            <%= link_to edit_sale_path(sale), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                        </li>
+                        <li>
+                            <button data-modal-target="popup-modal-<%=sale.id%>" data-modal-toggle="popup-modal-<%=sale.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
+                        </li>
                     </ul>
                 </div>
                 </td>
               </tr>
+              <%= render "confirm_delete_modal", sale: sale%>
             <%end%>
             </tbody>
           </table>
