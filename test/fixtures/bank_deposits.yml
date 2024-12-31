@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bank_account: one
+  user: one
+  territory: one
+  deposit_date: 2024-12-31
+  amount: 9.99
+  deposit_location: MyString
+  source_of_income: MyString
+  deposited_by: MyString
+  transaction_reference: MyString
+  additional_info: MyString
+
+two:
+  bank_account: two
+  user: two
+  territory: two
+  deposit_date: 2024-12-31
+  amount: 9.99
+  deposit_location: MyString
+  source_of_income: MyString
+  deposited_by: MyString
+  transaction_reference: MyString
+  additional_info: MyString

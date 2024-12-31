@@ -3,6 +3,7 @@ class ExpenseCategoriesController < ApplicationController
 
   # GET /expense_categories or /expense_categories.json
   def index
+    @active_link='expense categories'
     @expense_categories = ExpenseCategory.search(params).page(params[:page]).per(20)
   end
 

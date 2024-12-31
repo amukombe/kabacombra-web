@@ -22,6 +22,9 @@ application.register("order", OrderController)
 import ProductController from "./product_controller"
 application.register("product", ProductController)
 
+import SaleController from "./sale_controller"
+application.register("sale", SaleController)
+
 import SearchController from "./search_controller"
 application.register("search", SearchController)
 

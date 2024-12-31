@@ -3,6 +3,7 @@ class ExpenseTypesController < ApplicationController
 
   # GET /expense_types or /expense_types.json
   def index
+    @active_link='expense types'
     @expense_types = ExpenseType.search(params).page(params[:page]).per(20)
   end
 

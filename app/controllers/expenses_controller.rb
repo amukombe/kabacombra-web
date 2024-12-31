@@ -3,7 +3,8 @@ class ExpensesController < ApplicationController
 
   # GET /expenses or /expenses.json
   def index
-    @expenses = Expense.search(params).page(params[:page]).per(20)
+    @active_link='expenses'
+    @expenses = Expense.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
   # GET /expenses/1 or /expenses/1.json
@@ -62,6 +63,7 @@ class ExpensesController < ApplicationController
   end
 
   def  approvals
+    @active_link='approvals'
     status_id = 8
     @expenses = Expense.my_approvals(params, current_territory.id, current_user.id, status_id).page(params[:page]).per(20)
   end

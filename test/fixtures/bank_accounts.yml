@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bank: one
+  territory: one
+  user: one
+  account_name: MyString
+  account_number: MyString
+  branch_name: MyString
+  branch_code: MyString
+  swiftcode: MyString
+
+two:
+  bank: two
+  territory: two
+  user: two
+  account_name: MyString
+  account_number: MyString
+  branch_name: MyString
+  branch_code: MyString
+  swiftcode: MyString

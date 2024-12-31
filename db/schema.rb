@@ -10,7 +10,65 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_29_174440) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_31_001937) do
+  create_table "bank_accounts", force: :cascade do |t|
+    t.integer "bank_id", null: false
+    t.integer "territory_id", null: false
+    t.integer "user_id", null: false
+    t.string "account_name"
+    t.string "account_number"
+    t.string "branch_name"
+    t.string "branch_code"
+    t.string "swiftcode"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_id"], name: "index_bank_accounts_on_bank_id"
+    t.index ["territory_id"], name: "index_bank_accounts_on_territory_id"
+    t.index ["user_id"], name: "index_bank_accounts_on_user_id"
+  end
+
+  create_table "bank_deposits", force: :cascade do |t|
+    t.integer "bank_account_id", null: false
+    t.integer "user_id", null: false
+    t.integer "territory_id", null: false
+    t.date "deposit_date"
+    t.decimal "amount"
+    t.string "deposit_location"
+    t.string "source_of_income"
+    t.string "deposited_by"
+    t.string "transaction_reference"
+    t.string "additional_info"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_bank_deposits_on_bank_account_id"
+    t.index ["territory_id"], name: "index_bank_deposits_on_territory_id"
+    t.index ["user_id"], name: "index_bank_deposits_on_user_id"
+  end
+
+  create_table "bank_withdraws", force: :cascade do |t|
+    t.integer "bank_account_id", null: false
+    t.integer "user_id", null: false
+    t.integer "territory_id", null: false
+    t.date "withdraw_date"
+    t.decimal "amount"
+    t.string "withdraw_location"
+    t.string "reason"
+    t.string "withdrawn_by"
+    t.string "transaction_reference"
+    t.string "additional_info"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_bank_withdraws_on_bank_account_id"
+    t.index ["territory_id"], name: "index_bank_withdraws_on_territory_id"
+    t.index ["user_id"], name: "index_bank_withdraws_on_user_id"
+  end
+
+  create_table "banks", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "beer_dispatches", force: :cascade do |t|
     t.string "fdn_number"
     t.string "truck_numberplate"
@@ -223,6 +281,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_29_174440) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "nile_product_id", null: false
+    t.decimal "remaining_quantity"
     t.index ["loading_order_id"], name: "index_loading_order_items_on_loading_order_id"
     t.index ["nile_product_id"], name: "index_loading_order_items_on_nile_product_id"
   end
@@ -354,7 +413,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_29_174440) do
   end
 
   create_table "sales", force: :cascade do |t|
-    t.integer "customer_id", null: false
     t.integer "user_id", null: false
     t.string "sale_type"
     t.string "mode_of_payment"
@@ -363,7 +421,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_29_174440) do
     t.string "receipt_no"
     t.integer "territory_id", null: false
     t.integer "verified_by"
-    t.index ["customer_id"], name: "index_sales_on_customer_id"
+    t.datetime "sale_date"
+    t.string "customer_name"
+    t.string "tin"
+    t.string "payment_ref"
     t.index ["territory_id"], name: "index_sales_on_territory_id"
     t.index ["user_id"], name: "index_sales_on_user_id"
   end
@@ -494,6 +555,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_29_174440) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "bank_accounts", "banks"
+  add_foreign_key "bank_accounts", "territories"
+  add_foreign_key "bank_accounts", "users"
+  add_foreign_key "bank_deposits", "bank_accounts"
+  add_foreign_key "bank_deposits", "territories"
+  add_foreign_key "bank_deposits", "users"
+  add_foreign_key "bank_withdraws", "bank_accounts"
+  add_foreign_key "bank_withdraws", "territories"
+  add_foreign_key "bank_withdraws", "users"
   add_foreign_key "beer_dispatches", "orders"
   add_foreign_key "beer_dispatches", "territories"
   add_foreign_key "beer_dispatches", "users"
@@ -540,7 +610,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_29_174440) do
   add_foreign_key "orders", "users"
   add_foreign_key "sale_items", "loading_order_items"
   add_foreign_key "sale_items", "sales"
-  add_foreign_key "sales", "customers"
   add_foreign_key "sales", "territories"
   add_foreign_key "sales", "users"
   add_foreign_key "stock_stores", "inventory_items"

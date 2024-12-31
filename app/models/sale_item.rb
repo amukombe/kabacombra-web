@@ -7,6 +7,7 @@ class SaleItem < ApplicationRecord
   end
 
   def name
-    return "#{loading_order_item.nile_product.name}"
+    return "#{loading_order_item.nile_product.name}  #{loading_order_item.loading_order.order_number}"
   end
+  
 end

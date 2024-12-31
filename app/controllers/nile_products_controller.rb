@@ -96,6 +96,19 @@ class NileProductsController < ApplicationController
       render json: { error: 'Product not found' }, status: :not_found
     end
   end
+
+  def orderitemdetails
+    loading_order_item = LoadingOrderItem.find_by(id: params[:id])
+    product = loading_order_item.nile_product #NileProduct.find_by(id: params[:id])
+    if product
+      render json: {
+        unit_price: product.buying_price,
+        selling_price: product.selling_price
+      }
+    else
+      render json: { error: 'Product not found' }, status: :not_found
+    end
+  end
   
 
   private

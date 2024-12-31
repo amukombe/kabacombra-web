@@ -1,12 +1,21 @@
 Rails.application.routes.draw do
+  resources :bank_withdraws
+  resources :bank_deposits
+  resources :bank_accounts
+  resources :banks
   resources :sale_items
   resources :customers
-  resources :sales
+  resources :sales do
+    member do
+      get "sale_pdf"
+    end
+  end
   get "approvals/loading_order"
   get "approvals/epenses"
   get "expense_approvals",to: "expenses#approvals"
   get 'nile_products/:id/details', to: 'nile_products#details', as: :product_details
   get 'nile_products/:id/dispatchdetails', to: 'nile_products#dispatchdetails', as: :product_dispatchdetails
+  get 'nile_products/:id/orderitemdetails', to: 'nile_products#orderitemdetails', as: :product_orderitemdetails
 
   resources :expenses do
     member do

@@ -1,6 +1,20 @@
 class DashboardController < ApplicationController
   before_action :authenticate_user!
   def index
+    @top_products = SaleItem
+      .joins(:loading_order_item) # Join to access product details if needed
+      .group(:loading_order_item_id)
+      .select('loading_order_item_id, SUM(quantity_sold) AS total_sold, SUM(total) as total_amount')
+      .order('total_sold DESC')
+      .limit(10)
+
+      @least_products = SaleItem
+      .joins(:loading_order_item) # Join to access product details if needed
+      .group(:loading_order_item_id)
+      .select('loading_order_item_id, SUM(quantity_sold) AS total_sold, SUM(total) as total_amount')
+      .order('total_sold ASC')
+      .limit(10)
+ 
     if current_user.is_super
       render :index
     elsif current_user.role == "admin" && !current_user.is_super

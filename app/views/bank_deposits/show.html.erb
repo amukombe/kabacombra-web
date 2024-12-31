@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @bank_deposit %>
+
+<div>
+  <%= link_to "Edit this bank deposit", edit_bank_deposit_path(@bank_deposit) %> |
+  <%= link_to "Back to bank deposits", bank_deposits_path %>
+
+  <%= button_to "Destroy this bank deposit", @bank_deposit, method: :delete %>
+</div>

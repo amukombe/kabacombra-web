@@ -69,13 +69,19 @@ class LoadingOrdersController < ApplicationController
 
   # DELETE /loading_orders/1 or /loading_orders/1.json
   def destroy
-    @loading_order.destroy!
+    LoadingOrder.transaction do
+      deallocate_inventory(@loading_order) # Call the deallocation logic
+      @loading_order.destroy! # Destroy the loading order record
+    end
+    #@loading_order.destroy!
 
     respond_to do |format|
       format.html { redirect_to loading_orders_path, status: :see_other, notice: "Loading order was successfully destroyed." }
       format.json { head :no_content }
     end
   end
+
+
 
   def  approvals
     @active_link = "approvals"
@@ -90,6 +96,12 @@ class LoadingOrdersController < ApplicationController
   end
 
   private
+
+    def deallocate_inventory(loading_order)
+      loading_order.loading_order_items.each do |loading_order_item|
+        InventoryAllocator.new(loading_order_item.nile_product,loading_order_item.quantity_loaded,loading_order.territory_id).deallocate # Perform reverse allocation for each item
+      end
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_loading_order
       @loading_order = LoadingOrder.find(params[:id])

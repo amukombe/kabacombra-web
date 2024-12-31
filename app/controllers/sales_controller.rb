@@ -13,7 +13,8 @@ class SalesController < ApplicationController
 
   # GET /sales/new
   def new
-    @sale = Sale.new
+    @active_link = "new"
+    @sale = Sale.new(sale_date: DateTime.now)
     @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
     @customers = current_territory.customers
     @employees = current_territory.employees
@@ -29,10 +30,14 @@ class SalesController < ApplicationController
   # POST /sales or /sales.json
   def create
     @sale = Sale.new(sale_params)
+    @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
     @customers = current_territory.customers
     @employees = current_territory.employees
     respond_to do |format|
       if @sale.save
+        @sale.sale_items.each do |sale_item|
+          deduct_quantity(sale_item)
+        end
         format.html { redirect_to sales_path, notice: "Sale was successfully created." }
         format.json { render :show, status: :created, location: @sale }
       else
@@ -44,11 +49,12 @@ class SalesController < ApplicationController
 
   # PATCH/PUT /sales/1 or /sales/1.json
   def update
+    @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
     @customers = current_territory.customers
     @employees = current_territory.employees
     respond_to do |format|
       if @sale.update(sale_params)
-        format.html { redirect_to @sale, notice: "Sale was successfully updated." }
+        format.html { redirect_to sales_path, notice: "Sale was successfully updated." }
         format.json { render :show, status: :ok, location: @sale }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -67,6 +73,16 @@ class SalesController < ApplicationController
     end
   end
 
+  def sale_pdf
+    @sale = Sale.find(params[:id]) 
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "file_name", template: "sales/sale_pdf", formats: [:html], disposition: :inline, layout: 'pdf'   # Excluding ".pdf" extension.
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_sale
@@ -75,7 +91,18 @@ class SalesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def sale_params
-      params.require(:sale).permit(:customer_id, :user_id, :sale_type, :mode_of_payment,
+      params.require(:sale).permit(:customer_name, :user_id, :sale_type, :mode_of_payment,:sale_date, :customer_tin,:territory_id, :receipt_no,
       sale_items_attributes: [:id,:sale_id, :loading_order_item_id, :quantity_sold, :amount, :total, :_destroy])
+    end
+
+    def deduct_quantity(sale_item)
+      loading_order_item = sale_item.loading_order_item
+  
+      if loading_order_item.remaining_quantity >= sale_item.quantity_sold
+        loading_order_item.remaining_quantity -= sale_item.quantity_sold
+        loading_order_item.save!
+      else
+        raise "Insufficient stock for Loading Order Item ID #{loading_order_item.id}"
+      end
     end
 end
