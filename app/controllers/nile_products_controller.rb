@@ -111,6 +111,7 @@ class NileProductsController < ApplicationController
   end
 
   def stock_details
+    @product = NileProduct.find(params[:id])
     @inventory_items = InventoryItem.search_stock(params, current_territory.id, params[:id]).page(params[:page]).per(20)
   end
   
