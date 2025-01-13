@@ -109,6 +109,10 @@ class NileProductsController < ApplicationController
       render json: { error: 'Product not found' }, status: :not_found
     end
   end
+
+  def stock_details
+    @inventory_items = InventoryItem.search_stock(params, current_territory.id, params[:id]).page(params[:page]).per(20)
+  end
   
 
   private

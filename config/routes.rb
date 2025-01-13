@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get 'nile_products/:id/details', to: 'nile_products#details', as: :product_details
   get 'nile_products/:id/dispatchdetails', to: 'nile_products#dispatchdetails', as: :product_dispatchdetails
   get 'nile_products/:id/orderitemdetails', to: 'nile_products#orderitemdetails', as: :product_orderitemdetails
+  get 'nile_products/:id/stock_details', to: 'nile_products#stock_details', as: :stock_details
 
   resources :expenses do
     member do

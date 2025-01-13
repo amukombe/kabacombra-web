@@ -8,13 +8,26 @@ class InventoryItem < ApplicationRecord
   has_many :inventory_item_stores
   has_many :store, through: :inventory_item_store
   def self.search(params, territory_id)
-    #params[:query].blank? ? all : where("dispatch_items.order_items.nile_products.name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
+    query = InventoryItem
+      .joins(inventory: {}, dispatch_item: { order_item: :nile_product })
+      .where("inventories.territory_id = ?", territory_id)
+
     if params[:query].present?
-      joins(:inventory, dispatch_item: { order_item: :nile_product })
-        .where("nile_products.name LIKE ? AND inventories.territory_id=?", "%#{sanitize_sql_like(params[:query])}%",territory_id)
-    else
-      joins(:inventory).where("inventories.territory_id=?", territory_id)
+      query = query.where("nile_products.name LIKE ?", "%#{sanitize_sql_like(params[:query])}%")
     end
+
+    query.group(:nile_product_id)
+        .select("nile_product_id, nile_products.name, SUM(quantity) as total_quantity")
+  end
+
+  def self.search_stock(params, territory_id, product_id)
+    query = joins(inventory: {}, dispatch_item: { order_item: :nile_product })
+    .where("inventories.territory_id = ? AND nile_products.id=?", territory_id, product_id)
+
+    if params[:query].present?
+      query = query.where("nile_products.name LIKE ? AND nile_products.id=?", "%#{sanitize_sql_like(params[:query])}%", product_id)
+    end
+    query
   end
 
   def quantity
