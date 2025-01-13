@@ -17,7 +17,7 @@ class InventoryItem < ApplicationRecord
     end
 
     query.group(:nile_product_id)
-        .select("nile_product_id, nile_products.name, SUM(quantity) as total_quantity")
+        .select("nile_product_id, nile_products.name, SUM(quantity) as total_quantity, SUM(quantity_sold) as total_quantity_sold, SUM(breakages) as total_breakages")
   end
 
   def self.search_stock(params, territory_id, product_id)

@@ -39,12 +39,6 @@
                   Quantity
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Prices
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Delivery
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Action
                 </th>
               </tr>
@@ -60,16 +54,8 @@
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
                   <span class="font-normal">Qty Available: <%=item.total_quantity%></span><br/>
-                  <span class="font-normal">Qty Sold: <%=item.total_quantity%></span><br/>
-                  <span class="font-normal">Breakages: <%=item.total_quantity%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal">Purchase price: <%=item.total_quantity%></span><br/>
-                  <span class="font-normal">Selling price: <%=item.total_quantity%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  
-                  
+                  <span class="font-normal">Qty Sold: <%=item.total_quantity_sold%></span><br/>
+                  <span class="font-normal">Breakages: <%=item.total_breakages%></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=item.nile_product_id%>" data-dropdown-placement="bottom">
