@@ -4,7 +4,7 @@ class InventoryItem < ApplicationRecord
   belongs_to :dispatch_item
   before_save :initialize_quantity_sold
   before_validation :generate_stock_number, on: :create
-  validate :validate_quantity
+  #validate :validate_quantity
   has_many :inventory_item_stores
   has_many :store, through: :inventory_item_store
   def self.search(params, territory_id)
@@ -17,7 +17,7 @@ class InventoryItem < ApplicationRecord
     end
 
     query.group(:nile_product_id)
-        .select("nile_product_id, nile_products.name, SUM(quantity) as total_quantity, SUM(quantity_sold) as total_quantity_sold, SUM(breakages) as total_breakages")
+        .select("nile_product_id, nile_products.name, SUM(remaining_quantity) as openning_stock, SUM(quantity) as total_purchases, SUM(quantity_sold) as total_quantity_sold, SUM(breakages) as total_breakages, SUM(returns) as total_returns, SUM(nbl_return) as total_nbl_returns, SUM(transfers) as total_transfers")
   end
 
   def self.search_stock(params, territory_id, product_id)

@@ -18,6 +18,7 @@ class LoadingOrdersController < ApplicationController
     @units = UnitOfMeasurement.all
     @employees = current_territory.employees
     @sale_types = SaleType.all
+    @stores = Store.where(territory_id: current_territory.id)
     @loading_order.loading_order_items.build
   end
 
@@ -27,6 +28,7 @@ class LoadingOrdersController < ApplicationController
     @units = UnitOfMeasurement.all
     @employees = current_territory.employees
     @sale_types = SaleType.all
+    @stores = Store.where(territory_id: current_territory.id)
   end
 
   # POST /loading_orders or /loading_orders.json
@@ -36,6 +38,7 @@ class LoadingOrdersController < ApplicationController
     @units = UnitOfMeasurement.all
     @employees = current_territory.employees
     @sale_types = SaleType.all
+    @stores = Store.where(territory_id: current_territory.id)
     respond_to do |format|
       if @loading_order.save
         @loading_order.loading_order_items.each do |item|
@@ -56,6 +59,7 @@ class LoadingOrdersController < ApplicationController
     @units = UnitOfMeasurement.all
     @employees = current_territory.employees
     @sale_types = SaleType.all
+    @stores = Store.where(territory_id: current_territory.id)
     respond_to do |format|
       if @loading_order.update(loading_order_params)
         format.html { redirect_to loading_orders_path, notice: "Loading order was successfully updated." }
@@ -109,7 +113,7 @@ class LoadingOrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def loading_order_params
-      params.require(:loading_order).permit(:driver_name, :user_id, :territory_id, :status_id, :vehicle_numperplate, :destination, :loading_date, :order_number, :sales_man, :authorized_by, :verified_by, :sale_type_id,
+      params.require(:loading_order).permit(:driver_name, :user_id, :territory_id, :status_id, :vehicle_numperplate, :destination, :loading_date, :order_number, :sales_man, :authorized_by, :verified_by, :sale_type_id,:store_id,
       loading_order_items_attributes: [:id, :loading_order_id, :nile_product_id, :quantity_loaded, :_destroy ])
     end
 end

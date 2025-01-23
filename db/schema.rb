@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_31_105708) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_22_151512) do
   create_table "bank_accounts", force: :cascade do |t|
     t.integer "bank_id", null: false
     t.integer "territory_id", null: false
@@ -272,6 +272,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_31_105708) do
     t.decimal "missing_bottles"
     t.decimal "complaints"
     t.decimal "remaining_quantity", default: "0.0"
+    t.decimal "returns", default: "0.0"
+    t.decimal "transfers", default: "0.0"
+    t.decimal "nbl_return", default: "0.0"
     t.index ["dispatch_item_id"], name: "index_inventory_items_on_dispatch_item_id"
     t.index ["inventory_id"], name: "index_inventory_items_on_inventory_id"
   end
@@ -302,8 +305,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_31_105708) do
     t.integer "status_id", null: false
     t.string "driver_name"
     t.integer "sale_type_id", null: false
+    t.integer "store_id"
     t.index ["sale_type_id"], name: "index_loading_orders_on_sale_type_id"
     t.index ["status_id"], name: "index_loading_orders_on_status_id"
+    t.index ["store_id"], name: "index_loading_orders_on_store_id"
     t.index ["territory_id"], name: "index_loading_orders_on_territory_id"
     t.index ["user_id"], name: "index_loading_orders_on_user_id"
   end
@@ -598,6 +603,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_31_105708) do
   add_foreign_key "loading_order_items", "nile_products"
   add_foreign_key "loading_orders", "sale_types"
   add_foreign_key "loading_orders", "statuses"
+  add_foreign_key "loading_orders", "stores"
   add_foreign_key "loading_orders", "territories"
   add_foreign_key "loading_orders", "users"
   add_foreign_key "nile_products", "nile_categories"
