@@ -21,12 +21,16 @@ class ExpensesController < ApplicationController
   # GET /expenses/1/edit
   def edit
     @expense_types = ExpenseType.all
+    @employees = current_territory.employees #Employee.joins(employee_territory).where(employee_territories:{territory_id: current_territory.id})
+
   end
 
   # POST /expenses or /expenses.json
   def create
     @expense = Expense.new(expense_params)
     @expense_types = ExpenseType.all
+    @employees = current_territory.employees #Employee.joins(employee_territory).where(employee_territories:{territory_id: current_territory.id})
+
     respond_to do |format|
       if @expense.save
         format.html { redirect_to @expense, notice: "Expense was successfully created." }
@@ -41,6 +45,8 @@ class ExpensesController < ApplicationController
   # PATCH/PUT /expenses/1 or /expenses/1.json
   def update
     @expense_types = ExpenseType.all
+    @employees = current_territory.employees #Employee.joins(employee_territory).where(employee_territories:{territory_id: current_territory.id})
+
     respond_to do |format|
       if @expense.update(expense_params)
         format.html { redirect_to @expense, notice: "Expense was successfully updated." }
