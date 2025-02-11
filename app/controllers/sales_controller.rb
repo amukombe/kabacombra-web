@@ -19,7 +19,7 @@ class SalesController < ApplicationController
     @customers = current_territory.customers
     @employees = current_territory.employees
     @sale.sale_items.build
-    #@sale.sale_empties.build
+    @purchase_types = PurchaseType.all
     @empties = EmptyType.all
     @empties.each do |empty_type|
       @sale.sale_empties.build(empty_type: empty_type) # Build SaleEmpty for each EmptyType
@@ -32,6 +32,7 @@ class SalesController < ApplicationController
     @customers = current_territory.customers
     @employees = current_territory.employees
     @empties = EmptyType.all
+    @purchase_types = PurchaseType.all
     
   end
 
@@ -41,7 +42,7 @@ class SalesController < ApplicationController
     @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
     @customers = current_territory.customers
     @employees = current_territory.employees
-    
+    @purchase_types = PurchaseType.all
     respond_to do |format|
       if @sale.save
         @sale.sale_items.each do |sale_item|
@@ -62,6 +63,7 @@ class SalesController < ApplicationController
     @customers = current_territory.customers
     @employees = current_territory.employees
     @empties = EmptyType.all
+    @purchase_types = PurchaseType.all
     respond_to do |format|
       if @sale.update(sale_params)
         format.html { redirect_to sales_path, notice: "Sale was successfully updated." }
@@ -101,7 +103,7 @@ class SalesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def sale_params
-      params.require(:sale).permit(:customer_name, :user_id, :sale_type, :mode_of_payment,:sale_date, :customer_tin,:territory_id, :receipt_no,:status_id, :customer_mobile, :sales_route, :notes,
+      params.require(:sale).permit(:customer_name, :user_id, :purchase_type_id, :mode_of_payment,:sale_date, :customer_tin,:territory_id, :receipt_no,:status_id, :customer_mobile, :sales_route, :notes,
       sale_items_attributes: [:id,:sale_id, :loading_order_item_id, :quantity_sold, :amount, :total, :_destroy],
       sale_empties_attributes: [:id, :sale_id, :empty_type_id, :expected, :received, :variance, :_destroy])
     end

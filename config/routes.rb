@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :purchase_types
   resources :sale_empties
   resources :taxes
   resources :empty_types

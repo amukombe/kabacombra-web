@@ -1,5 +1,4 @@
 class Sale < ApplicationRecord
-  enum sale_type: { normal: "normal", fbi: "fbi" }
   enum mode_of_payment: { cash: "cash",credit: "credit", momopay: "momopay", airtelpay: "airtelpay", bank: "bank" }
 
   belongs_to :user
@@ -10,7 +9,7 @@ class Sale < ApplicationRecord
   has_many :sale_empties, dependent: :destroy
   accepts_nested_attributes_for :sale_empties, allow_destroy: true, reject_if: :all_blank
   
-  validates :sale_date, :sale_type, :mode_of_payment, presence: true
+  validates :sale_date, :mode_of_payment, presence: true
   validate :sufficient_stock
   before_destroy :restore_quantity
   before_validation :generate_receipt_number, on: :create

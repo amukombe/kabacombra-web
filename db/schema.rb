@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_10_131600) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
   create_table "bank_accounts", force: :cascade do |t|
     t.integer "bank_id", null: false
     t.integer "territory_id", null: false
@@ -396,6 +396,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_10_131600) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "purchase_types", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "routes", force: :cascade do |t|
     t.string "name"
     t.string "start_location"
@@ -439,7 +445,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_10_131600) do
 
   create_table "sales", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "sale_type"
     t.string "mode_of_payment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -455,6 +460,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_10_131600) do
     t.string "customer_mobile"
     t.text "notes"
     t.decimal "vat"
+    t.integer "purchase_type_id"
+    t.index ["purchase_type_id"], name: "index_sales_on_purchase_type_id"
     t.index ["status_id"], name: "index_sales_on_status_id"
     t.index ["territory_id"], name: "index_sales_on_territory_id"
     t.index ["user_id"], name: "index_sales_on_user_id"
@@ -652,6 +659,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_10_131600) do
   add_foreign_key "sale_empties", "sales"
   add_foreign_key "sale_items", "loading_order_items"
   add_foreign_key "sale_items", "sales"
+  add_foreign_key "sales", "purchase_types"
   add_foreign_key "sales", "statuses"
   add_foreign_key "sales", "territories"
   add_foreign_key "sales", "users"
