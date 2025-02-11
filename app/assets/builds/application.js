@@ -16176,7 +16176,7 @@ var product_controller_default = class extends Controller {
 
 // app/javascript/controllers/sale_controller.js
 var sale_controller_default = class extends Controller {
-  static targets = ["quantity", "amount", "itemtotal"];
+  static targets = ["quantity", "amount", "itemtotal", "subTotal", "tax", "grandTotal"];
   connect() {
     console.log("Sale controller connected");
   }
@@ -16228,6 +16228,49 @@ var sale_controller_default = class extends Controller {
     const amount = parseFloat(amountField.value) || 0;
     const total = quantity * amount;
     itemtotalField.value = total.toFixed(2);
+    this.updateTotals();
+  }
+  updateTotals() {
+    let subTotal = 0;
+    const rows = document.querySelectorAll("#sale-item-row");
+    console.log("Rows found:", rows.length);
+    document.querySelectorAll("#sale-item-row").forEach((row) => {
+      const itemtotalField = row.querySelector('[data-sale-target="itemtotal"]');
+      const quantityField = row.querySelector('[data-sale-target="quantity"]');
+      const amountField = row.querySelector('[data-sale-target="amount"]');
+      if (itemtotalField && quantityField && amountField) {
+        const quantity = parseFloat(quantityField.value) || 0;
+        const amount = parseFloat(amountField.value) || 0;
+        const itemTotal = quantity * amount;
+        if (itemTotal > 0) {
+          itemtotalField.value = itemTotal.toFixed(2);
+          itemtotalField.textContent = itemTotal.toFixed(2);
+          subTotal += itemTotal;
+          console.log("Item total:" + itemTotal);
+        } else {
+          console.log("Item total=0");
+        }
+      } else {
+        console.log("Failed to fetch values");
+      }
+    });
+    console.log("Sub Total:", subTotal);
+    const subTotalField = document.querySelector("#sub_total");
+    if (subTotalField) {
+      subTotalField.textContent = subTotal.toFixed(2);
+    }
+    const tax = subTotal * 0.18;
+    console.log("Tax (18%):", tax);
+    const taxField = document.querySelector("#tax");
+    if (taxField) {
+      taxField.textContent = tax.toFixed(2);
+    }
+    const grandTotal = subTotal + tax;
+    console.log("Grand Total:", grandTotal);
+    const grandTotalField = document.querySelector("#grand_total");
+    if (grandTotalField) {
+      grandTotalField.textContent = grandTotal.toFixed(2);
+    }
   }
 };
 

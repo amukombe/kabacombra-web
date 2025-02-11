@@ -19,8 +19,11 @@ class SalesController < ApplicationController
     @customers = current_territory.customers
     @employees = current_territory.employees
     @sale.sale_items.build
-    @sale.sale_empties.build
+    #@sale.sale_empties.build
     @empties = EmptyType.all
+    @empties.each do |empty_type|
+      @sale.sale_empties.build(empty_type: empty_type) # Build SaleEmpty for each EmptyType
+    end
   end
 
   # GET /sales/1/edit
@@ -29,6 +32,7 @@ class SalesController < ApplicationController
     @customers = current_territory.customers
     @employees = current_territory.employees
     @empties = EmptyType.all
+    
   end
 
   # POST /sales or /sales.json
@@ -37,7 +41,7 @@ class SalesController < ApplicationController
     @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
     @customers = current_territory.customers
     @employees = current_territory.employees
-    @empties = EmptyType.all
+    
     respond_to do |format|
       if @sale.save
         @sale.sale_items.each do |sale_item|

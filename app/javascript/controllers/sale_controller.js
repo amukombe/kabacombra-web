@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="sale"
 export default class extends Controller {
-  static targets = ["quantity","amount", "itemtotal"];
+  static targets = ["quantity","amount", "itemtotal","subTotal", "tax", "grandTotal"];
   connect() {
     console.log("Sale controller connected");
   }
@@ -73,6 +73,85 @@ export default class extends Controller {
   
     // Update the `total` field with the calculated value
     itemtotalField.value = total.toFixed(2); // Format to 2 decimal places
+
+    // Now update the grand total
+    this.updateTotals();
   }
+
+  updateTotals() {
+    let subTotal = 0;
+
+    const rows = document.querySelectorAll("#sale-item-row");
+    console.log("Rows found:", rows.length); // Logs how many rows are found
+
+  
+    // Loop through each row and calculate the subtotal
+    document.querySelectorAll("#sale-item-row").forEach((row) => {
+      const itemtotalField = row.querySelector('[data-sale-target="itemtotal"]');
+      const quantityField = row.querySelector('[data-sale-target="quantity"]');
+      const amountField = row.querySelector('[data-sale-target="amount"]');
+      
+      // Check if all necessary fields are present
+      if (itemtotalField && quantityField && amountField) {
+        const quantity = parseFloat(quantityField.value) || 0;
+        const amount = parseFloat(amountField.value) || 0;
+  
+        // Only calculate item total if both quantity and amount are valid numbers
+        const itemTotal = quantity * amount;
+  
+        // Ensure the itemTotal is calculated before updating the fields
+        if (itemTotal > 0) {
+          // Update the itemtotal field
+          itemtotalField.value = itemTotal.toFixed(2);  // Update the readonly field
+          itemtotalField.textContent = itemTotal.toFixed(2); // Update the text content if applicable
+  
+          // Add the item total to the subtotal
+          subTotal += itemTotal;
+          console.log("Item total:"+itemTotal);
+        }
+        else{
+          console.log("Item total=0");
+        }
+      }
+      else{
+        console.log("Failed to fetch values");
+      }
+    });
+  
+    // Log subTotal for debugging
+    console.log("Sub Total:", subTotal);
+  
+    // Update the sub_total field
+    const subTotalField = document.querySelector("#sub_total");
+    if (subTotalField) {
+      subTotalField.textContent = subTotal.toFixed(2); // Format to 2 decimal places
+    }
+  
+    // Calculate tax (18% of subTotal)
+    const tax = subTotal * 0.18;
+  
+    // Log tax for debugging
+    console.log("Tax (18%):", tax);
+  
+    // Update the tax field
+    const taxField = document.querySelector("#tax");
+    if (taxField) {
+      taxField.textContent = tax.toFixed(2); // Format to 2 decimal places
+    }
+  
+    // Calculate grand total (subTotal + tax)
+    const grandTotal = subTotal + tax;
+  
+    // Log grand total for debugging
+    console.log("Grand Total:", grandTotal);
+  
+    // Update the grand total field
+    const grandTotalField = document.querySelector("#grand_total");
+    if (grandTotalField) {
+      grandTotalField.textContent = grandTotal.toFixed(2); // Format to 2 decimal places
+    }
+  }
+    
+  
   
 }
