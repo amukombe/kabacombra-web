@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_22_151512) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_10_131600) do
   create_table "bank_accounts", force: :cascade do |t|
     t.integer "bank_id", null: false
     t.integer "territory_id", null: false
@@ -195,6 +195,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_22_151512) do
     t.index ["position_id"], name: "index_employees_on_position_id"
   end
 
+  create_table "empty_types", force: :cascade do |t|
+    t.string "name"
+    t.decimal "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "expense_categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -330,8 +337,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_22_151512) do
     t.datetime "updated_at", null: false
     t.string "buying_price"
     t.string "selling_price"
-    t.string "empty_type"
-    t.decimal "empty_price"
+    t.integer "empty_type_id"
+    t.index ["empty_type_id"], name: "index_nile_products_on_empty_type_id"
     t.index ["nile_category_id"], name: "index_nile_products_on_nile_category_id"
   end
 
@@ -398,6 +405,18 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_22_151512) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "sale_empties", force: :cascade do |t|
+    t.integer "sale_id", null: false
+    t.integer "empty_type_id", null: false
+    t.integer "expected"
+    t.integer "received"
+    t.integer "variance"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["empty_type_id"], name: "index_sale_empties_on_empty_type_id"
+    t.index ["sale_id"], name: "index_sale_empties_on_sale_id"
+  end
+
   create_table "sale_items", force: :cascade do |t|
     t.integer "loading_order_item_id", null: false
     t.decimal "quantity_sold"
@@ -432,6 +451,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_22_151512) do
     t.string "tin"
     t.string "payment_ref"
     t.integer "status_id", null: false
+    t.string "sales_route"
+    t.string "customer_mobile"
+    t.text "notes"
+    t.decimal "vat"
     t.index ["status_id"], name: "index_sales_on_status_id"
     t.index ["territory_id"], name: "index_sales_on_territory_id"
     t.index ["user_id"], name: "index_sales_on_user_id"
@@ -471,6 +494,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_22_151512) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["department_id"], name: "index_system_modules_on_department_id"
+  end
+
+  create_table "taxes", force: :cascade do |t|
+    t.string "name"
+    t.decimal "tax_percentage"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "territories", force: :cascade do |t|
@@ -606,6 +636,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_22_151512) do
   add_foreign_key "loading_orders", "stores"
   add_foreign_key "loading_orders", "territories"
   add_foreign_key "loading_orders", "users"
+  add_foreign_key "nile_products", "empty_types"
   add_foreign_key "nile_products", "nile_categories"
   add_foreign_key "order_drivers", "drivers"
   add_foreign_key "order_drivers", "orders"
@@ -617,6 +648,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_22_151512) do
   add_foreign_key "orders", "statuses"
   add_foreign_key "orders", "territories"
   add_foreign_key "orders", "users"
+  add_foreign_key "sale_empties", "empty_types"
+  add_foreign_key "sale_empties", "sales"
   add_foreign_key "sale_items", "loading_order_items"
   add_foreign_key "sale_items", "sales"
   add_foreign_key "sales", "statuses"

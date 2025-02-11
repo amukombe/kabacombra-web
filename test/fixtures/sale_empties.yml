@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sale: one
+  empty_type: one
+  expected: 1
+  received: 1
+  variance: 1
+
+two:
+  sale: two
+  empty_type: two
+  expected: 1
+  received: 1
+  variance: 1

@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @empty_type %>
+
+<div>
+  <%= link_to "Edit this empty type", edit_empty_type_path(@empty_type) %> |
+  <%= link_to "Back to empty types", empty_types_path %>
+
+  <%= button_to "Destroy this empty type", @empty_type, method: :delete %>
+</div>

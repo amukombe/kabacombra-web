@@ -1,0 +1,5 @@
+class AddVatToSales < ActiveRecord::Migration[7.2]
+  def change
+    add_column :sales, :vat, :decimal
+  end
+end

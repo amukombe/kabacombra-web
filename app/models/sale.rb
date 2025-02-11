@@ -7,6 +7,8 @@ class Sale < ApplicationRecord
   belongs_to :status
   has_many :sale_items, dependent: :destroy
   accepts_nested_attributes_for :sale_items, allow_destroy: true, reject_if: :all_blank
+  has_many :sale_empties, dependent: :destroy
+  accepts_nested_attributes_for :sale_empties, allow_destroy: true, reject_if: :all_blank
   
   validates :sale_date, :sale_type, :mode_of_payment, presence: true
   validate :sufficient_stock

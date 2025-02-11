@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Sale empties" %>
+
+<h1>Sale empties</h1>
+
+<div id="sale_empties">
+  <% @sale_empties.each do |sale_empty| %>
+    <%= render sale_empty %>
+    <p>
+      <%= link_to "Show this sale empty", sale_empty %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New sale empty", new_sale_empty_path %>

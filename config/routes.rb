@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :sale_empties
+  resources :taxes
+  resources :empty_types
   resources :bank_withdraws
   resources :bank_deposits
   resources :bank_accounts

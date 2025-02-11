@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @sale_empty %>
+
+<div>
+  <%= link_to "Edit this sale empty", edit_sale_empty_path(@sale_empty) %> |
+  <%= link_to "Back to sale empties", sale_empties_path %>
+
+  <%= button_to "Destroy this sale empty", @sale_empty, method: :delete %>
+</div>
