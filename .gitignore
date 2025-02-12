@@ -25,6 +25,7 @@
 # Ignore uploaded files in development.
 /storage/*
 !/storage/.keep
+!/storage/development.sqlite3
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
