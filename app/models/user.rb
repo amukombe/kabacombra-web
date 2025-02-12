@@ -14,4 +14,14 @@ class User < ApplicationRecord
     params[:query].blank? ? all : where("email LIKE?", "%#{sanitize_sql_like(params[:query])}%")
   end
       
+  def send_account_info_email
+    UserMailer.with(user: self, message: 'Account Created').user_account_info_email.deliver_now
+    rescue StandardError => e
+      # Handle any error that occurs
+      Rails.logger.error "Failed to send email: #{e.message}"
+      puts "FAILED TO SEND: #{e.message}"
+      # Optionally, notify the user or take corrective actions
+      # Notify user or perform fallback action
+    #end
+  end
 end

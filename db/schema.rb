@@ -11,10 +11,10 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
-  create_table "bank_accounts", force: :cascade do |t|
-    t.integer "bank_id", null: false
-    t.integer "territory_id", null: false
-    t.integer "user_id", null: false
+  create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "bank_id", null: false
+    t.bigint "territory_id", null: false
+    t.bigint "user_id", null: false
     t.string "account_name"
     t.string "account_number"
     t.string "branch_name"
@@ -27,12 +27,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["user_id"], name: "index_bank_accounts_on_user_id"
   end
 
-  create_table "bank_deposits", force: :cascade do |t|
-    t.integer "bank_account_id", null: false
-    t.integer "user_id", null: false
-    t.integer "territory_id", null: false
+  create_table "bank_deposits", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "bank_account_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "territory_id", null: false
     t.date "deposit_date"
-    t.decimal "amount"
+    t.decimal "amount", precision: 10
     t.string "deposit_location"
     t.string "source_of_income"
     t.string "deposited_by"
@@ -45,12 +45,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["user_id"], name: "index_bank_deposits_on_user_id"
   end
 
-  create_table "bank_withdraws", force: :cascade do |t|
-    t.integer "bank_account_id", null: false
-    t.integer "user_id", null: false
-    t.integer "territory_id", null: false
+  create_table "bank_withdraws", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "bank_account_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "territory_id", null: false
     t.date "withdraw_date"
-    t.decimal "amount"
+    t.decimal "amount", precision: 10
     t.string "withdraw_location"
     t.string "reason"
     t.string "withdrawn_by"
@@ -63,13 +63,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["user_id"], name: "index_bank_withdraws_on_user_id"
   end
 
-  create_table "banks", force: :cascade do |t|
+  create_table "banks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "beer_dispatches", force: :cascade do |t|
+  create_table "beer_dispatches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "fdn_number"
     t.string "truck_numberplate"
     t.string "trailer_plate"
@@ -77,12 +77,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.string "delivery_plant"
     t.string "shipping_point"
     t.datetime "loading_time"
-    t.integer "order_id", null: false
+    t.bigint "order_id", null: false
     t.string "dispatch_no"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "territory_id", null: false
+    t.bigint "territory_id", null: false
     t.string "driver_name"
     t.string "driver_mobile"
     t.string "invoice_no"
@@ -91,15 +91,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["user_id"], name: "index_beer_dispatches_on_user_id"
   end
 
-  create_table "car_makes", force: :cascade do |t|
+  create_table "car_makes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "comments", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "status_id", null: false
+  create_table "comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "status_id", null: false
     t.string "description"
     t.string "comment_type"
     t.datetime "created_at", null: false
@@ -108,27 +108,27 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
-  create_table "customers", force: :cascade do |t|
+  create_table "customers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "email"
     t.string "mobile"
     t.string "location"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "territory_id", null: false
+    t.bigint "territory_id", null: false
     t.index ["territory_id"], name: "index_customers_on_territory_id"
   end
 
-  create_table "department_modules", force: :cascade do |t|
+  create_table "department_modules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "module_url"
-    t.integer "department_id", null: false
+    t.bigint "department_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["department_id"], name: "index_department_modules_on_department_id"
   end
 
-  create_table "departments", force: :cascade do |t|
+  create_table "departments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -137,19 +137,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.string "app_url"
   end
 
-  create_table "dispatch_items", force: :cascade do |t|
-    t.decimal "quantity_dispatched"
+  create_table "dispatch_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.decimal "quantity_dispatched", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "beer_dispatch_id", null: false
-    t.decimal "quantity_ordered"
-    t.integer "order_item_id", null: false
+    t.bigint "beer_dispatch_id", null: false
+    t.decimal "quantity_ordered", precision: 10
+    t.bigint "order_item_id", null: false
     t.index ["beer_dispatch_id"], name: "index_dispatch_items_on_beer_dispatch_id"
     t.index ["order_item_id"], name: "index_dispatch_items_on_order_item_id"
   end
 
-  create_table "drivers", force: :cascade do |t|
-    t.integer "employee_id", null: false
+  create_table "drivers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "employee_id", null: false
     t.string "license_number"
     t.date "issued_date"
     t.date "expiry_date"
@@ -161,25 +161,25 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["employee_id"], name: "index_drivers_on_employee_id"
   end
 
-  create_table "employee_departments", force: :cascade do |t|
-    t.integer "employee_id", null: false
-    t.integer "department_id", null: false
+  create_table "employee_departments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "employee_id", null: false
+    t.bigint "department_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["department_id"], name: "index_employee_departments_on_department_id"
     t.index ["employee_id"], name: "index_employee_departments_on_employee_id"
   end
 
-  create_table "employee_territories", force: :cascade do |t|
-    t.integer "territory_id", null: false
-    t.integer "employee_id", null: false
+  create_table "employee_territories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "territory_id", null: false
+    t.bigint "employee_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["employee_id"], name: "index_employee_territories_on_employee_id"
     t.index ["territory_id"], name: "index_employee_territories_on_territory_id"
   end
 
-  create_table "employees", force: :cascade do |t|
+  create_table "employees", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "firstname"
     t.string "middlename"
     t.string "lastname"
@@ -191,42 +191,42 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.string "tin"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position_id", null: false
+    t.bigint "position_id", null: false
     t.index ["position_id"], name: "index_employees_on_position_id"
   end
 
-  create_table "empty_types", force: :cascade do |t|
+  create_table "empty_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
-    t.decimal "price"
+    t.decimal "price", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "expense_categories", force: :cascade do |t|
+  create_table "expense_categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "expense_types", force: :cascade do |t|
-    t.integer "expense_category_id", null: false
+  create_table "expense_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "expense_category_id", null: false
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["expense_category_id"], name: "index_expense_types_on_expense_category_id"
   end
 
-  create_table "expenses", force: :cascade do |t|
-    t.integer "expense_type_id", null: false
-    t.integer "user_id", null: false
-    t.integer "territory_id", null: false
-    t.integer "status_id", null: false
+  create_table "expenses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "expense_type_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "territory_id", null: false
+    t.bigint "status_id", null: false
     t.string "expense_title"
     t.integer "received_by"
     t.integer "authorized_by"
     t.string "description"
     t.date "expense_date"
-    t.decimal "amount"
+    t.decimal "amount", precision: 10
     t.string "source_of_income"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -236,36 +236,36 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["user_id"], name: "index_expenses_on_user_id"
   end
 
-  create_table "inventories", force: :cascade do |t|
-    t.decimal "total"
+  create_table "inventories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.decimal "total", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "beer_dispatch_id", null: false
-    t.integer "user_id", null: false
+    t.bigint "beer_dispatch_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "delivery_time"
-    t.integer "territory_id", null: false
+    t.bigint "territory_id", null: false
     t.index ["beer_dispatch_id"], name: "index_inventories_on_beer_dispatch_id"
     t.index ["territory_id"], name: "index_inventories_on_territory_id"
     t.index ["user_id"], name: "index_inventories_on_user_id"
   end
 
-  create_table "inventory_item_stores", force: :cascade do |t|
-    t.integer "inventory_item_id", null: false
-    t.integer "store_id", null: false
+  create_table "inventory_item_stores", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "inventory_item_id", null: false
+    t.bigint "store_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["inventory_item_id"], name: "index_inventory_item_stores_on_inventory_item_id"
     t.index ["store_id"], name: "index_inventory_item_stores_on_store_id"
   end
 
-  create_table "inventory_items", force: :cascade do |t|
-    t.integer "inventory_id", null: false
-    t.decimal "quantity_ordered"
-    t.decimal "quantity_dispatched"
-    t.decimal "quantity_received"
-    t.decimal "quantity_sold", default: "0.0"
-    t.decimal "purchase_price"
-    t.decimal "selling_price"
+  create_table "inventory_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "inventory_id", null: false
+    t.decimal "quantity_ordered", precision: 10
+    t.decimal "quantity_dispatched", precision: 10
+    t.decimal "quantity_received", precision: 10
+    t.decimal "quantity_sold", precision: 10, default: "0"
+    t.decimal "purchase_price", precision: 10
+    t.decimal "selling_price", precision: 10
     t.boolean "is_active", default: false
     t.boolean "is_closed", default: false
     t.boolean "is_deleted", default: false
@@ -274,32 +274,32 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "stock_no"
-    t.integer "dispatch_item_id", null: false
-    t.decimal "breakages"
-    t.decimal "missing_bottles"
-    t.decimal "complaints"
-    t.decimal "remaining_quantity", default: "0.0"
-    t.decimal "returns", default: "0.0"
-    t.decimal "transfers", default: "0.0"
-    t.decimal "nbl_return", default: "0.0"
+    t.bigint "dispatch_item_id", null: false
+    t.decimal "breakages", precision: 10
+    t.decimal "missing_bottles", precision: 10
+    t.decimal "complaints", precision: 10
+    t.decimal "remaining_quantity", precision: 10, default: "0"
+    t.decimal "returns", precision: 10, default: "0"
+    t.decimal "transfers", precision: 10, default: "0"
+    t.decimal "nbl_return", precision: 10, default: "0"
     t.index ["dispatch_item_id"], name: "index_inventory_items_on_dispatch_item_id"
     t.index ["inventory_id"], name: "index_inventory_items_on_inventory_id"
   end
 
-  create_table "loading_order_items", force: :cascade do |t|
-    t.integer "loading_order_id", null: false
-    t.decimal "quantity_loaded"
+  create_table "loading_order_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "loading_order_id", null: false
+    t.decimal "quantity_loaded", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "nile_product_id", null: false
-    t.decimal "remaining_quantity"
+    t.bigint "nile_product_id", null: false
+    t.decimal "remaining_quantity", precision: 10
     t.index ["loading_order_id"], name: "index_loading_order_items_on_loading_order_id"
     t.index ["nile_product_id"], name: "index_loading_order_items_on_nile_product_id"
   end
 
-  create_table "loading_orders", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "territory_id", null: false
+  create_table "loading_orders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "territory_id", null: false
     t.string "vehicle_numperplate"
     t.string "destination"
     t.datetime "loading_date"
@@ -309,10 +309,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.integer "verified_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "status_id", null: false
+    t.bigint "status_id", null: false
     t.string "driver_name"
-    t.integer "sale_type_id", null: false
-    t.integer "store_id"
+    t.bigint "sale_type_id", null: false
+    t.bigint "store_id"
     t.index ["sale_type_id"], name: "index_loading_orders_on_sale_type_id"
     t.index ["status_id"], name: "index_loading_orders_on_status_id"
     t.index ["store_id"], name: "index_loading_orders_on_store_id"
@@ -320,100 +320,100 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["user_id"], name: "index_loading_orders_on_user_id"
   end
 
-  create_table "nile_categories", force: :cascade do |t|
+  create_table "nile_categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "nile_products", force: :cascade do |t|
+  create_table "nile_products", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.integer "crate_size"
     t.string "bottle_size"
     t.string "pcode"
-    t.integer "nile_category_id", null: false
+    t.bigint "nile_category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "buying_price"
     t.string "selling_price"
-    t.integer "empty_type_id"
+    t.bigint "empty_type_id"
     t.index ["empty_type_id"], name: "index_nile_products_on_empty_type_id"
     t.index ["nile_category_id"], name: "index_nile_products_on_nile_category_id"
   end
 
-  create_table "order_drivers", force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "driver_id", null: false
+  create_table "order_drivers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "driver_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["driver_id"], name: "index_order_drivers_on_driver_id"
     t.index ["order_id"], name: "index_order_drivers_on_order_id"
   end
 
-  create_table "order_items", force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.decimal "quantity"
-    t.decimal "unit_price"
-    t.decimal "total"
+  create_table "order_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "nile_product_id", null: false
+    t.decimal "quantity", precision: 10
+    t.decimal "unit_price", precision: 10
+    t.decimal "total", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "nile_product_id", null: false
-    t.integer "unit_of_measurement_id", null: false
+    t.bigint "unit_of_measurement_id", null: false
     t.index ["nile_product_id"], name: "index_order_items_on_nile_product_id"
     t.index ["order_id"], name: "index_order_items_on_order_id"
     t.index ["unit_of_measurement_id"], name: "index_order_items_on_unit_of_measurement_id"
   end
 
-  create_table "order_routes", force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "route_id", null: false
+  create_table "order_routes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "route_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_order_routes_on_order_id"
     t.index ["route_id"], name: "index_order_routes_on_route_id"
   end
 
-  create_table "orders", force: :cascade do |t|
+  create_table "orders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "order_number"
     t.date "order_date"
-    t.integer "user_id", null: false
-    t.integer "status_id", null: false
-    t.decimal "total_price"
+    t.bigint "user_id", null: false
+    t.bigint "status_id", null: false
+    t.decimal "total_price", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "departure_date"
     t.string "description"
-    t.integer "territory_id", null: false
+    t.bigint "territory_id", null: false
     t.index ["status_id"], name: "index_orders_on_status_id"
     t.index ["territory_id"], name: "index_orders_on_territory_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
-  create_table "positions", force: :cascade do |t|
+  create_table "positions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "purchase_types", force: :cascade do |t|
+  create_table "purchase_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "routes", force: :cascade do |t|
+  create_table "routes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "start_location"
     t.string "end_location"
-    t.decimal "distance"
+    t.decimal "distance", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "sale_empties", force: :cascade do |t|
-    t.integer "sale_id", null: false
-    t.integer "empty_type_id", null: false
+  create_table "sale_empties", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "sale_id", null: false
+    t.bigint "empty_type_id", null: false
     t.integer "expected"
     t.integer "received"
     t.integer "variance"
@@ -423,51 +423,51 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["sale_id"], name: "index_sale_empties_on_sale_id"
   end
 
-  create_table "sale_items", force: :cascade do |t|
-    t.integer "loading_order_item_id", null: false
-    t.decimal "quantity_sold"
-    t.decimal "amount"
-    t.decimal "total"
+  create_table "sale_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "loading_order_item_id", null: false
+    t.decimal "quantity_sold", precision: 10
+    t.decimal "amount", precision: 10
+    t.decimal "total", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "empties_returned"
-    t.decimal "cash_for_empties"
-    t.integer "sale_id", null: false
+    t.decimal "cash_for_empties", precision: 10
+    t.bigint "sale_id", null: false
     t.index ["loading_order_item_id"], name: "index_sale_items_on_loading_order_item_id"
     t.index ["sale_id"], name: "index_sale_items_on_sale_id"
   end
 
-  create_table "sale_types", force: :cascade do |t|
+  create_table "sale_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "sales", force: :cascade do |t|
-    t.integer "user_id", null: false
+  create_table "sales", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
     t.string "mode_of_payment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "receipt_no"
-    t.integer "territory_id", null: false
+    t.bigint "territory_id", null: false
     t.integer "verified_by"
     t.datetime "sale_date"
     t.string "customer_name"
     t.string "tin"
     t.string "payment_ref"
-    t.integer "status_id", null: false
+    t.bigint "status_id", null: false
     t.string "sales_route"
     t.string "customer_mobile"
     t.text "notes"
-    t.decimal "vat"
-    t.integer "purchase_type_id"
+    t.decimal "vat", precision: 10
+    t.bigint "purchase_type_id"
     t.index ["purchase_type_id"], name: "index_sales_on_purchase_type_id"
     t.index ["status_id"], name: "index_sales_on_status_id"
     t.index ["territory_id"], name: "index_sales_on_territory_id"
     t.index ["user_id"], name: "index_sales_on_user_id"
   end
 
-  create_table "statuses", force: :cascade do |t|
+  create_table "statuses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "code"
     t.string "description"
@@ -475,56 +475,56 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "stock_stores", force: :cascade do |t|
-    t.integer "inventory_item_id", null: false
-    t.integer "store_id", null: false
+  create_table "stock_stores", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "inventory_item_id", null: false
+    t.bigint "store_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["inventory_item_id"], name: "index_stock_stores_on_inventory_item_id"
     t.index ["store_id"], name: "index_stock_stores_on_store_id"
   end
 
-  create_table "stores", force: :cascade do |t|
+  create_table "stores", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.integer "territory_id", null: false
+    t.bigint "territory_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["territory_id"], name: "index_stores_on_territory_id"
   end
 
-  create_table "system_modules", force: :cascade do |t|
+  create_table "system_modules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "module_url"
     t.string "icon"
-    t.integer "department_id", null: false
+    t.bigint "department_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["department_id"], name: "index_system_modules_on_department_id"
   end
 
-  create_table "taxes", force: :cascade do |t|
+  create_table "taxes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
-    t.decimal "tax_percentage"
+    t.decimal "tax_percentage", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "territories", force: :cascade do |t|
+  create_table "territories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "address"
     t.string "telephone"
-    t.integer "department_id", null: false
+    t.bigint "department_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["department_id"], name: "index_territories_on_department_id"
   end
 
-  create_table "truck_drivers", force: :cascade do |t|
-    t.integer "truck_id", null: false
-    t.integer "driver_id", null: false
+  create_table "truck_drivers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "truck_id", null: false
+    t.bigint "driver_id", null: false
     t.string "date_assigned"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["driver_id"], name: "index_truck_drivers_on_driver_id"
@@ -532,51 +532,43 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["user_id"], name: "index_truck_drivers_on_user_id"
   end
 
-  create_table "truck_types", force: :cascade do |t|
+  create_table "truck_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "trucks", force: :cascade do |t|
+  create_table "trucks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "plate_number"
     t.string "model"
     t.string "chasis"
     t.string "status"
-    t.integer "car_make_id", null: false
+    t.bigint "car_make_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "truck_type_id", null: false
+    t.bigint "truck_type_id", null: false
     t.index ["car_make_id"], name: "index_trucks_on_car_make_id"
     t.index ["truck_type_id"], name: "index_trucks_on_truck_type_id"
   end
 
-  create_table "tt_categories", force: :cascade do |t|
+  create_table "tt_categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "tt_products", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "tt_category_id", null: false
-    t.index ["tt_category_id"], name: "index_tt_products_on_tt_category_id"
-  end
-
-  create_table "unit_of_measurements", force: :cascade do |t|
+  create_table "unit_of_measurements", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_modules", force: :cascade do |t|
-    t.integer "system_module_id", null: false
-    t.integer "user_id", null: false
-    t.integer "territory_id", null: false
+  create_table "user_modules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "system_module_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "territory_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["system_module_id"], name: "index_user_modules_on_system_module_id"
@@ -584,7 +576,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.index ["user_id"], name: "index_user_modules_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -592,7 +584,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "employee_id", null: false
+    t.bigint "employee_id", null: false
     t.integer "role"
     t.boolean "is_super"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -673,7 +665,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_11_124939) do
   add_foreign_key "truck_drivers", "users"
   add_foreign_key "trucks", "car_makes"
   add_foreign_key "trucks", "truck_types"
-  add_foreign_key "tt_products", "tt_categories"
   add_foreign_key "user_modules", "system_modules"
   add_foreign_key "user_modules", "territories"
   add_foreign_key "user_modules", "users"

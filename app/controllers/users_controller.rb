@@ -17,6 +17,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     puts "SAVING USER ..."
     respond_to do |format|
+      @user.send_account_info_email
       if @user.save
         format.html { redirect_to users_path, notice: "User was successfully created." }
         format.json { render :index, status: :created, location: @user }
@@ -37,6 +38,7 @@ class UsersController < ApplicationController
     end
     respond_to do |format|
       if @user.update(user_params)
+        @user.send_account_info_email
         format.html{redirect_to users_path, notice: "User successfully updated" }
         format.json{render :index, status: :cretated, location: @user}
       else
