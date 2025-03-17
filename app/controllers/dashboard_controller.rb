@@ -31,10 +31,60 @@ class DashboardController < ApplicationController
 
   end
   def beer
-    employee_territories = current_user.employee.employee_territories.joins(:territory).where(territories: { department_id: params[:id] })
+    user_territories = current_user.employee.territories.pluck(:id)
+    today      = Date.current
+    start_date = today.beginning_of_week(:monday)  # This will be Monday
+    end_date   = today.end_of_week(:monday)          # This will be Sunday 
+    if params["territory_id"].present? && params["start"].present? && params["end"].present?
+      start_date = Date.strptime(params["start"], '%d/%m/%Y')
+      end_date = Date.strptime(params["end"], '%d/%m/%Y')
+      territory_id = params["territory_id"]
+      @top_products = NileProduct
+      .joins(loading_order_items: { sale_items: :sale })
+      .where(sales: { sale_date: start_date..end_date, territory_id: territory_id})
+      .select("nile_products.*, SUM(sale_items.quantity_sold) AS total_sales")
+      .group("nile_products.id")
+      .order("total_sales DESC")
+      .limit(10)
 
-    puts "===============#{employee_territories}"
-    puts "===============#{employee_territories.count}"
+      @least_products = NileProduct
+      .joins(loading_order_items: { sale_items: :sale })
+      .where(sales: { sale_date: start_date..end_date, territory_id: territory_id })
+      .select("nile_products.*, SUM(sale_items.quantity_sold) AS total_sales")
+      .group("nile_products.id")
+      .order("total_sales ASC")
+      .limit(10)
+
+      @total_sale = SaleItem
+      .joins(:sale)
+      .where(sales:{sale_date: start_date..end_date, territory_id: user_territories})
+      .select("SUM(total) as total_sales")
+      .take
+    else
+      @top_products = NileProduct
+      .joins(loading_order_items: { sale_items: :sale })
+      .where(sales: { sale_date: start_date..end_date, territory_id: user_territories})
+      .select("nile_products.*, SUM(sale_items.quantity_sold) AS total_sales")
+      .group("nile_products.id")
+      .order("total_sales DESC")
+      .limit(10)
+
+      @least_products = NileProduct
+      .joins(loading_order_items: { sale_items: :sale })
+      .where(sales: { sale_date: start_date..end_date })
+      .select("nile_products.*, SUM(sale_items.quantity_sold) AS total_sales")
+      .group("nile_products.id")
+      .order("total_sales ASC")
+      .limit(10)
+
+      @total_sale = SaleItem
+      .joins(:sale)
+      .where(sales:{sale_date: start_date..end_date, territory_id: user_territories})
+      .select("SUM(total) as total_sales")
+      .take
+    end  
+    
+    @title = "From #{start_date.strftime('%Y-%m-%d')} to #{end_date.strftime('%Y-%m-%d')}"
     get_user_department_dashboard(params[:id])
   end
   def energy

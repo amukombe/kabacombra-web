@@ -1,7 +1,8 @@
 class NileProduct < ApplicationRecord
   belongs_to :nile_category
   has_many :order_items
-  has_many :loadding_order_items
+  has_many :loading_order_items
+  has_many :sale_items, through: :loading_order_items
   belongs_to :empty_type, optional: true
   validates :name, uniqueness: true, presence: true
   def self.search(params)
