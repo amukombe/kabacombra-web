@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_19_064725) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_10_201021) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -240,11 +240,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_19_064725) do
     t.decimal "total", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "beer_dispatch_id", null: false
     t.bigint "user_id", null: false
     t.datetime "delivery_time"
     t.bigint "territory_id", null: false
-    t.index ["beer_dispatch_id"], name: "index_inventories_on_beer_dispatch_id"
     t.index ["territory_id"], name: "index_inventories_on_territory_id"
     t.index ["user_id"], name: "index_inventories_on_user_id"
   end
@@ -274,7 +272,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_19_064725) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "stock_no"
-    t.bigint "dispatch_item_id", null: false
     t.decimal "breakages", precision: 10
     t.decimal "missing_bottles", precision: 10
     t.decimal "complaints", precision: 10
@@ -282,8 +279,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_19_064725) do
     t.decimal "returns", precision: 10, default: "0"
     t.decimal "transfers", precision: 10, default: "0"
     t.decimal "nbl_return", precision: 10, default: "0"
-    t.index ["dispatch_item_id"], name: "index_inventory_items_on_dispatch_item_id"
+    t.bigint "nile_product_id"
     t.index ["inventory_id"], name: "index_inventory_items_on_inventory_id"
+    t.index ["nile_product_id"], name: "index_inventory_items_on_nile_product_id"
   end
 
   create_table "loading_order_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -621,13 +619,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_19_064725) do
   add_foreign_key "expenses", "statuses"
   add_foreign_key "expenses", "territories"
   add_foreign_key "expenses", "users"
-  add_foreign_key "inventories", "beer_dispatches"
   add_foreign_key "inventories", "territories"
   add_foreign_key "inventories", "users"
   add_foreign_key "inventory_item_stores", "inventory_items"
   add_foreign_key "inventory_item_stores", "stores"
-  add_foreign_key "inventory_items", "dispatch_items"
   add_foreign_key "inventory_items", "inventories"
+  add_foreign_key "inventory_items", "nile_products"
   add_foreign_key "loading_order_items", "loading_orders"
   add_foreign_key "loading_order_items", "nile_products"
   add_foreign_key "loading_orders", "sale_types"
