@@ -47,7 +47,12 @@ Rails.application.routes.draw do
       delete :remove_store
     end
   end
-  resources :inventories
+  resources :inventories do
+    collection do
+      get :existing_stock
+      post :create_existing_stock
+    end
+  end
   resources :beer_dispatches do
     member do
       get "dispatch_pdf"

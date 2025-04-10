@@ -63,6 +63,24 @@ class InventoriesController < ApplicationController
     end
   end
 
+  #Additional method for inventory not coming from dispatches
+  def existing_stock
+    @inventory = Inventory.new
+    @inventory.inventory_items.build
+    @nile_products = NileProduct.all
+  end
+  def create_existing_stock
+    @inventory = Inventory.new(existing_stock_params)
+    @inventory.user_id = current_user.id # Optional: Set user if not in form
+
+    if @inventory.save
+      redirect_to @inventory, notice: "Existing stock added successfully."
+    else
+      @nile_products = NileProduct.all
+      render :existing_stock, status: :unprocessable_entity
+    end
+  end
+
   # DELETE /inventories/1 or /inventories/1.json
   def destroy
     @inventory.destroy!
@@ -82,6 +100,11 @@ class InventoriesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def inventory_params
       params.require(:inventory).permit(:beer_dispatch_id, :total,:delivery_time,:user_id,:territory_id, 
-      inventory_items_attributes: [:id, :inventory_id, :dispatch_item_id, :quantity_ordered, :quantity_dispatched, :quantity_received, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :missing_bottles, :complaints, :_destroy])
+      inventory_items_attributes: [:id, :inventory_id,:nile_product_id, :dispatch_item_id, :quantity_ordered, :quantity_dispatched, :quantity_received, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :missing_bottles, :complaints, :_destroy])
+    end
+
+    def existing_stock_params
+      params.require(:inventory).permit(:total,:delivery_time,:user_id,:territory_id, 
+      inventory_items_attributes: [:id, :inventory_id,:nile_product_id, :quantity_ordered, :quantity_dispatched, :quantity_received, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :missing_bottles, :complaints, :_destroy])
     end
 end

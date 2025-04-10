@@ -1,7 +1,8 @@
 class InventoryItem < ApplicationRecord
   scope :oldest, -> { order(created_at: :asc) }
   belongs_to :inventory
-  belongs_to :dispatch_item
+  belongs_to :nile_product
+  belongs_to :dispatch_item, optional: true
   before_save :initialize_quantity_sold
   before_validation :generate_stock_number, on: :create
   #validate :validate_quantity
@@ -9,7 +10,7 @@ class InventoryItem < ApplicationRecord
   has_many :store, through: :inventory_item_store
   def self.search(params, territory_id)
     query = InventoryItem
-      .joins(inventory: {}, dispatch_item: { order_item: :nile_product })
+      .joins(inventory: {}, nile_product: {})
       .where("inventories.territory_id = ?", territory_id)
 
     if params[:query].present?
@@ -17,11 +18,11 @@ class InventoryItem < ApplicationRecord
     end
 
     query.group(:nile_product_id)
-        .select("nile_product_id, nile_products.name, SUM(quantity) as openning_stock, SUM(quantity) as total_purchases, SUM(quantity_sold) as total_quantity_sold, SUM(breakages) as total_breakages, SUM(returns) as total_returns, SUM(nbl_return) as total_nbl_returns, SUM(transfers) as total_transfers, SUM(remaining_quantity*nile_products.selling_price) as total_closing_stock_value")
+        .select("nile_product_id, nile_products.name, SUM(quantity_received-quantity_sold) as openning_stock, SUM(quantity_received) as total_purchases, SUM(quantity_sold) as total_quantity_sold, SUM(breakages) as total_breakages, SUM(returns) as total_returns, SUM(nbl_return) as total_nbl_returns, SUM(transfers) as total_transfers, SUM(remaining_quantity*nile_products.selling_price) as total_closing_stock_value")
   end
 
   def self.search_stock(params, territory_id, product_id)
-    query = joins(inventory: {}, dispatch_item: { order_item: :nile_product })
+    query = joins(inventory: {}, nile_product:{})
     .where("inventories.territory_id = ? AND nile_products.id=?", territory_id, product_id)
 
     if params[:query].present?
