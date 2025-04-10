@@ -72,9 +72,10 @@ class InventoriesController < ApplicationController
   def create_existing_stock
     @inventory = Inventory.new(existing_stock_params)
     @inventory.user_id = current_user.id # Optional: Set user if not in form
+    @inventory.territory_id = current_territory.id
 
     if @inventory.save
-      redirect_to @inventory, notice: "Existing stock added successfully."
+      redirect_to @inventor_items_path, notice: "Existing stock added successfully."
     else
       @nile_products = NileProduct.all
       render :existing_stock, status: :unprocessable_entity
@@ -104,7 +105,7 @@ class InventoriesController < ApplicationController
     end
 
     def existing_stock_params
-      params.require(:inventory).permit(:total,:delivery_time,:user_id,:territory_id, 
-      inventory_items_attributes: [:id, :inventory_id,:nile_product_id, :quantity_ordered, :quantity_dispatched, :quantity_received, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :missing_bottles, :complaints, :_destroy])
+      params.require(:inventory).permit(:total,:delivery_time, 
+      inventory_items_attributes: [:id, :inventory_id,:nile_product_id,:quantity_received, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :missing_bottles, :_destroy])
     end
 end

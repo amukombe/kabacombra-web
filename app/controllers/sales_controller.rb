@@ -75,6 +75,11 @@ class SalesController < ApplicationController
     end
   end
 
+  #my sales approvals
+  def approvals
+    @active_link = "approvals"
+  end
+
   # DELETE /sales/1 or /sales/1.json
   def destroy
     @sale.destroy!

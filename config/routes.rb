@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   resources :sale_items
   resources :customers
   resources :sales do
+    collection do
+      get "approvals"
+    end
     member do
       get "sale_pdf"
     end
