@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_10_212529) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_24_103935) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -283,9 +283,25 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_10_212529) do
     t.decimal "nbl_return", precision: 10, default: "0"
     t.bigint "nile_product_id"
     t.bigint "dispatch_item_id"
+    t.decimal "bad_beer", precision: 10
+    t.decimal "good_beer", precision: 10
     t.index ["dispatch_item_id"], name: "index_inventory_items_on_dispatch_item_id"
     t.index ["inventory_id"], name: "index_inventory_items_on_inventory_id"
     t.index ["nile_product_id"], name: "index_inventory_items_on_nile_product_id"
+  end
+
+  create_table "inventory_transactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "inventory_item_id", null: false
+    t.datetime "transaction_date"
+    t.decimal "transaction_quantity", precision: 10
+    t.string "transaction_type"
+    t.string "direction"
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "nile_product_id", null: false
+    t.index ["inventory_item_id"], name: "index_inventory_transactions_on_inventory_item_id"
+    t.index ["nile_product_id"], name: "index_inventory_transactions_on_nile_product_id"
   end
 
   create_table "loading_order_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -631,6 +647,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_10_212529) do
   add_foreign_key "inventory_items", "dispatch_items"
   add_foreign_key "inventory_items", "inventories"
   add_foreign_key "inventory_items", "nile_products"
+  add_foreign_key "inventory_transactions", "inventory_items"
+  add_foreign_key "inventory_transactions", "nile_products"
   add_foreign_key "loading_order_items", "loading_orders"
   add_foreign_key "loading_order_items", "nile_products"
   add_foreign_key "loading_orders", "sale_types"

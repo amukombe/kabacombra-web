@@ -16116,7 +16116,7 @@ var nested_form_controller_default = class extends RailsNestedForm {
 
 // app/javascript/controllers/order_controller.js
 var order_controller_default = class extends Controller {
-  static targets = ["unitPrice"];
+  static targets = ["unitPrice", "sellingPrice"];
   connect() {
     console.log("order connected");
     console.log("unit price", this.priceTarget);
@@ -16147,7 +16147,7 @@ var order_controller_default = class extends Controller {
 
 // app/javascript/controllers/product_controller.js
 var product_controller_default = class extends Controller {
-  static targets = ["productSelect", "quantityDisplay"];
+  static targets = ["productSelect", "quantityDisplay", "unitPrice", "sellingPrice"];
   connect() {
     console.log("product connected");
   }
@@ -16170,6 +16170,34 @@ var product_controller_default = class extends Controller {
       }
     } else {
       console.log("Invalid product id: " + productId);
+    }
+  }
+  async fetchProductDetails(event) {
+    const selectedProductId = event.target.value;
+    const row = event.target.closest(".order-item-row");
+    if (!row) {
+      console.error("Row not found for product selection");
+      return;
+    }
+    const unitPriceField = row.querySelector('[data-product-target="unitPrice"]');
+    if (!unitPriceField) {
+      console.error("Unit price field not found in this row");
+      return;
+    }
+    const sellingPriceField = row.querySelector('[data-product-target="sellingPrice"]');
+    if (!sellingPriceField) {
+      console.error("Selling price field not found in this row");
+      return;
+    }
+    try {
+      const response = await fetch(`/nile_products/${selectedProductId}/details`);
+      if (!response.ok) throw new Error("Failed to fetch product details");
+      const productDetails = await response.json();
+      unitPriceField.value = productDetails.unit_price || "";
+      sellingPriceField.value = productDetails.selling_price || "";
+    } catch (error2) {
+      console.error(error2);
+      alert("Could not load product details.");
     }
   }
 };

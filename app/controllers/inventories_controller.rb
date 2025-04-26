@@ -75,7 +75,7 @@ class InventoriesController < ApplicationController
     @inventory.territory_id = current_territory.id
 
     if @inventory.save
-      redirect_to @inventor_items_path, notice: "Existing stock added successfully."
+      redirect_to inventory_items_path, notice: "Existing stock added successfully."
     else
       @nile_products = NileProduct.all
       render :existing_stock, status: :unprocessable_entity
@@ -106,6 +106,6 @@ class InventoriesController < ApplicationController
 
     def existing_stock_params
       params.require(:inventory).permit(:total,:delivery_time, 
-      inventory_items_attributes: [:id, :inventory_id,:nile_product_id,:quantity_received, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :missing_bottles, :_destroy])
+      inventory_items_attributes: [:id, :inventory_id,:nile_product_id,:good_beer, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :bad_beer, :complaints, :_destroy])
     end
 end

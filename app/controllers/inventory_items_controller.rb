@@ -6,6 +6,7 @@ class InventoryItemsController < ApplicationController
   def index
     @inventory_items = InventoryItem.search(params, current_territory.id).page(params[:page]).per(20)
     @active_link = "purchases"
+    @warehouses = Store.all
   end
 
   # GET /inventory_items/1 or /inventory_items/1.json

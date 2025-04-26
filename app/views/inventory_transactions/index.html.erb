@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Inventory transactions" %>
+
+<h1>Inventory transactions</h1>
+
+<div id="inventory_transactions">
+  <% @inventory_transactions.each do |inventory_transaction| %>
+    <%= render inventory_transaction %>
+    <p>
+      <%= link_to "Show this inventory transaction", inventory_transaction %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New inventory transaction", new_inventory_transaction_path %>

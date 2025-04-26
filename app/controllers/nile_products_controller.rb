@@ -1,5 +1,5 @@
 class NileProductsController < ApplicationController
-  before_action :set_nile_product, only: %i[ show edit update destroy ]
+  before_action :set_nile_product, only: %i[ show edit update destroy openning_stock ]
 
   # GET /nile_products or /nile_products.json
   def index
@@ -119,6 +119,10 @@ class NileProductsController < ApplicationController
     @inventory_items = InventoryItem.search_stock(params, current_territory.id, params[:id]).page(params[:page]).per(20)
   end
   
+  def openning_stock
+    @product = NileProduct.find(params[:id])
+    @transactions = InventoryTransaction.search_openning_stock(params, current_territory.id, @product.id).page(params[:page]).per(20)
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

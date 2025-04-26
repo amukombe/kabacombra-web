@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @inventory_transaction %>
+
+<div>
+  <%= link_to "Edit this inventory transaction", edit_inventory_transaction_path(@inventory_transaction) %> |
+  <%= link_to "Back to inventory transactions", inventory_transactions_path %>
+
+  <%= button_to "Destroy this inventory transaction", @inventory_transaction, method: :delete %>
+</div>

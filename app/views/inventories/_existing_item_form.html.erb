@@ -1,7 +1,7 @@
 <div class="flex items-center justify-between gap-1 px-5 order-item-row nested-form-wrapper" data-new-record="<%= f.object.new_record? %>">
     <div>
         <%= f.label :nile_product_id, 'Product', class:"text-xs text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.collection_select :nile_product_id, @nile_products, :id, :name, {prompt: "Choose a product"}, {class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500", data:{controller:"order", action: "change->order#fetchProductDetails"}} %>
+        <%= f.collection_select :nile_product_id, @nile_products, :id, :name, {prompt: "Choose a product"}, {class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500", data:{controller:"product", action: "change->product#fetchProductDetails"}} %>
         
     </div>
 
@@ -11,29 +11,29 @@
     </div>
 
     <div>
-        <%= f.label :qty_received , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.text_field :quantity_received, step: 1, min: 1 ,class:"quantity-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
+        <%= f.label :good_beer , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+        <%= f.text_field :good_beer, step: 1, min: 1 ,class:"quantity-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
     </div>
 
     <div>
-        <%= f.label :breakages , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.text_field :breakages, step: 1, min: 1 , class:"breakages-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
+        <%= f.label :bad_beer , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+        <%= f.text_field :bad_beer, step: 1, min: 1 , class:"breakages-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
     </div>
 
     <div>
-        <%= f.label :missing_bottles , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.text_field :missing_bottles, step: 1, min: 1 , class:"missing_bottles-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
+        <%= f.label :complaints , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+        <%= f.text_field :complaints, step: 1, min: 1 , class:"breakages-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
     </div>
 
     <div>
         <%= f.label :purchase_price , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.text_field :purchase_price , class:"quantity_dispatched-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500", data: {controller: "order", order_target: "unitPrice" }%>
+        <%= f.text_field :purchase_price , class:"quantity_dispatched-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500", data: {controller: "product", product_target: "unitPrice" }%>
     </div>
 
     <div>
         <%= f.label :selling_price , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
         <%= f.text_field :selling_price, step: 1, min: 1, class:"selling_price-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
-            data: { inventory_target: "sellingPrice" }%>
+            data: { product_target: "sellingPrice" }%>
     </div>
     
     <div>

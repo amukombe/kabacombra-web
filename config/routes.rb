@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :inventory_transactions
   resources :purchase_types
   resources :sale_empties
   resources :taxes
@@ -23,7 +24,7 @@ Rails.application.routes.draw do
   get 'nile_products/:id/details', to: 'nile_products#details', as: :product_details
   get 'nile_products/:id/dispatchdetails', to: 'nile_products#dispatchdetails', as: :product_dispatchdetails
   get 'nile_products/:id/orderitemdetails', to: 'nile_products#orderitemdetails', as: :product_orderitemdetails
-  get 'nile_products/:id/stock_details', to: 'nile_products#stock_details', as: :stock_details
+  #get 'nile_products/:id/stock_details', to: 'nile_products#stock_details', as: :stock_details
 
   resources :expenses do
     member do
@@ -84,6 +85,10 @@ Rails.application.routes.draw do
   resources :unit_of_measurements
   resources :nile_products do
     get 'available_stock', on: :collection
+    member do
+      get :openning_stock
+      get :stock_details
+    end
   end
   resources :nile_categories
   resources :routes

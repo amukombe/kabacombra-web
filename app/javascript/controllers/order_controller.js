@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["unitPrice"];
+  static targets = ["unitPrice", "sellingPrice"];
   connect() {
     console.log("order connected");
     console.log("unit price", this.priceTarget);
@@ -23,7 +23,7 @@ export default class extends Controller {
       console.error("Unit price field not found in this row");
       return;
     }
-
+    
     try {
       const response = await fetch(`/nile_products/${selectedProductId}/details`);
       if (!response.ok) throw new Error("Failed to fetch product details");
