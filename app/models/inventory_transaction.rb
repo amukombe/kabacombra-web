@@ -13,7 +13,10 @@ class InventoryTransaction < ApplicationRecord
         .select(
           'nile_products.id  AS nile_product_id, nile_products.name, nile_products.selling_price',
           'SUM(CASE WHEN inventory_transactions.transaction_type = "opening_stock" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_opening_stock',
-          'SUM(CASE WHEN inventory_transactions.transaction_type = "breakage" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_breakage',
+          'SUM(CASE WHEN inventory_transactions.transaction_type = "purchase breakage" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_purchase_breakage',
+          'SUM(CASE WHEN inventory_transactions.transaction_type = "warehouse breakage" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_warehouse_breakage',
+          'SUM(CASE WHEN inventory_transactions.transaction_type = "within store breakage" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_within_store_breakage',
+          'SUM(CASE WHEN inventory_transactions.transaction_type = "store to store breakage" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_store_to_store_breakage',
           'SUM(CASE WHEN inventory_transactions.transaction_type = "missing bottles" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_missing_bottles',
           'SUM(CASE WHEN inventory_transactions.transaction_type = "complaint" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_complaint',
           'SUM(CASE WHEN inventory_transactions.transaction_type = "bad beer" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_bad_beer',

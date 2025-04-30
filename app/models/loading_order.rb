@@ -5,7 +5,7 @@ class LoadingOrder < ApplicationRecord
   belongs_to :status
   belongs_to :store, optional: true
   accepts_nested_attributes_for :loading_order_items, allow_destroy: true, reject_if: :all_blank
-  validates :loading_date, :order_number, :sales_man, :authorized_by, :verified_by, presence: true
+  validates :loading_date, :order_number, :sales_man, :authorized_by, presence: true
   before_validation :generate_order_number, on: :create
   after_create :create_inventory_transactions
   
@@ -36,8 +36,6 @@ class LoadingOrder < ApplicationRecord
     end
   end
 
-  private
-
   def create_inventory_transactions
     loading_order_items.each do |item|
       quantity = item.quantity_loaded
@@ -52,5 +50,26 @@ class LoadingOrder < ApplicationRecord
         transaction_date: self.loading_date
       )
     end
+  end
+
+  private
+
+  def generate_order_number
+    return if order_number.present? || territory.blank?
+
+    prefix = territory.name[0, 3].upcase
+    last_order = LoadingOrder.where(territory_id: territory.id)
+                             .order(order_number: :desc)
+                             .where("order_number LIKE ?", "#{prefix}-%")
+                             .first
+
+    if last_order&.order_number.present?
+      last_number = last_order.order_number.split('-').last.to_i
+      next_number = last_number + 1
+    else
+      next_number = 1
+    end
+
+    self.order_number = "#{prefix}-#{next_number.to_s.rjust(7, '0')}"
   end
 end

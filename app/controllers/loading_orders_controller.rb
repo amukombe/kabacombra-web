@@ -113,7 +113,7 @@ class LoadingOrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def loading_order_params
-      params.require(:loading_order).permit(:driver_name, :user_id, :territory_id, :status_id, :vehicle_numperplate, :destination, :loading_date, :order_number, :sales_man, :authorized_by, :verified_by, :sale_type_id,:store_id,
+      params.require(:loading_order).permit(:driver_name, :user_id, :territory_id, :status_id, :vehicle_numperplate, :loading_date, :sales_man, :authorized_by, :sale_type_id,:store_id,
       loading_order_items_attributes: [:id, :loading_order_id, :nile_product_id, :quantity_loaded, :_destroy ])
     end
 end

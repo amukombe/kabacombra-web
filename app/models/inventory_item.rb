@@ -81,11 +81,20 @@ class InventoryItem < ApplicationRecord
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: breakages,
-      transaction_type: 'breakage',
+      transaction_type: 'purchase breakage',
       direction: 'out',
       transaction_date: inventory.delivery_time
     ) if breakages.present? && breakages > 0
-  
+
+    inventory_transactions.create!(
+      nile_product_id: nile_product_id,
+      territory_id: inventory.territory_id,
+      transaction_quantity: breakages,
+      transaction_type: 'store_to_store_breakage',
+      direction: 'out',
+      transaction_date: inventory.delivery_time
+    ) if breakages.present? && breakages > 0
+
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,

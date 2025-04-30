@@ -132,9 +132,17 @@ class NileProductsController < ApplicationController
 
   def breakages
     @product = NileProduct.find(params[:id])
+    @inventory_transaction = InventoryTransaction.new
   end
-  def create_breakage
+  def record_breakage
     @product = NileProduct.find(params[:id])
+    @inventory_transaction = InventoryTransaction.new(inventory_transaction_params)
+  
+    if @inventory_transaction.save
+      redirect_to inventory_items_path, notice: "Breakage recorded successfully."
+    else
+      render :breakages, alert: "Failed to record breakage."
+    end
   end
 
   private
@@ -149,5 +157,9 @@ class NileProductsController < ApplicationController
     end
     def breakage_params
       params.require(:inventory_item).permit(:nile_product_id, :breakages)
+    end
+    # breakage params
+    def inventory_transaction_params
+      params.require(:inventory_transaction).permit(:nile_product_id, :territory_id, :transaction_date, :transaction_quantity, :transaction_type, :direction)
     end
 end

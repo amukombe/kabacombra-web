@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :warehouses
   resources :inventory_transactions
   resources :purchase_types
   resources :sale_empties
@@ -89,6 +90,8 @@ Rails.application.routes.draw do
       get :openning_stock
       get :stock_details
       get :quantity_in
+      get :breakages
+      post :record_breakage
     end
   end
   resources :nile_categories

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_29_112846) do
+ActiveRecord::Schema[7.2].define(version: 2025_04_30_110004) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -331,9 +331,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_29_112846) do
     t.datetime "updated_at", null: false
     t.bigint "status_id", null: false
     t.string "driver_name"
-    t.bigint "sale_type_id", null: false
     t.bigint "store_id"
-    t.index ["sale_type_id"], name: "index_loading_orders_on_sale_type_id"
     t.index ["status_id"], name: "index_loading_orders_on_status_id"
     t.index ["store_id"], name: "index_loading_orders_on_store_id"
     t.index ["territory_id"], name: "index_loading_orders_on_territory_id"
@@ -612,6 +610,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_29_112846) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "warehouses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "territory_id", null: false
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["territory_id"], name: "index_warehouses_on_territory_id"
+  end
+
   add_foreign_key "bank_accounts", "banks"
   add_foreign_key "bank_accounts", "territories"
   add_foreign_key "bank_accounts", "users"
@@ -654,7 +660,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_29_112846) do
   add_foreign_key "inventory_transactions", "territories"
   add_foreign_key "loading_order_items", "loading_orders"
   add_foreign_key "loading_order_items", "nile_products"
-  add_foreign_key "loading_orders", "sale_types"
   add_foreign_key "loading_orders", "statuses"
   add_foreign_key "loading_orders", "stores"
   add_foreign_key "loading_orders", "territories"
@@ -693,4 +698,5 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_29_112846) do
   add_foreign_key "user_modules", "territories"
   add_foreign_key "user_modules", "users"
   add_foreign_key "users", "employees"
+  add_foreign_key "warehouses", "territories"
 end

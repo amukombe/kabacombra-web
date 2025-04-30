@@ -4,6 +4,7 @@ class Territory < ApplicationRecord
   has_many :employee_territories
   has_many :employees, through: :employee_territories
   has_many :stores
+  has_many :warehouses
   has_many :customers
   has_many :inventory_transactions
   def self.search(params)

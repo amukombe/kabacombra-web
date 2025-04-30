@@ -3,10 +3,10 @@
 <div class="px-4 pt-4 bg-white dark:bg-gray-900">
 <div class="grid w-full grid-cols-2 gap-4 mb-3">
   <div class="col-span-1">
-    <h1 class="text-gray-800 text-md dark:text-gray-100">Inventory</h1>
+    <h1 class="text-gray-800 text-md dark:text-gray-100">Warehouse Inventory</h1>
   </div>
   <div class="flex justify-end w-full col-span-1 gap-2 text-end">
-    <div><%= link_to new_loading_order_path, class:"bg-purple-700 text-purple-100 p-1 px-3 text-sm rounded-full dark:text-purple-100 dark:bg-purple-700" do %> <i class="fas fa-plus"></i> Create Distribution<%end%></div>
+    <div><%= link_to new_loading_order_path, class:"bg-purple-700 text-purple-100 p-1 px-3 text-sm rounded-full dark:text-purple-100 dark:bg-purple-700" do %> <i class="fas fa-plus"></i> Assign Store<%end%></div>
     <div><%= link_to existing_stock_inventories_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> Add Openning Stock<%end%></div>
   </div>  
 </div>
@@ -66,7 +66,7 @@
             <tbody class="bg-white dark:bg-gray-800">
             <% @inventory_items.each_with_index do |item, index| %>
               <% total_stock_in = item.total_opening_stock.to_f + item.total_good_beer.to_f + item.total_returns.to_f%>
-              <% total_stock_out = item.total_breakage.to_f + item.total_missing_bottles.to_f + item.total_complaint.to_f + item.total_bad_beer.to_f + item.total_transfers.to_f + item.total_nbl_return.to_f + item.total_distribution.to_f %>
+              <% total_stock_out = item.total_purchase_breakage.to_f + item.total_warehouse_breakage.to_f + item.total_within_store_breakage.to_f + item.total_store_to_store_breakage.to_f + item.total_missing_bottles.to_f + item.total_complaint.to_f + item.total_bad_beer.to_f + item.total_transfers.to_f + item.total_nbl_return.to_f + item.total_distribution.to_f %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   <span class="font-semibold"><%=index+1%></span>
@@ -102,19 +102,13 @@
                     
                     <ul class="py-2" aria-labelledby="order-menu-button">
                         <li>
-                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Breakages<%end%>
+                          <%= link_to breakages_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Add Breakages<%end%>
                         </li>
                         <li>
-                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Store Returns<%end%>
+                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Transfer to Branch<%end%>
                         </li>
                         <li>
-                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>NBL Returns<%end%>
-                        </li>
-                        <li>
-                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Distributions<%end%>
-                        </li>
-                        <li>
-                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Store Returns<%end%>
+                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Add NBL Returns<%end%>
                         </li>
                     </ul>
                 </div>
