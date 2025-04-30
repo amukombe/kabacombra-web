@@ -7,6 +7,8 @@ class LoadingOrder < ApplicationRecord
   accepts_nested_attributes_for :loading_order_items, allow_destroy: true, reject_if: :all_blank
   validates :loading_date, :order_number, :sales_man, :authorized_by, :verified_by, presence: true
   before_validation :generate_order_number, on: :create
+  after_create :create_inventory_transactions
+  
   def self.search(params, territory_id)
     if params[:query].present?
       where("order_number LIKE ? AND status_id IN (?) AND territory_id = ?", "%#{sanitize_sql_like(params[:query])}%", [6,7], territory_id)
@@ -31,6 +33,24 @@ class LoadingOrder < ApplicationRecord
       last_order = LoadingOrder.order(:created_at).last
       next_number = last_order&.order_number.to_i + 1 || 1
       self.order_number = next_number.to_s.rjust(5, '0')
+    end
+  end
+
+  private
+
+  def create_inventory_transactions
+    loading_order_items.each do |item|
+      quantity = item.quantity_loaded
+      next unless quantity.present? && quantity > 0
+
+      InventoryTransaction.create!(
+        nile_product_id: item.nile_product_id,
+        territory_id: self.territory_id,
+        transaction_quantity: quantity,
+        transaction_type: 'distribution',
+        direction: 'out',
+        transaction_date: self.loading_date
+      )
     end
   end
 end

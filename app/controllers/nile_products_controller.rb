@@ -66,14 +66,15 @@ class NileProductsController < ApplicationController
 
   def available_stock
     # Fetch the product based on the provided ID
-  @product = NileProduct.find(params[:id])
-
-  # Join InventoryItem with Inventory and filter by territory_id
-  total_available_stock = InventoryItem.joins(:inventory, dispatch_item: { order_item: :nile_product }).where(inventories: {territory_id: current_territory.id},nile_products:{id: @product.id})
-                                       .sum("quantity_received - quantity_sold")
-  puts "TOTAL AVAILABLE:=========#{total_available_stock}"
-  # Return the available stock in JSON format
-  render json: { available_stock: total_available_stock }
+    @product = NileProduct.find(params[:id])
+    available_stock = InventoryTransaction.available_quantity(
+      product_id: @product.id,
+      territory_id: current_territory.id
+    )
+  
+    puts "TOTAL AVAILABLE:=========#{available_stock}"
+  
+    render json: { available_stock: available_stock }
   end
 
   def details
@@ -124,6 +125,18 @@ class NileProductsController < ApplicationController
     @transactions = InventoryTransaction.search_openning_stock(params, current_territory.id, @product.id).page(params[:page]).per(20)
   end
 
+  def quantity_in
+    @product = NileProduct.find(params[:id])
+    @transactions = InventoryTransaction.search_quantity_in(params, current_territory.id, @product.id).page(params[:page]).per(20)
+  end
+
+  def breakages
+    @product = NileProduct.find(params[:id])
+  end
+  def create_breakage
+    @product = NileProduct.find(params[:id])
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_nile_product
@@ -133,5 +146,8 @@ class NileProductsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def nile_product_params
       params.require(:nile_product).permit(:name, :crate_size, :bottle_size, :pcode, :nile_category_id, :buying_price, :selling_price, :empty_type_id)
+    end
+    def breakage_params
+      params.require(:inventory_item).permit(:nile_product_id, :breakages)
     end
 end

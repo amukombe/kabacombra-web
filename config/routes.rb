@@ -88,6 +88,7 @@ Rails.application.routes.draw do
     member do
       get :openning_stock
       get :stock_details
+      get :quantity_in
     end
   end
   resources :nile_categories

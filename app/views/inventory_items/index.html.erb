@@ -65,6 +65,8 @@
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
             <% @inventory_items.each_with_index do |item, index| %>
+              <% total_stock_in = item.total_opening_stock.to_f + item.total_good_beer.to_f + item.total_returns.to_f%>
+              <% total_stock_out = item.total_breakage.to_f + item.total_missing_bottles.to_f + item.total_complaint.to_f + item.total_bad_beer.to_f + item.total_transfers.to_f + item.total_nbl_return.to_f + item.total_distribution.to_f %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   <span class="font-semibold"><%=index+1%></span>
@@ -73,19 +75,19 @@
                   <span class="font-semibold"><%=item.name%></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to openning_stock_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=item.total_opening_stock%></span><%end%>
+                  <%= link_to openning_stock_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%= total_stock_in.to_f - total_stock_out.to_f %></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=item.total_in%></span>
+                  <%= link_to quantity_in_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=total_stock_in.to_f%></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=item.total_out%></span>
+                  <span class="font-normal"><%=total_stock_out.to_f%></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=(item.total_in.to_f - item.total_out.to_f)%></span>
+                  <span class="font-normal"></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= number_with_delimiter((item.total_in.to_f - item.total_out.to_f)*item.selling_price, delimiter: ",") %></span>
+                  <span class="font-normal"></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=item.nile_product_id%>" data-dropdown-placement="bottom">
@@ -99,9 +101,6 @@
                 <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=item.nile_product_id%>">
                     
                     <ul class="py-2" aria-labelledby="order-menu-button">
-                        <li>
-                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>View Details<%end%>
-                        </li>
                         <li>
                           <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Breakages<%end%>
                         </li>
@@ -121,6 +120,7 @@
                 </div>
                 </td>
               </tr>
+              <%= render "breakages_form"%>
             <%end%>
             </tbody>
           </table>

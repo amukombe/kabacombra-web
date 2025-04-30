@@ -70,6 +70,7 @@ class InventoryItem < ApplicationRecord
   
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
+      territory_id: inventory.territory_id,
       transaction_quantity: quantity_received,
       transaction_type: 'opening_stock',
       direction: 'in',
@@ -78,6 +79,7 @@ class InventoryItem < ApplicationRecord
   
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
+      territory_id: inventory.territory_id,
       transaction_quantity: breakages,
       transaction_type: 'breakage',
       direction: 'out',
@@ -86,6 +88,7 @@ class InventoryItem < ApplicationRecord
   
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
+      territory_id: inventory.territory_id,
       transaction_quantity: missing_bottles,
       transaction_type: 'missing bottles',
       direction: 'out',
@@ -94,6 +97,7 @@ class InventoryItem < ApplicationRecord
 
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
+      territory_id: inventory.territory_id,
       transaction_quantity: complaints,
       transaction_type: 'complaint',
       direction: 'out',
@@ -102,6 +106,7 @@ class InventoryItem < ApplicationRecord
 
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
+      territory_id: inventory.territory_id,
       transaction_quantity: bad_beer,
       transaction_type: 'bad beer',
       direction: 'out',
@@ -110,7 +115,8 @@ class InventoryItem < ApplicationRecord
 
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
-      transaction_quantity: bad_beer,
+      territory_id: inventory.territory_id,
+      transaction_quantity: good_beer,
       transaction_type: 'good beer',
       direction: 'in',
       transaction_date: inventory.delivery_time
@@ -118,6 +124,7 @@ class InventoryItem < ApplicationRecord
 
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
+      territory_id: inventory.territory_id,
       transaction_quantity: transfers,
       transaction_type: 'transfers',
       direction: 'out',
@@ -126,6 +133,7 @@ class InventoryItem < ApplicationRecord
 
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
+      territory_id: inventory.territory_id,
       transaction_quantity: returns,
       transaction_type: 'returns',
       direction: 'in',
@@ -134,6 +142,7 @@ class InventoryItem < ApplicationRecord
 
     inventory_transactions.create!(
       nile_product_id: nile_product_id,
+      territory_id: inventory.territory_id,
       transaction_quantity: nbl_return,
       transaction_type: 'nbl_return',
       direction: 'out',
