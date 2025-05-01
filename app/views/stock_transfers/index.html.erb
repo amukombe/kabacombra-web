@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Stock transfers" %>
+
+<h1>Stock transfers</h1>
+
+<div id="stock_transfers">
+  <% @stock_transfers.each do |stock_transfer| %>
+    <%= render stock_transfer %>
+    <p>
+      <%= link_to "Show this stock transfer", stock_transfer %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New stock transfer", new_stock_transfer_path %>

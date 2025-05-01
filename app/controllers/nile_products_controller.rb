@@ -130,6 +130,11 @@ class NileProductsController < ApplicationController
     @transactions = InventoryTransaction.search_quantity_in(params, current_territory.id, @product.id).page(params[:page]).per(20)
   end
 
+  def quantity_out
+    @product = NileProduct.find(params[:id])
+    @transactions = InventoryTransaction.search_quantity_out(params, current_territory.id, @product.id).page(params[:page]).per(20)
+  end
+
   def breakages
     @product = NileProduct.find(params[:id])
     @inventory_transaction = InventoryTransaction.new

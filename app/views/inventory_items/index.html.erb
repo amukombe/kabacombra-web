@@ -1,13 +1,35 @@
 
 
 <div class="px-4 pt-4 bg-white dark:bg-gray-900">
-<div class="grid w-full grid-cols-2 gap-4 mb-3">
-  <div class="col-span-1">
+<div class="flex flex-row w-full grid-cols-2 gap-4 mb-3">
+  <div class="w-1/3">
     <h1 class="text-gray-800 text-md dark:text-gray-100">Warehouse Inventory</h1>
   </div>
-  <div class="flex justify-end w-full col-span-1 gap-2 text-end">
-    <div><%= link_to new_loading_order_path, class:"bg-purple-700 text-purple-100 p-1 px-3 text-sm rounded-full dark:text-purple-100 dark:bg-purple-700" do %> <i class="fas fa-plus"></i> Assign Store<%end%></div>
-    <div><%= link_to existing_stock_inventories_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> Add Openning Stock<%end%></div>
+  <div class="w-2/3">
+    <div class="flex flex-row justify-end gap-1">
+      <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="sub-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-menu" data-dropdown-placement="bottom">
+          <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
+          <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
+          </svg>
+      </button>
+  
+      <!-- Dropdown menu -->
+      <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-menu">
+          
+          <ul class="py-2" aria-labelledby="sub-menu-button">
+              <li>
+                  <%= link_to new_stock_transfer_path, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Create Transfer<%end%>
+              </li>
+              <li>
+                  <%= link_to new_loading_order_path, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Assign Store<%end%>
+              </li>
+              <li>
+                  <%= link_to existing_stock_inventories_path, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Add Openning Stock<%end%>
+              </li>
+          </ul>
+      </div>
+    </div>
   </div>  
 </div>
 <div class="mb-3">
@@ -58,15 +80,12 @@
                 <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Closing Stock Value
                 </th>
-                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Action
-                </th>
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
             <% @inventory_items.each_with_index do |item, index| %>
-              <% total_stock_in = item.total_opening_stock.to_f + item.total_good_beer.to_f + item.total_returns.to_f%>
-              <% total_stock_out = item.total_purchase_breakage.to_f + item.total_warehouse_breakage.to_f + item.total_within_store_breakage.to_f + item.total_store_to_store_breakage.to_f + item.total_missing_bottles.to_f + item.total_complaint.to_f + item.total_bad_beer.to_f + item.total_transfers.to_f + item.total_nbl_return.to_f + item.total_distribution.to_f %>
+              <% total_stock_in = item.total_opening_stock.to_f + item.total_good_beer.to_f + item.total_returns.to_f + item.total_branch_transfer_in.to_f + item.total_distributor_transfer.to_f%>
+              <% total_stock_out = item.total_purchase_breakage.to_f + item.total_warehouse_breakage.to_f + item.total_within_store_breakage.to_f + item.total_store_to_store_breakage.to_f + item.total_missing_bottles.to_f + item.total_complaint.to_f + item.total_bad_beer.to_f + item.total_nbl_return.to_f + item.total_distribution.to_f + + item.total_branch_transfer_out.to_f %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   <span class="font-semibold"><%=index+1%></span>
@@ -81,40 +100,15 @@
                   <%= link_to quantity_in_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=total_stock_in.to_f%></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=total_stock_out.to_f%></span>
+                  <%= link_to quantity_out_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=total_stock_out.to_f%></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
                   <span class="font-normal"></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
                   <span class="font-normal"></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                  <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=item.nile_product_id%>" data-dropdown-placement="bottom">
-                    <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
-                    <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
-                    </svg>
-                </button>
-            
-                <!-- Dropdown menu -->
-                <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=item.nile_product_id%>">
-                    
-                    <ul class="py-2" aria-labelledby="order-menu-button">
-                        <li>
-                          <%= link_to breakages_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Add Breakages<%end%>
-                        </li>
-                        <li>
-                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Transfer to Branch<%end%>
-                        </li>
-                        <li>
-                          <%= link_to stock_details_nile_product_path(item.nile_product_id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Add NBL Returns<%end%>
-                        </li>
-                    </ul>
-                </div>
                 </td>
               </tr>
-              <%= render "breakages_form"%>
             <%end%>
             </tbody>
           </table>

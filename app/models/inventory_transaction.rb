@@ -21,10 +21,12 @@ class InventoryTransaction < ApplicationRecord
           'SUM(CASE WHEN inventory_transactions.transaction_type = "complaint" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_complaint',
           'SUM(CASE WHEN inventory_transactions.transaction_type = "bad beer" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_bad_beer',
           'SUM(CASE WHEN inventory_transactions.transaction_type = "good beer" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_good_beer',
-          'SUM(CASE WHEN inventory_transactions.transaction_type = "transfers" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_transfers',
+          'SUM(CASE WHEN inventory_transactions.transaction_type = "branch transfer out" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_branch_transfer_out',
+          'SUM(CASE WHEN inventory_transactions.transaction_type = "branch transfer in" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_branch_transfer_in',
           'SUM(CASE WHEN inventory_transactions.transaction_type = "returns" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_returns',
           'SUM(CASE WHEN inventory_transactions.transaction_type = "nbl_return" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_nbl_return',
-          'SUM(CASE WHEN inventory_transactions.transaction_type = "distribution" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_distribution'
+          'SUM(CASE WHEN inventory_transactions.transaction_type = "distribution" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_distribution',
+          'SUM(CASE WHEN inventory_transactions.transaction_type = "distributor_transfer" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_distributor_transfer'
         )
   end
 
@@ -46,6 +48,17 @@ class InventoryTransaction < ApplicationRecord
     if params[:query].present?
       query = joins(:territory, :nile_product)
       .where("territory_id = ? AND nile_products.id=? AND direction=?", territory_id, product_id, "in")
+    end
+    query
+  end
+
+  def self.search_quantity_out(params, territory_id, product_id)
+    query = joins(:territory, :nile_product)
+    .where("territory_id = ? AND nile_products.id=? AND direction=?", territory_id, product_id, "out")
+
+    if params[:query].present?
+      query = joins(:territory, :nile_product)
+      .where("territory_id = ? AND nile_products.id=? AND direction=?", territory_id, product_id, "out")
     end
     query
   end

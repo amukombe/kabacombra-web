@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :stock_transfer_items
+  resources :stock_transfers
   resources :warehouses
   resources :inventory_transactions
   resources :purchase_types
@@ -90,6 +92,7 @@ Rails.application.routes.draw do
       get :openning_stock
       get :stock_details
       get :quantity_in
+      get :quantity_out
       get :breakages
       post :record_breakage
     end

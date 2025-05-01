@@ -15,6 +15,7 @@ class InventoriesController < ApplicationController
   def new
     @dispatch = BeerDispatch.find(params[:id])
     @inventory = Inventory.new(delivery_time: Time.now)
+    @warehouses = current_territory.warehouses
     # Build dispatch items based on existing order items
     @dispatch.dispatch_items.each do |item|
       @inventory.inventory_items.build(
@@ -36,6 +37,7 @@ class InventoriesController < ApplicationController
   def create
     dispatch_id = inventory_params[:beer_dispatch_id]
     @dispatch = BeerDispatch.find(dispatch_id)
+    @warehouses = current_territory.warehouses
     @inventory = Inventory.new(inventory_params)
     @dispatch_items = @dispatch.dispatch_items
     respond_to do |format|
@@ -68,11 +70,13 @@ class InventoriesController < ApplicationController
     @inventory = Inventory.new
     @inventory.inventory_items.build
     @nile_products = NileProduct.all
+    @warehouses = current_territory.warehouses
   end
   def create_existing_stock
     @inventory = Inventory.new(existing_stock_params)
     @inventory.user_id = current_user.id # Optional: Set user if not in form
     @inventory.territory_id = current_territory.id
+    @warehouses = current_territory.warehouses
 
     if @inventory.save
       redirect_to inventory_items_path, notice: "Existing stock added successfully."
@@ -100,12 +104,12 @@ class InventoriesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def inventory_params
-      params.require(:inventory).permit(:beer_dispatch_id, :total,:delivery_time,:user_id,:territory_id, 
+      params.require(:inventory).permit(:warehouse_id, :beer_dispatch_id, :total,:delivery_time,:user_id,:territory_id, 
       inventory_items_attributes: [:id, :inventory_id,:nile_product_id, :dispatch_item_id, :quantity_ordered, :quantity_dispatched, :quantity_received, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :missing_bottles, :complaints, :_destroy])
     end
 
     def existing_stock_params
-      params.require(:inventory).permit(:total,:delivery_time, 
+      params.require(:inventory).permit(:warehouse_id,:total,:delivery_time, 
       inventory_items_attributes: [:id, :inventory_id,:nile_product_id,:good_beer, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :bad_beer, :complaints, :_destroy])
     end
 end

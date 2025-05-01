@@ -28,5 +28,8 @@ application.register("sale", SaleController)
 import SearchController from "./search_controller"
 application.register("search", SearchController)
 
+import StockTransferController from "./stock_transfer_controller"
+application.register("stock-transfer", StockTransferController)
+
 import ThemeController from "./theme_controller"
 application.register("theme", ThemeController)
