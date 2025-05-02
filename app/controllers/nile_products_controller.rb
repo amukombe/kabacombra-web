@@ -136,11 +136,11 @@ class NileProductsController < ApplicationController
   end
 
   def breakages
-    @product = NileProduct.find(params[:id])
+    @products = NileProduct.all
     @inventory_transaction = InventoryTransaction.new
   end
   def record_breakage
-    @product = NileProduct.find(params[:id])
+    @products = NileProduct.all
     @inventory_transaction = InventoryTransaction.new(inventory_transaction_params)
   
     if @inventory_transaction.save

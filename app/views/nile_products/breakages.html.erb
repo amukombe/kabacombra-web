@@ -1,7 +1,7 @@
-<h1  class="text-lg text-gray-600 dark:text-gray-400">Enter Breakages for <%= @product.name %></h1> <i class="text-xs text-red-600 dark:text-red-400">(All fields marked with * are mandetory)</i>
+<h1  class="text-lg text-gray-600 dark:text-gray-400">Enter Breakages </h1> <i class="text-xs text-red-600 dark:text-red-400">(All fields marked with * are mandetory)</i>
 
 <div class="rounded-lg shadow-lg dark:bg-gray-800">
-<%= form_with(model: @inventory_transaction, url: record_breakage_nile_product_path(@product), method: :post, local: true) do |form| %>
+<%= form_with(model: @inventory_transaction, url: record_breakage_nile_products_path(@product), method: :post, local: true) do |form| %>
 
   <% if @inventory_transaction.errors.any? %>
     <div class="grid-cols-1" data-controller="alert" data-alert-target="alertDialog">
@@ -24,11 +24,14 @@
       </div>
     </div>
   <% end %>
-  <%= form.hidden_field :nile_product_id, value: @product.id %>
   <%= form.hidden_field :territory_id, value: current_territory.id %>
   <%= form.hidden_field :transaction_type, value: "warehouse breakage" %>
   <%= form.hidden_field :direction, value: "out" %>
   <div class="grid grid-cols-3 gap-4 p-4">
+    <div>
+        <%= form.label :nile_product_id, 'Product', class:"text-xs text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+        <%= form.collection_select :nile_product_id, @products, :id, :name, {prompt: "Choose a product"}, {class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"} %>
+    </div>
     <div>
       <%= form.label :breakage_date, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
       <%= form.date_field :transaction_date, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
@@ -43,7 +46,7 @@
   
   <div class="flex justify-end gap-4 p-4 mx-auto">
     <div class="inline-flex">
-      <%= form.submit "Save order", class:"bg-slate-700 text-slate-100 p-1 px-3 text-md rounded-full dark:text-slate-100 dark:bg-slate-700"  %>
+      <%= form.submit "Save", class:"bg-slate-700 text-slate-100 p-1 px-3 text-md rounded-full dark:text-slate-100 dark:bg-slate-700"  %>
     </div>
     <div class="inline-flex">
       <%= link_to "Return", inventory_items_path, class:"bg-red-200 text-red-800 p-1 px-3 text-md rounded-full dark:text-red-200 dark:bg-red-900" %>

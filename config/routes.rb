@@ -93,6 +93,8 @@ Rails.application.routes.draw do
       get :stock_details
       get :quantity_in
       get :quantity_out
+    end
+    collection do
       get :breakages
       post :record_breakage
     end
