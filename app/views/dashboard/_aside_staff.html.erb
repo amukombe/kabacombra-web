@@ -1,27 +1,22 @@
-<div class="flex flex-col flex-1 pt-5 pb-28 overflow-y-auto scrollbar scrollbar-w-2 scrollbar-thumb-rounded-[0.1667rem] scrollbar-thumb-slate-200 scrollbar-track-gray-400 dark:scrollbar-thumb-slate-900 dark:scrollbar-track-gray-800">
-    <div class="flex-1 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-        <ul class="pb-2 space-y-2">
-            <% mydepartments = EmployeeDepartment.where(employee_id: current_user.employee.id)%>
-            <%if mydepartments.present?%>
-                <% mydepartments.each do |dpt|%>
-                <li>
-                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" aria-controls="dropdown-<%= dpt.id%>" data-collapse-toggle="dropdown-<%= dpt.id%>">
-                        <%= raw dpt.department.icon %>
-                        <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item><%=dpt.department.name%></span>
-                        <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    </button>
-                    <ul id="dropdown-<%= dpt.id%>" class="hidden py-2 space-y-2">
-                        <li>
-                            <a href="https://themesberg.github.io/flowbite-astro-admin-dashboard/layouts/stacked" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Purchases</a>
-                        </li>
-                        <li>
-                            <a href="https://themesberg.github.io/flowbite-astro-admin-dashboard/layouts/sidebar" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Stores</a>
-                        </li>
-                    </ul>
-                </li>
+
+<div class="flex flex-col flex-1 overflow-y-auto scrollbar scrollbar-w-2 scrollbar-thumb-rounded-[0.1667rem] scrollbar-thumb-slate-200 scrollbar-track-gray-400 dark:scrollbar-thumb-slate-900 dark:scrollbar-track-gray-800">
+    <div class="flex-1 px-3 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+        <ul class="py-2 pt-3">
+            <% @um = current_user.user_modules %>
+            <% if @um.present?%>
+                <% @um.each do |user_m| %>
+                    <% if user_m.territory.department.name == "Beer"%>
+
+                        <ul class="">
+                            <li>
+                                <a href="<%=user_m.system_module.module_url%>" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"><%= user_m.system_module.name%></a>
+                            </li>
+                        </ul>
+                    <%end%>
                 <%end%>
             <%end%>
         </ul>
     </div>
 </div>
+		
 		
