@@ -42,9 +42,14 @@ Rails.application.routes.draw do
   
   get "approvals",to: "loading_orders#approvals"
   get "expense_approvals",to: "expenses#approvals"
+  get "store_inventory", to: "loading_orders#store_inventory", as: "store_inventory"
+  get "store_loading_orders", to: "loading_orders#store_loading_orders", as: "store_loading_orders"
   resources :loading_orders do
     member do
       patch :approve
+    end
+    collection do
+      
     end
   end
   resources :inventory_items do
@@ -82,6 +87,9 @@ Rails.application.routes.draw do
       patch :update_driver
       delete :remove_driver
       get "dispatch_pdf"
+    end
+    collection do
+      get "vendor_statement"
     end
   end
   resources :statuses

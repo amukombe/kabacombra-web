@@ -72,7 +72,7 @@ class InventoryItem < ApplicationRecord
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: quantity_received,
-      transaction_type: 'opening_stock',
+      transaction_type: 'purchase',
       direction: 'in',
       transaction_date: inventory.delivery_time
     ) if quantity_received.present? && quantity_received > 0

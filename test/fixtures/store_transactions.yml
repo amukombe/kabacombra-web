@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nile_product: one
+  territory: one
+  user: one
+  quantity: 9.99
+  direction: MyString
+  movement_type: MyString
+  notes: MyString
+
+two:
+  nile_product: two
+  territory: two
+  user: two
+  quantity: 9.99
+  direction: MyString
+  movement_type: MyString
+  notes: MyString

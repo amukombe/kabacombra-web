@@ -15,20 +15,32 @@ class SalesController < ApplicationController
   def new
     @active_link = "new"
     @sale = Sale.new(sale_date: DateTime.now)
-    @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
+    @products = LoadingOrderItem
+      .joins(:loading_order, :nile_product)
+      .where(loading_orders: { sales_man: current_user.employee.id })
+      .group('nile_products.id', 'nile_products.name')
+      .select('nile_product_id, nile_products.id, nile_products.name, SUM(loading_order_items.quantity_loaded) AS total_quantity')
+
     @customers = current_territory.customers
     @employees = current_territory.employees
     @sale.sale_items.build
     @purchase_types = PurchaseType.all
+
+    @sale.sale_empties.build
     @empties = EmptyType.all
-    @empties.each do |empty_type|
-      @sale.sale_empties.build(empty_type: empty_type) # Build SaleEmpty for each EmptyType
-    end
+    # @empties.each do |empty_type|
+      #@sale.sale_empties.build(empty_type: empty_type) # Build SaleEmpty for each EmptyType
+    # end
   end
 
   # GET /sales/1/edit
   def edit
-    @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
+    @products = LoadingOrderItem
+      .joins(:loading_order, :nile_product)
+      .where(loading_orders: { sales_man: current_user.employee.id })
+      .group('nile_products.id', 'nile_products.name')
+      .select('nile_product_id, nile_products.id, nile_products.name, SUM(loading_order_items.quantity_loaded) AS total_quantity')
+
     @customers = current_territory.customers
     @employees = current_territory.employees
     @empties = EmptyType.all

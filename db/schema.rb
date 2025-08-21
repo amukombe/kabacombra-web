@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_01_042447) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_30_125641) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -495,6 +495,21 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_01_042447) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "stock_adjustments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "nile_product_id", null: false
+    t.bigint "territory_id", null: false
+    t.bigint "user_id", null: false
+    t.decimal "quantity", precision: 10
+    t.string "direction"
+    t.string "movement_type"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["nile_product_id"], name: "index_stock_adjustments_on_nile_product_id"
+    t.index ["territory_id"], name: "index_stock_adjustments_on_territory_id"
+    t.index ["user_id"], name: "index_stock_adjustments_on_user_id"
+  end
+
   create_table "stock_stores", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "inventory_item_id", null: false
     t.bigint "store_id", null: false
@@ -527,6 +542,21 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_01_042447) do
     t.string "from_distributor"
     t.string "to_distributor"
     t.index ["territory_id"], name: "index_stock_transfers_on_territory_id"
+  end
+
+  create_table "store_transactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "nile_product_id", null: false
+    t.bigint "territory_id", null: false
+    t.bigint "user_id", null: false
+    t.decimal "quantity", precision: 10
+    t.string "direction"
+    t.string "movement_type"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["nile_product_id"], name: "index_store_transactions_on_nile_product_id"
+    t.index ["territory_id"], name: "index_store_transactions_on_territory_id"
+    t.index ["user_id"], name: "index_store_transactions_on_user_id"
   end
 
   create_table "stores", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -712,11 +742,17 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_01_042447) do
   add_foreign_key "sales", "statuses"
   add_foreign_key "sales", "territories"
   add_foreign_key "sales", "users"
+  add_foreign_key "stock_adjustments", "nile_products"
+  add_foreign_key "stock_adjustments", "territories"
+  add_foreign_key "stock_adjustments", "users"
   add_foreign_key "stock_stores", "inventory_items"
   add_foreign_key "stock_stores", "stores"
   add_foreign_key "stock_transfer_items", "nile_products"
   add_foreign_key "stock_transfer_items", "stock_transfers"
   add_foreign_key "stock_transfers", "territories"
+  add_foreign_key "store_transactions", "nile_products"
+  add_foreign_key "store_transactions", "territories"
+  add_foreign_key "store_transactions", "users"
   add_foreign_key "stores", "territories"
   add_foreign_key "system_modules", "departments"
   add_foreign_key "territories", "departments"

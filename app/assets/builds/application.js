@@ -16204,7 +16204,7 @@ var product_controller_default = class extends Controller {
 
 // app/javascript/controllers/sale_controller.js
 var sale_controller_default = class extends Controller {
-  static targets = ["quantity", "amount", "itemtotal", "subTotal", "tax", "grandTotal"];
+  static targets = ["quantity", "amount", "itemtotal", "subTotal", "tax", "grandTotal", "productSelect"];
   connect() {
     console.log("Sale controller connected");
   }
@@ -16298,6 +16298,19 @@ var sale_controller_default = class extends Controller {
     const grandTotalField = document.querySelector("#grand_total");
     if (grandTotalField) {
       grandTotalField.textContent = grandTotal.toFixed(2);
+    }
+  }
+  showEmpty(event) {
+    const selectedOption = event.target.selectedOptions[0];
+    const emptyId = selectedOption.dataset.emptyId;
+    document.querySelectorAll(".empty-form").forEach((div) => {
+      div.style.display = "none";
+    });
+    if (emptyId) {
+      const emptyDiv = document.querySelector(`.empty-form[data-empty-id='${emptyId}']`);
+      if (emptyDiv) {
+        emptyDiv.style.display = "block";
+      }
     }
   }
 };

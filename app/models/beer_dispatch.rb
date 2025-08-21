@@ -1,7 +1,7 @@
 class BeerDispatch < ApplicationRecord
   belongs_to :order
   belongs_to :user
-  has_one :inventory
+  has_one :inventory, dependent: :destroy
   has_many :dispatch_items, dependent: :destroy
   accepts_nested_attributes_for :dispatch_items, allow_destroy: true, reject_if: :all_blank
   before_validation :generate_dispatch_number, on: :create

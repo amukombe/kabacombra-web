@@ -2,9 +2,9 @@ class Order < ApplicationRecord
   belongs_to :user
   belongs_to :status
   has_many :order_items, dependent: :destroy
-  has_many :order_drivers
-  has_many :drivers, through: :order_drivers
-  has_one :beer_dispatch
+  has_many :order_drivers, dependent: :destroy
+  has_many :drivers, through: :order_drivers, dependent: :destroy
+  has_one :beer_dispatch, dependent: :destroy
   accepts_nested_attributes_for :order_items, allow_destroy: true, reject_if: :all_blank
   before_validation :generate_order_number, on: :create
   def self.search(params, territory_id)

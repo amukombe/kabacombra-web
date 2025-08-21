@@ -3,7 +3,7 @@ class Driver < ApplicationRecord
   has_many :truck_drivers
   has_many :trucks, through: :truck_drivers
   has_many :order_drivers
-  has_many :orders, through: :order_drivers
+  has_many :orders, through: :order_drivers, dependent: :destroy
   def self.search(params)
     if params[:query].blank?
       all

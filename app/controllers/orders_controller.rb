@@ -137,6 +137,12 @@ class OrdersController < ApplicationController
     end
   end
 
+  #vendor statement
+  def vendor_statement
+    @date = Date.today # params[:date].present? ? Date.parse(params[:date]) : Date.today
+    @statements = InventoryTransaction.daily_statement(@date)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_order

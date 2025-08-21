@@ -4,7 +4,7 @@ class LoadingOrdersController < ApplicationController
   # GET /loading_orders or /loading_orders.json
   def index
     @active_link = "loading_orders"
-    @loading_orders = LoadingOrder.search(params, current_territory.id).page(params[:page]).per(20)
+    @loading_orders = LoadingOrder.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 
   # GET /loading_orders/1 or /loading_orders/1.json
@@ -97,6 +97,19 @@ class LoadingOrdersController < ApplicationController
     @order = LoadingOrder.find(params[:id])
     @order.update(status_id: 7)
     redirect_to approvals_path, notice: "Loading order approved"
+  end
+
+  def store_inventory
+    @active_link='store_inventory'
+    sales_man = current_user.id
+    #@products = LoadingOrderItems.
+    @loading_orders = LoadingOrder.where(sales_man: sales_man).order(loading_date: :desc).page(params[:page]).per(20)
+  end
+
+  def store_loading_orders
+    @active_link='loading_orders'
+    sales_man = current_user.id
+    @loading_orders = LoadingOrder.where(sales_man: sales_man).order(loading_date: :desc).page(params[:page]).per(20)
   end
 
   private
