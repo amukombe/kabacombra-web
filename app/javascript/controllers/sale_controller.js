@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="sale"
 export default class extends Controller {
-  static targets = ["quantity","amount", "itemtotal","subTotal", "tax", "grandTotal", "productSelect"];
+  static targets = ["quantity","amount", "itemtotal","subTotal", "tax", "grandTotal", "productSelect","quantityDisplay"];
   connect() {
     console.log("Sale controller connected");
   }
@@ -19,6 +19,7 @@ export default class extends Controller {
 
     // Find the `unitPrice` target specific to this row
     const amountField = row.querySelector('[data-sale-target="amount"]');
+    const quantityDisplay = row.querySelector("[data-sale-target='quantityDisplay']")
     if (!amountField) {
       console.error("Unit price field not found in this row");
       return;
@@ -30,6 +31,7 @@ export default class extends Controller {
 
       const productDetails = await response.json();
       amountField.value = productDetails.selling_price || "";
+      quantityDisplay.textContent = productDetails.quantity_available || "";
     } catch (error) {
       console.error(error);
       alert("Could not load product details.");

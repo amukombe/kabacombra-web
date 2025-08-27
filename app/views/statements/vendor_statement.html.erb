@@ -1,0 +1,76 @@
+<%= render "nav" %>
+
+<div class="flex flex-col gap-4 p-4 bg-white rounded-lg shadow dark:bg-gray-900">
+  <h1 class="mb-4 text-2xl font-bold">Vendor Statement</h1>
+
+    <div class="mb-3">
+        <%= form_tag nile_products_path, class:"flex items-start max-w-sm", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do |form| %>
+        <label for="simple-search" class="sr-only">Search</label>
+        <div class="relative w-full">
+            <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
+                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                </svg>
+                <span class="sr-only">Search</span>
+            </div>
+            <%= date_field_tag "query", nil, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder:"Search nile_product ..." %>
+            
+        </div>
+        <%end%>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+            
+            <tbody class="bg-white dark:bg-gray-800">
+                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">OPENING BALANCE</span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">35000204403</span>
+                    </td>
+                </tr>
+                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">PURCHASES</span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">100000</span>
+                    </td>
+                </tr>
+                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">EMPTY RETURNS</span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">105000</span>
+                    </td>
+                </tr>
+                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">PAYMENTS</span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">22000204403</span>
+                    </td>
+                </tr>
+                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">ADJUSTMENTS</span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">0</span>
+                    </td>
+                </tr>
+                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">CLOSING BALANCE</span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">15000204403</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

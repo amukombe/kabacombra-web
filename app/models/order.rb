@@ -15,6 +15,14 @@ class Order < ApplicationRecord
     end
   end
 
+  def self.search_vendor_purchases(params, territory_id)
+    if params[:query].present?
+      where("order_number LIKE ? AND status_id IN (?) AND territory_id = ?", "%#{sanitize_sql_like(params[:query])}%", [4], territory_id)
+    else
+      where(status_id: [4], territory_id: territory_id)
+    end
+  end
+
   def total_price
     order_items.sum(&:total)
   end

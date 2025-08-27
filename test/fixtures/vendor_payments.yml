@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  territory: one
+  user: one
+  payment_date: 2025-08-27
+  journal_no: MyString
+  ref_no: MyString
+  payments: 9.99
+  suspence: 9.99
+
+two:
+  territory: two
+  user: two
+  payment_date: 2025-08-27
+  journal_no: MyString
+  ref_no: MyString
+  payments: 9.99
+  suspence: 9.99

@@ -1,0 +1,12 @@
+<% content_for :title, "Editing vendor payment" %>
+
+<h1>Editing vendor payment</h1>
+
+<%= render "form", vendor_payment: @vendor_payment %>
+
+<br>
+
+<div>
+  <%= link_to "Show this vendor payment", @vendor_payment %> |
+  <%= link_to "Back to vendor payments", vendor_payments_path %>
+</div>

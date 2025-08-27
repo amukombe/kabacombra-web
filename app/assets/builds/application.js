@@ -16204,7 +16204,7 @@ var product_controller_default = class extends Controller {
 
 // app/javascript/controllers/sale_controller.js
 var sale_controller_default = class extends Controller {
-  static targets = ["quantity", "amount", "itemtotal", "subTotal", "tax", "grandTotal", "productSelect"];
+  static targets = ["quantity", "amount", "itemtotal", "subTotal", "tax", "grandTotal", "productSelect", "quantityDisplay"];
   connect() {
     console.log("Sale controller connected");
   }
@@ -16216,6 +16216,7 @@ var sale_controller_default = class extends Controller {
       return;
     }
     const amountField = row.querySelector('[data-sale-target="amount"]');
+    const quantityDisplay = row.querySelector("[data-sale-target='quantityDisplay']");
     if (!amountField) {
       console.error("Unit price field not found in this row");
       return;
@@ -16225,6 +16226,7 @@ var sale_controller_default = class extends Controller {
       if (!response.ok) throw new Error("Failed to fetch product details");
       const productDetails = await response.json();
       amountField.value = productDetails.selling_price || "";
+      quantityDisplay.textContent = productDetails.quantity_available || "";
     } catch (error2) {
       console.error(error2);
       alert("Could not load product details.");

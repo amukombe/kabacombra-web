@@ -7,6 +7,7 @@ class Territory < ApplicationRecord
   has_many :warehouses
   has_many :customers
   has_many :inventory_transactions
+  has_many :vendor_payments, dependent: :destroy
   def self.search(params)
     params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
   end

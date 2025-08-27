@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Vendor payments" %>
+
+<h1>Vendor payments</h1>
+
+<div id="vendor_payments">
+  <% @vendor_payments.each do |vendor_payment| %>
+    <%= render vendor_payment %>
+    <p>
+      <%= link_to "Show this vendor payment", vendor_payment %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New vendor payment", new_vendor_payment_path %>

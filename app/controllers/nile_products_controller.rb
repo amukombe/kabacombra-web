@@ -105,10 +105,13 @@ class NileProductsController < ApplicationController
   def orderitemdetails
     loading_order_item = LoadingOrderItem.find_by(id: params[:id])
     product = loading_order_item.nile_product #NileProduct.find_by(id: params[:id])
+
     if product
+      qty_available = InventoryTransaction.where(territory_id: current_territory.id, nile_product_id: product.id).sum(:transaction_quantity)
       render json: {
         unit_price: product.buying_price,
-        selling_price: product.selling_price
+        selling_price: product.selling_price,
+        quantity_available: qty_available
       }
     else
       render json: { error: 'Product not found' }, status: :not_found
