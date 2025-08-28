@@ -41,16 +41,10 @@
                   Veh No.
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Description
+                  Products
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Account No.
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Trn Year
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Trn Month
+                  Action
                 </th>
               </tr>
             </thead>
@@ -58,21 +52,43 @@
             <% @orders.each_with_index do |order, index| %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=order.order_date%></span>
+                  <span class="font-semibold"><%= order.beer_dispatch&.invoice_no %></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= puts "UBG 123K" %></span>
+                  <span class="font-normal"><%= order.beer_dispatch&.truck_numberplate %></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <% order.order_items.each do |item|%>
-                    <span class="text-xs font-normal"><%=item.nile_product.name%>- <%=item.quantity%> Crates</span><br/>
-                  <%end%>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-normal"><%=order.total_price%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">                
-                  
+                <table class="min-w-full border border-collapse border-gray-300 dark:border-gray-700">
+                  <thead>
+                    <tr class="bg-gray-100 dark:bg-gray-800">
+                      <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">#</th>
+                      <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Product</th>
+                      <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Ordered</th>
+                      <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Breakages</th>
+                      <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Missing</th>
+                      <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Complaints</th>
+                      <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Received</th>
+                      <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Rate</th>
+                      <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% order.inventory_items.each_with_index do |item, index| %>
+                      <tr>
+                        <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= index+1 %></td>
+                        <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.name %></td>
+                        <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.quantity_dispatched %></td>
+                        <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.breakages %></td>
+                        <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.missing_bottles %></td>
+                        <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.complaints %></td>
+                        <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.quantity_received %></td>
+                        <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.buying_price %></td>
+                        <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.buying_price.to_i * item.quantity_received.to_i %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   

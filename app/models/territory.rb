@@ -6,6 +6,7 @@ class Territory < ApplicationRecord
   has_many :stores
   has_many :warehouses
   has_many :customers
+  has_many :inventories
   has_many :inventory_transactions
   has_many :vendor_payments, dependent: :destroy
   def self.search(params)

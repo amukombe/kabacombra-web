@@ -5,7 +5,8 @@ class StatementsController < ApplicationController
 
   def beer_purchases
     @active_link='beer purchases'
-    @orders = Order.search_vendor_purchases(params, current_territory.id).page(params[:page]).per(20)
+    @territory = Territory.find(current_territory.id)
+    @orders = @territory.inventories.page(params[:page]).per(10) # Order.search_vendor_purchases(params, current_territory.id).page(params[:page]).per(20)
   end
 
   def empty_returns
