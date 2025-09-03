@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @vendor_adjustiment %>
+
+<div>
+  <%= link_to "Edit this vendor adjustiment", edit_vendor_adjustiment_path(@vendor_adjustiment) %> |
+  <%= link_to "Back to vendor adjustiments", vendor_adjustiments_path %>
+
+  <%= button_to "Destroy this vendor adjustiment", @vendor_adjustiment, method: :delete %>
+</div>

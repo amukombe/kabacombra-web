@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  purchase_type: one
+  adjustment_date: 2025-09-03
+  territory: one
+
+two:
+  user: two
+  purchase_type: two
+  adjustment_date: 2025-09-03
+  territory: two

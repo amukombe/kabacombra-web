@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :vendor_adjustiments
   resources :vendor_payments
   get "statements/vendor_statement"
   get "statements/beer_purchases"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_27_120511) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_03_150908) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -667,6 +667,31 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_27_120511) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "vendor_adjustiment_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "vendor_adjustiment_id", null: false
+    t.bigint "nile_product_id", null: false
+    t.decimal "quantity", precision: 10
+    t.decimal "quantity_sold", precision: 10
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["nile_product_id"], name: "index_vendor_adjustiment_items_on_nile_product_id"
+    t.index ["vendor_adjustiment_id"], name: "index_vendor_adjustiment_items_on_vendor_adjustiment_id"
+  end
+
+  create_table "vendor_adjustiments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "purchase_type_id", null: false
+    t.date "adjustment_date"
+    t.bigint "territory_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "journal_no"
+    t.string "ref_no"
+    t.index ["purchase_type_id"], name: "index_vendor_adjustiments_on_purchase_type_id"
+    t.index ["territory_id"], name: "index_vendor_adjustiments_on_territory_id"
+    t.index ["user_id"], name: "index_vendor_adjustiments_on_user_id"
+  end
+
   create_table "vendor_payments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "territory_id", null: false
     t.bigint "user_id", null: false
@@ -779,6 +804,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_27_120511) do
   add_foreign_key "user_modules", "territories"
   add_foreign_key "user_modules", "users"
   add_foreign_key "users", "employees"
+  add_foreign_key "vendor_adjustiment_items", "nile_products"
+  add_foreign_key "vendor_adjustiment_items", "vendor_adjustiments"
+  add_foreign_key "vendor_adjustiments", "purchase_types"
+  add_foreign_key "vendor_adjustiments", "territories"
+  add_foreign_key "vendor_adjustiments", "users"
   add_foreign_key "vendor_payments", "territories"
   add_foreign_key "vendor_payments", "users"
   add_foreign_key "warehouses", "territories"

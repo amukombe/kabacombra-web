@@ -1,0 +1,2 @@
+module VendorAdjustimentsHelper
+end

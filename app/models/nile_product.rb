@@ -6,6 +6,7 @@ class NileProduct < ApplicationRecord
   has_many :inventory_items
   belongs_to :empty_type, optional: true
   has_many :inventory_transactions
+  has_many :vendor_adjustiment_items
   validates :name, uniqueness: true, presence: true
   def self.search(params)
       params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
