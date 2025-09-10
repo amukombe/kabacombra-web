@@ -20,5 +20,7 @@ class StatementsController < ApplicationController
 
   def adjustments
     @active_link='adjustments'
+    @territory = Territory.find(current_territory.id)
+    @vendor_adjustiments = @territory.vendor_adjustiments.order(created_at: :desc).page(params[:page]).per(15)
   end
 end

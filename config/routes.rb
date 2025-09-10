@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :cheques
+  resources :payments
+  resources :payment_types
   resources :vendor_adjustiments
   resources :vendor_payments
   get "statements/vendor_statement"

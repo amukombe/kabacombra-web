@@ -1,0 +1,91 @@
+<%= render "nav" %>
+<div class="px-4 pt-4 bg-white dark:bg-gray-900">
+<div class="grid w-full grid-cols-2 gap-4 mb-3">
+  <div class="col-span-1">
+    <h1 class="text-gray-800 text-md dark:text-gray-100">List of payments</h1>
+  </div>
+  <div class="col-span-1 text-right">
+    <%= link_to new_payment_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> New payment<%end%>
+  </div>  
+</div>
+
+<!-- Table -->
+<div class="flex flex-col mt-6">
+  <div class="overflow-x-auto rounded-lg">
+    <div class="inline-block min-w-full align-middle">
+      <div class="overflow-hidden shadow sm:rounded-lg">
+        <div id="payments">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  #
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Date. 
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Payment Type. 
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Recepient.
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Amount.
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800">
+            <% @payments.each_with_index do |payment, index| %>
+              <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <span class="font-semibold"><%=index+1%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <span class="font-semibold"><%=payment.payment_date%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <span class="font-semibold"><%=payment.payment_type.name%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <span class="font-semibold"><%=payment.amount%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <span class="font-semibold"><%=payment.deposited_by%></span><br/>
+                  <span class="font-semibold"><%=payment.transaction_reference%> - <%=payment.deposit_location%></span>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                  <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="payment-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=payment.id%>" data-dropdown-placement="bottom">
+                    <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
+                    <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+            
+                <!-- Dropdown menu -->
+                <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=payment.id%>">
+                    
+                    <ul class="py-2" aria-labelledby="payment-menu-button">
+                        <li>
+                            <%= link_to edit_payment_path(payment), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                        </li>
+                        <li>
+                            <button data-modal-target="popup-modal-<%=payment.id%>" data-modal-toggle="popup-modal-<%=payment.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
+                        </li>
+                    </ul>
+                </div>
+                </td>
+              </tr>
+              <%= render "confirm_delete_modal", payment: payment%>
+            <%end%>
+            </tbody>
+          </table>
+          <%= render "pagination" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

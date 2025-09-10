@@ -2,6 +2,7 @@ class BankAccount < ApplicationRecord
   belongs_to :bank
   belongs_to :territory
   belongs_to :user
+  has_many :payments, dependent: :destroy
 
   validates :account_name, :account_number, presence: true
   def self.search(params, territory_id)

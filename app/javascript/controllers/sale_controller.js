@@ -85,8 +85,6 @@ export default class extends Controller {
 
     const rows = document.querySelectorAll("#sale-item-row");
     console.log("Rows found:", rows.length); // Logs how many rows are found
-
-  
     // Loop through each row and calculate the subtotal
     document.querySelectorAll("#sale-item-row").forEach((row) => {
       const itemtotalField = row.querySelector('[data-sale-target="itemtotal"]');
@@ -97,16 +95,13 @@ export default class extends Controller {
       if (itemtotalField && quantityField && amountField) {
         const quantity = parseFloat(quantityField.value) || 0;
         const amount = parseFloat(amountField.value) || 0;
-  
         // Only calculate item total if both quantity and amount are valid numbers
         const itemTotal = quantity * amount;
-  
         // Ensure the itemTotal is calculated before updating the fields
         if (itemTotal > 0) {
           // Update the itemtotal field
           itemtotalField.value = itemTotal.toFixed(2);  // Update the readonly field
           itemtotalField.textContent = itemTotal.toFixed(2); // Update the text content if applicable
-  
           // Add the item total to the subtotal
           subTotal += itemTotal;
           console.log("Item total:"+itemTotal);
@@ -134,7 +129,6 @@ export default class extends Controller {
   
     // Log tax for debugging
     console.log("Tax (18%):", tax);
-  
     // Update the tax field
     const taxField = document.querySelector("#tax");
     if (taxField) {

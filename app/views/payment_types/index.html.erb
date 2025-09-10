@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Payment types" %>
+
+<h1>Payment types</h1>
+
+<div id="payment_types">
+  <% @payment_types.each do |payment_type| %>
+    <%= render payment_type %>
+    <p>
+      <%= link_to "Show this payment type", payment_type %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New payment type", new_payment_type_path %>

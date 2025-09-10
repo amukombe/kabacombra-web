@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  territory: one
+  financial_transaction: one
+  payment_type: one
+  recipient_type: MyString
+  recepient_id: 1
+  amount: 9.99
+  payment_date: 2025-09-06
+
+two:
+  user: two
+  territory: two
+  financial_transaction: two
+  payment_type: two
+  recipient_type: MyString
+  recepient_id: 1
+  amount: 9.99
+  payment_date: 2025-09-06
