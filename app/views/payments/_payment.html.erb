@@ -1,32 +1,32 @@
 <div id="<%= dom_id payment %>">
   <p>
-    <strong>User:</strong>
-    <%= payment.user_id %>
-  </p>
-
-  <p>
     <strong>Territory:</strong>
     <%= payment.territory_id %>
   </p>
 
   <p>
-    <strong>Financial transaction:</strong>
-    <%= payment.financial_transaction_id %>
+    <strong>User:</strong>
+    <%= payment.user_id %>
   </p>
 
   <p>
-    <strong>Payment type:</strong>
-    <%= payment.payment_type_id %>
-  </p>
-
-  <p>
-    <strong>Recipient type:</strong>
-    <%= payment.recipient_type %>
+    <strong>Bank account:</strong>
+    <%= payment.bank_account_id %>
   </p>
 
   <p>
     <strong>Recepient:</strong>
     <%= payment.recepient_id %>
+  </p>
+
+  <p>
+    <strong>Recepient type:</strong>
+    <%= payment.recepient_type %>
+  </p>
+
+  <p>
+    <strong>Payment method:</strong>
+    <%= payment.payment_method %>
   </p>
 
   <p>
@@ -37,6 +37,11 @@
   <p>
     <strong>Payment date:</strong>
     <%= payment.payment_date %>
+  </p>
+
+  <p>
+    <strong>Payment ref:</strong>
+    <%= payment.payment_ref %>
   </p>
 
 </div>

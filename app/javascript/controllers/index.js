@@ -19,6 +19,9 @@ application.register("nested-form", NestedFormController)
 import OrderController from "./order_controller"
 application.register("order", OrderController)
 
+import PaymentController from "./payment_controller"
+application.register("payment", PaymentController)
+
 import ProductController from "./product_controller"
 application.register("product", ProductController)
 

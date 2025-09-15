@@ -1,7 +1,15 @@
 Rails.application.routes.draw do
-  resources :cheques
+  resources :bank_transfers
+  resources :suppliers
   resources :payments
-  resources :payment_types
+  get "summaries/banking"
+  get "banking/index"
+  get "banking/deposits"
+  get "banking/withdraws"
+  get "banking/payments"
+  get "banking/transfers"
+  get "reports/banking"
+  resources :cheques
   resources :vendor_adjustiments
   resources :vendor_payments
   get "statements/vendor_statement"
@@ -130,7 +138,11 @@ Rails.application.routes.draw do
   end
   resources :car_makes
   resources :truck_types
-  resources :stores
+  resources :stores do
+    collection do
+      get :inventory
+    end
+  end
   resources :territories
   resources :department_modules
   resources :employees do

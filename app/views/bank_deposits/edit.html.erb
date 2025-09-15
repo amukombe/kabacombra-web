@@ -1,12 +1,3 @@
-<% content_for :title, "Editing bank deposit" %>
-
-<h1>Editing bank deposit</h1>
-
+<%render "nav"%>
+<h1  class="text-lg text-gray-600 dark:text-gray-400">Edit deposit</h1> <i class="text-xs text-red-600 dark:text-red-400">(All fields marked with * are mandetory)</i>
 <%= render "form", bank_deposit: @bank_deposit %>
-
-<br>
-
-<div>
-  <%= link_to "Show this bank deposit", @bank_deposit %> |
-  <%= link_to "Back to bank deposits", bank_deposits_path %>
-</div>

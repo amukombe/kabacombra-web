@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_10_071408) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_15_210434) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -56,10 +56,28 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_10_071408) do
     t.date "cleared_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "transaction_type"
     t.index ["bank_account_id"], name: "index_bank_transactions_on_bank_account_id"
     t.index ["financial_transaction_id"], name: "index_bank_transactions_on_financial_transaction_id"
     t.index ["territory_id"], name: "index_bank_transactions_on_territory_id"
     t.index ["user_id"], name: "index_bank_transactions_on_user_id"
+  end
+
+  create_table "bank_transfers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "territory_id", null: false
+    t.bigint "from_account_id", null: false
+    t.bigint "to_account_id", null: false
+    t.datetime "transfer_date"
+    t.decimal "amount", precision: 10
+    t.text "reason"
+    t.string "transfer_ref"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["from_account_id"], name: "index_bank_transfers_on_from_account_id"
+    t.index ["territory_id"], name: "index_bank_transfers_on_territory_id"
+    t.index ["to_account_id"], name: "index_bank_transfers_on_to_account_id"
+    t.index ["user_id"], name: "index_bank_transfers_on_user_id"
   end
 
   create_table "bank_withdraws", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -465,25 +483,20 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_10_071408) do
   end
 
   create_table "payments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.bigint "territory_id", null: false
-    t.bigint "payment_type_id", null: false
-    t.integer "recepient_id"
+    t.bigint "user_id", null: false
+    t.bigint "bank_account_id", null: false
     t.decimal "amount", precision: 10
-    t.date "payment_date"
+    t.datetime "payment_date"
+    t.string "payment_ref"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "bank_account_id", null: false
-    t.string "recepient_type"
+    t.string "payment_no"
+    t.integer "payment_method"
     t.string "recipient_type", null: false
     t.bigint "recipient_id", null: false
-    t.bigint "expense_category_id"
-    t.string "cheque_number"
-    t.text "description"
     t.index ["bank_account_id"], name: "index_payments_on_bank_account_id"
-    t.index ["expense_category_id"], name: "index_payments_on_expense_category_id"
-    t.index ["payment_type_id"], name: "index_payments_on_payment_type_id"
-    t.index ["recipient_type", "recipient_id"], name: "index_payments_on_recipient"
+    t.index ["recipient_type", "recipient_id"], name: "index_payments_on_recipient_type_and_recipient_id"
     t.index ["territory_id"], name: "index_payments_on_territory_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
   end
@@ -646,6 +659,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_10_071408) do
     t.index ["territory_id"], name: "index_stores_on_territory_id"
   end
 
+  create_table "suppliers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "mobile"
+    t.string "location"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "system_modules", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "module_url"
@@ -802,6 +824,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_10_071408) do
   add_foreign_key "bank_transactions", "financial_transactions"
   add_foreign_key "bank_transactions", "territories"
   add_foreign_key "bank_transactions", "users"
+  add_foreign_key "bank_transfers", "bank_accounts", column: "from_account_id"
+  add_foreign_key "bank_transfers", "bank_accounts", column: "to_account_id"
+  add_foreign_key "bank_transfers", "territories"
+  add_foreign_key "bank_transfers", "users"
   add_foreign_key "bank_withdraws", "bank_accounts"
   add_foreign_key "bank_withdraws", "territories"
   add_foreign_key "bank_withdraws", "users"
@@ -861,8 +887,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_10_071408) do
   add_foreign_key "orders", "territories"
   add_foreign_key "orders", "users"
   add_foreign_key "payments", "bank_accounts"
-  add_foreign_key "payments", "expense_categories"
-  add_foreign_key "payments", "payment_types"
   add_foreign_key "payments", "territories"
   add_foreign_key "payments", "users"
   add_foreign_key "sale_empties", "empty_types"

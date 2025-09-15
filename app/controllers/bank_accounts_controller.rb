@@ -1,6 +1,6 @@
 class BankAccountsController < ApplicationController
   before_action :set_bank_account, only: %i[ show edit update destroy ]
-
+  before_action :set_active_link
   # GET /bank_accounts or /bank_accounts.json
   def index
     @active_link='bank accounts'
@@ -15,16 +15,19 @@ class BankAccountsController < ApplicationController
   def new
     @bank_account = BankAccount.new
     @banks = Bank.all
+    @territories = Territory.all
   end
 
   # GET /bank_accounts/1/edit
   def edit
+    @territories = Territory.all
   end
 
   # POST /bank_accounts or /bank_accounts.json
   def create
     @bank_account = BankAccount.new(bank_account_params)
-
+    @banks = Bank.all
+    @territories = Territory.all
     respond_to do |format|
       if @bank_account.save
         format.html { redirect_to bank_accounts_path, notice: "Bank account was successfully created." }
@@ -38,6 +41,8 @@ class BankAccountsController < ApplicationController
 
   # PATCH/PUT /bank_accounts/1 or /bank_accounts/1.json
   def update
+    @banks = Bank.all
+    @territories = Territory.all
     respond_to do |format|
       if @bank_account.update(bank_account_params)
         format.html { redirect_to bank_accounts_path, notice: "Bank account was successfully updated." }
@@ -63,6 +68,10 @@ class BankAccountsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_bank_account
       @bank_account = BankAccount.find(params[:id])
+    end
+
+    def set_active_link
+      @active_link = "bank accounts"
     end
 
     # Only allow a list of trusted parameters through.

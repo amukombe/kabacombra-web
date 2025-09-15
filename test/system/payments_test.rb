@@ -15,11 +15,12 @@ class PaymentsTest < ApplicationSystemTestCase
     click_on "New payment"
 
     fill_in "Amount", with: @payment.amount
-    fill_in "Financial transaction", with: @payment.financial_transaction_id
+    fill_in "Bank account", with: @payment.bank_account_id
     fill_in "Payment date", with: @payment.payment_date
-    fill_in "Payment type", with: @payment.payment_type_id
+    fill_in "Payment method", with: @payment.payment_method
+    fill_in "Payment ref", with: @payment.payment_ref
     fill_in "Recepient", with: @payment.recepient_id
-    fill_in "Recipient type", with: @payment.recipient_type
+    fill_in "Recepient type", with: @payment.recepient_type
     fill_in "Territory", with: @payment.territory_id
     fill_in "User", with: @payment.user_id
     click_on "Create Payment"
@@ -33,11 +34,12 @@ class PaymentsTest < ApplicationSystemTestCase
     click_on "Edit this payment", match: :first
 
     fill_in "Amount", with: @payment.amount
-    fill_in "Financial transaction", with: @payment.financial_transaction_id
-    fill_in "Payment date", with: @payment.payment_date
-    fill_in "Payment type", with: @payment.payment_type_id
+    fill_in "Bank account", with: @payment.bank_account_id
+    fill_in "Payment date", with: @payment.payment_date.to_s
+    fill_in "Payment method", with: @payment.payment_method
+    fill_in "Payment ref", with: @payment.payment_ref
     fill_in "Recepient", with: @payment.recepient_id
-    fill_in "Recipient type", with: @payment.recipient_type
+    fill_in "Recepient type", with: @payment.recepient_type
     fill_in "Territory", with: @payment.territory_id
     fill_in "User", with: @payment.user_id
     click_on "Update Payment"

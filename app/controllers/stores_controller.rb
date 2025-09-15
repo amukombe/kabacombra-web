@@ -60,6 +60,13 @@ class StoresController < ApplicationController
     end
   end
 
+  def inventory
+    @active_link='store_inventory'
+    sales_man = current_user.id
+    #@products = LoadingOrderItems.
+    @loading_orders = LoadingOrder.where(sales_man: sales_man).order(loading_date: :desc).page(params[:page]).per(20)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_store

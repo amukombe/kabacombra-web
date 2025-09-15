@@ -1,9 +1,10 @@
 class PaymentsController < ApplicationController
   before_action :set_payment, only: %i[ show edit update destroy ]
-
+  before_action :set_active_link
   # GET /payments or /payments.json
   def index
-    @payments = Payment.all
+    @territory = Territory.find(current_territory.id)
+    @payments = @territory.payments.page(params[:page]).per(10).order(payment_date: :desc)
   end
 
   # GET /payments/1 or /payments/1.json
@@ -12,7 +13,11 @@ class PaymentsController < ApplicationController
 
   # GET /payments/new
   def new
-    @payment = Payment.new
+    @payment = Payment.new(payment_date: DateTime.now)
+    @territory = Territory.find(current_territory.id)
+    @employees = @territory.employees
+    @suppliers = Supplier.all
+    @bank_accounts = @territory.bank_accounts
   end
 
   # GET /payments/1/edit
@@ -21,11 +26,12 @@ class PaymentsController < ApplicationController
 
   # POST /payments or /payments.json
   def create
+    params[:payment][:recipient_type] = params[:payment][:recipient_type].classify
     @payment = Payment.new(payment_params)
 
     respond_to do |format|
       if @payment.save
-        format.html { redirect_to @payment, notice: "Payment was successfully created." }
+        format.html { redirect_to payments_path, notice: "Payment was successfully created." }
         format.json { render :show, status: :created, location: @payment }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +44,7 @@ class PaymentsController < ApplicationController
   def update
     respond_to do |format|
       if @payment.update(payment_params)
-        format.html { redirect_to @payment, notice: "Payment was successfully updated." }
+        format.html { redirect_to payments_path, notice: "Payment was successfully updated." }
         format.json { render :show, status: :ok, location: @payment }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -63,8 +69,12 @@ class PaymentsController < ApplicationController
       @payment = Payment.find(params[:id])
     end
 
+    def set_active_link
+      @active_link = "payments"
+    end
+
     # Only allow a list of trusted parameters through.
     def payment_params
-      params.require(:payment).permit(:user_id, :territory_id, :financial_transaction_id, :payment_type_id, :recipient_type, :recepient_id, :amount, :payment_date)
+      params.require(:payment).permit(:territory_id, :user_id, :bank_account_id, :recipient_id, :recipient_type, :payment_method, :amount, :payment_date, :payment_ref, :payment_no)
     end
 end

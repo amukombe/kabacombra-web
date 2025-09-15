@@ -1,9 +1,8 @@
 class BankWithdrawsController < ApplicationController
   before_action :set_bank_withdraw, only: %i[ show edit update destroy ]
-
+  before_action :set_active_link
   # GET /bank_withdraws or /bank_withdraws.json
   def index
-    @active_link='withdraws'
     @bank_withdraws = BankWithdraw.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
@@ -65,6 +64,10 @@ class BankWithdrawsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_bank_withdraw
       @bank_withdraw = BankWithdraw.find(params[:id])
+    end
+
+    def set_active_link
+      @active_link = "withdraws"
     end
 
     # Only allow a list of trusted parameters through.

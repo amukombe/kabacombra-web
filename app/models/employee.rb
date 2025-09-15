@@ -9,6 +9,7 @@ class Employee < ApplicationRecord
     has_many :departments, through: :territories
     has_many :drivers
     belongs_to :position
+    has_many :payments, as: :recipient
     def self.search(params)
         return all if params[:query].blank?
       
@@ -33,5 +34,9 @@ class Employee < ApplicationRecord
         else
             return "#{firstname} #{lastname}"
         end
+    end
+
+    def name
+        fullname
     end
 end

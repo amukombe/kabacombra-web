@@ -1,6 +1,6 @@
 class BanksController < ApplicationController
   before_action :set_bank, only: %i[ show edit update destroy ]
-
+  before_action :set_active_link
   # GET /banks or /banks.json
   def index
     @active_link='banks'
@@ -62,6 +62,10 @@ class BanksController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_bank
       @bank = Bank.find(params[:id])
+    end
+
+    def set_active_link
+      @active_link = "banks"
     end
 
     # Only allow a list of trusted parameters through.

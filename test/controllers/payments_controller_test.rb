@@ -17,7 +17,7 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create payment" do
     assert_difference("Payment.count") do
-      post payments_url, params: { payment: { amount: @payment.amount, financial_transaction_id: @payment.financial_transaction_id, payment_date: @payment.payment_date, payment_type_id: @payment.payment_type_id, recepient_id: @payment.recepient_id, recipient_type: @payment.recipient_type, territory_id: @payment.territory_id, user_id: @payment.user_id } }
+      post payments_url, params: { payment: { amount: @payment.amount, bank_account_id: @payment.bank_account_id, payment_date: @payment.payment_date, payment_method: @payment.payment_method, payment_ref: @payment.payment_ref, recepient_id: @payment.recepient_id, recepient_type: @payment.recepient_type, territory_id: @payment.territory_id, user_id: @payment.user_id } }
     end
 
     assert_redirected_to payment_url(Payment.last)
@@ -34,7 +34,7 @@ class PaymentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update payment" do
-    patch payment_url(@payment), params: { payment: { amount: @payment.amount, financial_transaction_id: @payment.financial_transaction_id, payment_date: @payment.payment_date, payment_type_id: @payment.payment_type_id, recepient_id: @payment.recepient_id, recipient_type: @payment.recipient_type, territory_id: @payment.territory_id, user_id: @payment.user_id } }
+    patch payment_url(@payment), params: { payment: { amount: @payment.amount, bank_account_id: @payment.bank_account_id, payment_date: @payment.payment_date, payment_method: @payment.payment_method, payment_ref: @payment.payment_ref, recepient_id: @payment.recepient_id, recepient_type: @payment.recepient_type, territory_id: @payment.territory_id, user_id: @payment.user_id } }
     assert_redirected_to payment_url(@payment)
   end
 
