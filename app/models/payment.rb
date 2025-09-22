@@ -13,7 +13,7 @@ class Payment < ApplicationRecord
     ft = FinancialTransaction.create!(
       user_id: user_id,
       territory_id: territory_id,
-      transaction_type: 'withdraw',
+      transaction_type: 'payment',
       transaction_date: payment_date,
       amount: amount,
       reference: (payment_ref.presence || "FT#{Time.current.strftime('%Y%m%d%H%M%S')}"),
@@ -25,11 +25,11 @@ class Payment < ApplicationRecord
       financial_transaction_id: ft.id,
       user_id: user_id,
       territory_id: territory_id,
-      method: payment_method,
+      method: "withdraw",
       cheque_number: (payment_method == 'cheque' ? payment_no : nil),
       amount: amount,
       cleared_date: payment_date,
-      transaction_type: "withdraw"
+      transaction_type: "bank_withdraw"
     )
   end
 end

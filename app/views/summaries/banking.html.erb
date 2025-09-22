@@ -1,3 +1,63 @@
-<%= render "nav_banking"%>
-<h1>Summaries#banking</h1>
-<p>Find me in app/views/summaries/banking.html.erb</p>
+<%= render "nav_banking" %>
+
+<div class="flex justify-center text-center">
+  <div class="w-full max-w-6xl">
+    <!-- Title -->
+    <h1 class="mt-4 mb-6 font-bold text-gray-700 dark:text-gray-50">Banking Summary</h1>
+
+    <!-- Row 1: Three Columns -->
+    <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+      <div class="p-4 rounded-lg shadow-lg bg-gray-50 dark:bg-gray-700">
+        <h2 class="mb-2 font-semibold text-gray-700 dark:text-gray-50">Total Balance</h2>
+        <p class="text-2xl">$<%= @total_balance %></p>
+      </div>
+
+      <div class="p-4 rounded-lg shadow-lg bg-gray-50 dark:bg-gray-700">
+        <h2 class="mb-2 font-semibold text-gray-700 dark:text-gray-50">Total Income</h2>
+        <p class="text-2xl">$<%= @total_income %></p>
+      </div>
+
+      <div class="p-4 rounded-lg shadow-lg bg-gray-50 dark:bg-gray-700">
+        <h2 class="mb-2 font-semibold text-gray-700 dark:text-gray-50">Total Expenses</h2>
+        <p class="text-2xl">$<%= @total_expenses %></p>
+      </div>
+    </div>
+
+    <!-- Row 2: Two Columns -->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="p-4 rounded-lg shadow-lg bg-gray-50 dark:bg-gray-700">
+        <h2 class="mb-2 font-semibold text-gray-700 dark:text-gray-50">Recent Transactions</h2>
+        <ul class="text-left list-disc list-inside">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+          <thead></thead>
+            <tr class="p-1 pl-2 text-gray-700 border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+              <th class="text-sm text-left">Date</th>
+              <th class="text-sm text-left">Type</th>
+              <th class="text-sm text-end">Amount</th>
+            </tr>
+          </thead>
+          <% @recent_transactions.each do |transaction| %>
+            <tr class="p-1 pl-2 text-gray-700 border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+              <td class="text-sm"><%= transaction&.transaction_date.strftime("%Y-%m-%d") %></td>
+              <td class="text-sm"><%= transaction.transaction_type %></td>
+              <td class="text-xs text-end">UGX <%= number_with_delimiter(transaction.amount, delimiter: ",") %></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+
+      <div class="p-4 rounded-lg shadow-lg bg-gray-50 dark:bg-gray-700">
+        <h2 class="mb-2 font-semibold text-gray-700 dark:text-gray-50">Account Overview</h2>
+        <ul class="text-left list-disc list-inside">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+          <% @accounts.each do |account| %>
+            <tr class="p-1 text-gray-700 border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+              <td class="text-sm font-medium"><%= account.account_name %>:</td>
+              <td class="text-sm">UGX <%= number_with_delimiter(account&.balance, delimiter: ",") %></td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

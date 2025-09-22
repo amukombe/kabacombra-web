@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_15_210434) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -645,7 +645,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_15_210434) do
     t.string "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "store_id", null: false
+    t.datetime "transaction_date"
     t.index ["nile_product_id"], name: "index_store_transactions_on_nile_product_id"
+    t.index ["store_id"], name: "index_store_transactions_on_store_id"
     t.index ["territory_id"], name: "index_store_transactions_on_territory_id"
     t.index ["user_id"], name: "index_store_transactions_on_user_id"
   end
@@ -906,6 +909,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_15_210434) do
   add_foreign_key "stock_transfer_items", "stock_transfers"
   add_foreign_key "stock_transfers", "territories"
   add_foreign_key "store_transactions", "nile_products"
+  add_foreign_key "store_transactions", "stores"
   add_foreign_key "store_transactions", "territories"
   add_foreign_key "store_transactions", "users"
   add_foreign_key "stores", "territories"

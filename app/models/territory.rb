@@ -15,6 +15,8 @@ class Territory < ApplicationRecord
   has_many :bank_deposits, dependent: :destroy
   has_many :bank_withdraws, dependent: :destroy
   has_many :bank_transfers, dependent: :destroy
+  has_many :bank_transactions, dependent: :destroy
+  has_many :financial_transactions, dependent: :destroy
   def self.search(params)
     params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
   end
