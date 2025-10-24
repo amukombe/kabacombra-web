@@ -87,8 +87,8 @@
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
             <% @inventory_items.each_with_index do |item, index| %>
-              <% total_stock_in = item.total_opening_stock.to_f + item.total_good_beer.to_f + item.total_returns.to_f + item.total_branch_transfer_in.to_f + item.total_distributor_transfer.to_f%>
-              <% total_stock_out = item.total_purchase_breakage.to_f + item.total_warehouse_breakage.to_f + item.total_within_store_breakage.to_f + item.total_store_to_store_breakage.to_f + item.total_missing_bottles.to_f + item.total_complaint.to_f + item.total_bad_beer.to_f + item.total_nbl_return.to_f + item.total_distribution.to_f + + item.total_branch_transfer_out.to_f %>
+            <% total_stock_in = InventoryTransaction.opening_stock(item.nile_product_id, current_territory.id, Date.today) %>
+            <% total_stock_out = InventoryTransaction.opening_stock(item.nile_product_id, current_territory.id, Date.today) %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   <span class="font-semibold"><%=index+1%></span>
@@ -97,19 +97,19 @@
                   <span class="font-semibold"><%=item.name%></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to openning_stock_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%= total_stock_in.to_f - total_stock_out.to_f %></span><%end%>
+                  <%= link_to openning_stock_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%= item.opening_stock %></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to quantity_in_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=total_stock_in.to_f%></span><%end%>
+                  <%= link_to quantity_in_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=item.quantity_in %></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to quantity_out_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=total_stock_out.to_f%></span><%end%>
+                  <%= link_to quantity_out_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=item.quantity_out %></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"></span>
+                  <span class="font-normal"><%= item.opening_stock.to_f + item.quantity_in.to_f - item.quantity_out.to_f %></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"></span>
+                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.selling_price.to_i, delimiter: ',' )%></span>
                 </td>
               </tr>
             <%end%>

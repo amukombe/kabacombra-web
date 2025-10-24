@@ -54,12 +54,10 @@ class SalesController < ApplicationController
     @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
     @customers = current_territory.customers
     @employees = current_territory.employees
+    @empties = EmptyType.all
     @purchase_types = PurchaseType.all
     respond_to do |format|
       if @sale.save
-        @sale.sale_items.each do |sale_item|
-          deduct_quantity(sale_item)
-        end
         format.html { redirect_to sales_path, notice: "Sale was successfully created." }
         format.json { render :show, status: :created, location: @sale }
       else
@@ -120,8 +118,8 @@ class SalesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def sale_params
-      params.require(:sale).permit(:customer_name, :user_id, :purchase_type_id, :mode_of_payment,:sale_date, :customer_tin,:territory_id, :receipt_no,:status_id, :customer_mobile, :sales_route, :notes,
-      sale_items_attributes: [:id,:sale_id, :loading_order_item_id, :quantity_sold, :amount, :total, :_destroy],
+      params.require(:sale).permit(:customer_name, :user_id, :mode_of_payment,:sale_date, :tin,:territory_id, :receipt_no,:status_id, :customer_mobile, :sales_route, :store_id, :notes,:payment_ref,
+      sale_items_attributes: [:id,:sale_id, :nile_product_id, :purchase_type_id, :quantity_sold, :amount, :total, :_destroy],
       sale_empties_attributes: [:id, :sale_id, :empty_type_id, :expected, :received, :variance, :_destroy])
     end
 

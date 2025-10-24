@@ -5,7 +5,7 @@ class InventoryItem < ApplicationRecord
   belongs_to :dispatch_item, optional: true
   has_many :inventory_item_stores
   has_many :store, through: :inventory_item_store
-  has_many :inventory_transactions, dependent: :destroy
+  # has_many :inventory_transactions, dependent: :destroy
   
   
   before_save :initialize_quantity_sold
@@ -68,7 +68,7 @@ class InventoryItem < ApplicationRecord
   def create_transactions
     return unless inventory.persisted?
   
-    inventory_transactions.create!(
+    InventoryTransaction.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: quantity_received,
@@ -76,8 +76,8 @@ class InventoryItem < ApplicationRecord
       direction: 'in',
       transaction_date: inventory.delivery_time
     ) if quantity_received.present? && quantity_received > 0
-  
-    inventory_transactions.create!(
+
+    InventoryTransaction.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: breakages,
@@ -86,16 +86,7 @@ class InventoryItem < ApplicationRecord
       transaction_date: inventory.delivery_time
     ) if breakages.present? && breakages > 0
 
-    inventory_transactions.create!(
-      nile_product_id: nile_product_id,
-      territory_id: inventory.territory_id,
-      transaction_quantity: breakages,
-      transaction_type: 'store_to_store_breakage',
-      direction: 'out',
-      transaction_date: inventory.delivery_time
-    ) if breakages.present? && breakages > 0
-
-    inventory_transactions.create!(
+    InventoryTransaction.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: missing_bottles,
@@ -104,7 +95,7 @@ class InventoryItem < ApplicationRecord
       transaction_date: inventory.delivery_time
     ) if missing_bottles.present? && missing_bottles > 0
 
-    inventory_transactions.create!(
+    InventoryTransaction.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: complaints,
@@ -113,7 +104,7 @@ class InventoryItem < ApplicationRecord
       transaction_date: inventory.delivery_time
     ) if complaints.present? && complaints > 0
 
-    inventory_transactions.create!(
+    InventoryTransaction.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: bad_beer,
@@ -122,7 +113,7 @@ class InventoryItem < ApplicationRecord
       transaction_date: inventory.delivery_time
     ) if bad_beer.present? && bad_beer > 0
 
-    inventory_transactions.create!(
+    InventoryTransaction.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: good_beer,
@@ -131,7 +122,7 @@ class InventoryItem < ApplicationRecord
       transaction_date: inventory.delivery_time
     ) if good_beer.present? && good_beer > 0
 
-    inventory_transactions.create!(
+    InventoryTransaction.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: transfers,
@@ -140,7 +131,7 @@ class InventoryItem < ApplicationRecord
       transaction_date: inventory.delivery_time
     ) if transfers.present? && transfers > 0
 
-    inventory_transactions.create!(
+    InventoryTransaction.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: returns,
@@ -149,7 +140,7 @@ class InventoryItem < ApplicationRecord
       transaction_date: inventory.delivery_time
     ) if returns.present? && returns > 0
 
-    inventory_transactions.create!(
+    InventoryTransaction.create!(
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
       transaction_quantity: nbl_return,

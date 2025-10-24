@@ -2,16 +2,16 @@ class DashboardController < ApplicationController
   before_action :authenticate_user!
   def index
     @top_products = SaleItem
-      .joins(:loading_order_item) # Join to access product details if needed
-      .group(:loading_order_item_id)
-      .select('loading_order_item_id, SUM(quantity_sold) AS total_sold, SUM(total) as total_amount')
+      .joins(:nile_product) # Join to access product details if needed
+      .group(:nile_product_id)
+      .select('nile_product_id, SUM(quantity_sold) AS total_sold, SUM(total) as total_amount')
       .order('total_sold DESC')
       .limit(10)
 
       @least_products = SaleItem
-      .joins(:loading_order_item) # Join to access product details if needed
-      .group(:loading_order_item_id)
-      .select('loading_order_item_id, SUM(quantity_sold) AS total_sold, SUM(total) as total_amount')
+      .joins(:nile_product) # Join to access product details if needed
+      .group(:nile_product_id)
+      .select('nile_product_id, SUM(quantity_sold) AS total_sold, SUM(total) as total_amount')
       .order('total_sold ASC')
       .limit(10)
  
@@ -40,7 +40,7 @@ class DashboardController < ApplicationController
       end_date = Date.strptime(params["end"], '%d/%m/%Y')
       territory_id = params["territory_id"]
       @top_products = NileProduct
-      .joins(loading_order_items: { sale_items: :sale })
+      .joins(nile_products: { sale_items: :sale })
       .where(sales: { sale_date: start_date..end_date, territory_id: territory_id})
       .select("nile_products.*, SUM(sale_items.quantity_sold) AS total_sales")
       .group("nile_products.id")
@@ -48,7 +48,7 @@ class DashboardController < ApplicationController
       .limit(10)
 
       @least_products = NileProduct
-      .joins(loading_order_items: { sale_items: :sale })
+      .joins(nile_products: { sale_items: :sale })
       .where(sales: { sale_date: start_date..end_date, territory_id: territory_id })
       .select("nile_products.*, SUM(sale_items.quantity_sold) AS total_sales")
       .group("nile_products.id")
@@ -62,7 +62,7 @@ class DashboardController < ApplicationController
       .take
     else
       @top_products = NileProduct
-      .joins(loading_order_items: { sale_items: :sale })
+      .joins(sale_items: :sale )
       .where(sales: { sale_date: start_date..end_date, territory_id: user_territories})
       .select("nile_products.*, SUM(sale_items.quantity_sold) AS total_sales")
       .group("nile_products.id")
@@ -70,7 +70,7 @@ class DashboardController < ApplicationController
       .limit(10)
 
       @least_products = NileProduct
-      .joins(loading_order_items: { sale_items: :sale })
+      .joins(sale_items: :sale )
       .where(sales: { sale_date: start_date..end_date })
       .select("nile_products.*, SUM(sale_items.quantity_sold) AS total_sales")
       .group("nile_products.id")

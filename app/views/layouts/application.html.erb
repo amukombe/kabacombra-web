@@ -37,7 +37,7 @@
           </button>
           <a href="/" class="flex gap-2 ml-2 md:mr-24">
             <%= image_tag 'logo', class:"w-8 rounded-full" %>
-            <span class="self-center font-semibold text-md sm:text-lg whitespace-nowrap dark:text-white"><%= current_territory.department.name%> | <%= current_territory.name%></span>
+            <span class="self-center font-semibold text-md sm:text-lg whitespace-nowrap dark:text-white"><%= current_territory.department.name%> | <%= "#{current_territory.name}" %> <i class='text-xs'><%= "#{current_user.store&.name}" %></i></span>
           </a>
         </div>
 

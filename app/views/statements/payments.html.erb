@@ -3,10 +3,7 @@
 <div class="grid w-full grid-cols-2 gap-4 mb-3">
   <div class="col-span-1">
     <h1 class="text-gray-800 text-md dark:text-gray-100">Payments</h1>
-  </div>
-  <div class="col-span-1 text-right">
-    <%= link_to new_vendor_payment_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> Make a Payment<%end%>
-  </div>  
+  </div> 
 </div>
 
 <div class="mb-3">
@@ -43,64 +40,46 @@
                     Ref No. 
                     </th>
                     <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                    Payments 
+                    Amount 
                     </th>
                     <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                    Suspense 
+                    Recepient 
                     </th>
                     <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                     Total 
-                    </th>
-                    <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                    Action
                     </th>
                 </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800">
                 <% @vendor_payments.each_with_index do |vendor_payment, index| %>
-                <% total = vendor_payment.payments.to_i + vendor_payment.suspence.to_i %>
                 <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                     <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    <span class="font-semibold"><%=vendor_payment.payment_date%></span>
+                    <span class="font-semibold"><%=vendor_payment.payment_date %></span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
+                    <span class="font-semibold"><%=vendor_payment.payment_method%>
+                        <% if vendor_payment.payment_method == "mobile_money" %>
+                            <span class="text-xs text-gray-500">Number: <%=vendor_payment.bank_account.display_name%></span>
+                        <% elsif vendor_payment.payment_method == "cheque" %>
+                            <span class="text-xs text-gray-500">Bank: <%=vendor_payment.bank_account.display_name%>, Cheque: <%=vendor_payment.payment_no%></span>
+                        <% end %>
+                    </span>
                     </td>
                     <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    <span class="font-semibold"><%=vendor_payment.journal_no%></span>
+                    <span class="font-semibold"><%=vendor_payment.payment_ref%></span>
                     </td>
                     <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    <span class="font-semibold"><%=vendor_payment.ref_no%></span>
+                    <span class="font-semibold"><%=vendor_payment.amount%></span>
                     </td>
                     <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    <span class="font-semibold"><%=vendor_payment.payments%></span>
+                    <span class="font-semibold"><%=vendor_payment.recipient&.name %></span>
                     </td>
                     <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    <span class="font-semibold"><%=vendor_payment.suspence.to_i%></span>
+                    <span class="font-semibold"><%= vendor_payment.amount %></span>
                     </td>
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    <span class="font-semibold"><%=total%></span>
-                    </td>
-                    <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                    <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="vendor_payment-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=vendor_payment.id%>" data-dropdown-placement="bottom">
-                        <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
-                        <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
-                        </svg>
-                    </button>
-                
-                    <!-- Dropdown menu -->
-                    <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=vendor_payment.id%>">
-                        
-                        <ul class="py-2" aria-labelledby="vendor_payment-menu-button">
-                            <li>
-                                <%= link_to edit_vendor_payment_path(vendor_payment), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
-                            </li>
-                            <li>
-                                <button data-modal-target="popup-modal-<%=vendor_payment.id%>" data-modal-toggle="popup-modal-<%=vendor_payment.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
-                            </li>
-                        </ul>
-                    </div>
-                    </td>
+                    
                 </tr>
-                <%= render "/vendor_payments/confirm_delete_modal", payment: vendor_payment%>
+                <%= render "/payments/confirm_delete_modal", payment: vendor_payment%>
                 <%end%>
                 </tbody>
             </table>

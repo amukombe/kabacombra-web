@@ -6,4 +6,8 @@ class Store < ApplicationRecord
   def self.search(params)
     params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
   end
+
+  def store_name
+    "#{name} - #{territory.name}"
+  end
 end

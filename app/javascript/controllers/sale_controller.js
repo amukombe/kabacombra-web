@@ -8,15 +8,18 @@ export default class extends Controller {
   }
 
   async fetchProductDetails(event) {
-    const loading_order_item_id = event.target.value;
-
+    const nile_product_id = event.target.value;
+    console.log("Selected product ID:", nile_product_id);
+    if (!nile_product_id) {
+      console.error("No product ID selected");
+      return;
+    }
     // Locate the row containing the event target
     const row = event.target.closest(".order-item-row");
     if (!row) {
       console.error("Row not found for product selection");
       return;
     }
-
     // Find the `unitPrice` target specific to this row
     const amountField = row.querySelector('[data-sale-target="amount"]');
     const quantityDisplay = row.querySelector("[data-sale-target='quantityDisplay']")
@@ -26,7 +29,7 @@ export default class extends Controller {
     }
 
     try {
-      const response = await fetch(`/nile_products/${loading_order_item_id}/orderitemdetails`);
+      const response = await fetch(`/nile_products/${nile_product_id}/orderitemdetails`);
       if (!response.ok) throw new Error("Failed to fetch product details");
 
       const productDetails = await response.json();

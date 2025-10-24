@@ -49,6 +49,7 @@
       <%= form.hidden_field :user_id, value: current_user.id %>
       <%= form.hidden_field :status_id, value: "12" %>
       <%= form.hidden_field :territory_id, value: current_territory.id %>
+      <%= form.hidden_field :store_id, value: current_user.store&.id %>
     </div>
   </div>
   <%# nested form starts here %>

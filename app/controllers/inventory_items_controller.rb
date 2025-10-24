@@ -4,7 +4,35 @@ class InventoryItemsController < ApplicationController
 
   # GET /inventory_items or /inventory_items.json
   def index
-    @inventory_items = InventoryTransaction.search(params, current_territory.id).page(params[:page]).per(20)
+    @territory= Territory.find(current_territory.id)
+    today = Date.today.beginning_of_day
+  tomorrow = today + 1.day
+
+  @inventory_items = @territory.inventory_transactions
+    .joins(:nile_product)
+    .select(
+      "nile_products.id AS nile_product_id,
+       nile_products.name,
+       nile_products.selling_price,
+
+       -- Opening stock
+       COALESCE(SUM(CASE WHEN inventory_transactions.transaction_date < '#{today}' AND inventory_transactions.direction = 'in' THEN inventory_transactions.transaction_quantity ELSE 0 END), 0)
+       -
+       COALESCE(SUM(CASE WHEN inventory_transactions.transaction_date < '#{today}' AND inventory_transactions.direction = 'out' THEN inventory_transactions.transaction_quantity ELSE 0 END), 0)
+       AS opening_stock,
+
+       -- Quantity In Today
+       COALESCE(SUM(CASE WHEN inventory_transactions.transaction_date >= '#{today}' AND inventory_transactions.transaction_date < '#{tomorrow}' AND inventory_transactions.direction = 'in' THEN inventory_transactions.transaction_quantity ELSE 0 END), 0)
+       AS quantity_in,
+
+       -- Quantity Out Today
+       COALESCE(SUM(CASE WHEN inventory_transactions.transaction_date >= '#{today}' AND inventory_transactions.transaction_date < '#{tomorrow}' AND inventory_transactions.direction = 'out' THEN inventory_transactions.transaction_quantity ELSE 0 END), 0)
+       AS quantity_out
+      "
+    )
+    .group("nile_products.id, nile_products.name, nile_products.selling_price")
+    .page(params["page"]).per(10)
+    
     @active_link = "purchases"
     @warehouses = current_territory.warehouses
   end

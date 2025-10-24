@@ -1,9 +1,10 @@
 class SaleEmptiesController < ApplicationController
   before_action :set_sale_empty, only: %i[ show edit update destroy ]
-
+  before_action :set_active_link
   # GET /sale_empties or /sale_empties.json
   def index
-    @sale_empties = SaleEmpty.all
+    @territory = Territory.find(current_territory.id)
+    @sale_empties = @territory.sale_empties.page(params[:page]).per(10)
   end
 
   # GET /sale_empties/1 or /sale_empties/1.json
@@ -61,6 +62,10 @@ class SaleEmptiesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_sale_empty
       @sale_empty = SaleEmpty.find(params[:id])
+    end
+
+    def set_active_link
+      @active_link='empties inventory'
     end
 
     # Only allow a list of trusted parameters through.

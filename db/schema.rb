@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_03_072519) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -367,8 +367,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
     t.datetime "updated_at", null: false
     t.bigint "nile_product_id", null: false
     t.bigint "territory_id"
-    t.bigint "inventory_item_id"
-    t.index ["inventory_item_id"], name: "index_inventory_transactions_on_inventory_item_id"
     t.index ["nile_product_id"], name: "index_inventory_transactions_on_nile_product_id"
     t.index ["territory_id"], name: "index_inventory_transactions_on_territory_id"
   end
@@ -535,7 +533,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
   end
 
   create_table "sale_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "loading_order_item_id", null: false
     t.decimal "quantity_sold", precision: 10
     t.decimal "amount", precision: 10
     t.decimal "total", precision: 10
@@ -545,7 +542,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
     t.decimal "cash_for_empties", precision: 10
     t.bigint "sale_id", null: false
     t.bigint "purchase_type_id"
-    t.index ["loading_order_item_id"], name: "index_sale_items_on_loading_order_item_id"
+    t.bigint "nile_product_id", null: false
+    t.index ["nile_product_id"], name: "index_sale_items_on_nile_product_id"
     t.index ["purchase_type_id"], name: "index_sale_items_on_purchase_type_id"
     t.index ["sale_id"], name: "index_sale_items_on_sale_id"
   end
@@ -573,7 +571,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
     t.string "customer_mobile"
     t.text "notes"
     t.decimal "vat", precision: 10
+    t.bigint "store_id", null: false
     t.index ["status_id"], name: "index_sales_on_status_id"
+    t.index ["store_id"], name: "index_sales_on_store_id"
     t.index ["territory_id"], name: "index_sales_on_territory_id"
     t.index ["user_id"], name: "index_sales_on_user_id"
   end
@@ -765,9 +765,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
     t.bigint "employee_id", null: false
     t.integer "role"
     t.boolean "is_super"
+    t.bigint "store_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["employee_id"], name: "index_users_on_employee_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["store_id"], name: "index_users_on_store_id"
   end
 
   create_table "vendor_adjustiment_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -868,7 +870,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
   add_foreign_key "inventory_items", "dispatch_items"
   add_foreign_key "inventory_items", "inventories"
   add_foreign_key "inventory_items", "nile_products"
-  add_foreign_key "inventory_transactions", "inventory_items"
   add_foreign_key "inventory_transactions", "nile_products"
   add_foreign_key "inventory_transactions", "territories"
   add_foreign_key "loading_order_items", "loading_orders"
@@ -894,10 +895,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
   add_foreign_key "payments", "users"
   add_foreign_key "sale_empties", "empty_types"
   add_foreign_key "sale_empties", "sales"
-  add_foreign_key "sale_items", "loading_order_items"
+  add_foreign_key "sale_items", "nile_products"
   add_foreign_key "sale_items", "purchase_types"
   add_foreign_key "sale_items", "sales"
   add_foreign_key "sales", "statuses"
+  add_foreign_key "sales", "stores"
   add_foreign_key "sales", "territories"
   add_foreign_key "sales", "users"
   add_foreign_key "stock_adjustments", "nile_products"
@@ -924,6 +926,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_22_110337) do
   add_foreign_key "user_modules", "territories"
   add_foreign_key "user_modules", "users"
   add_foreign_key "users", "employees"
+  add_foreign_key "users", "stores"
   add_foreign_key "vendor_adjustiment_items", "nile_products"
   add_foreign_key "vendor_adjustiment_items", "vendor_adjustiments"
   add_foreign_key "vendor_adjustiments", "purchase_types"

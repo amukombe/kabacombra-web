@@ -1,16 +1,111 @@
-<p style="color: green"><%= notice %></p>
-
 <% content_for :title, "Sale empties" %>
-
-<h1>Sale empties</h1>
-
-<div id="sale_empties">
-  <% @sale_empties.each do |sale_empty| %>
-    <%= render sale_empty %>
-    <p>
-      <%= link_to "Show this sale empty", sale_empty %>
-    </p>
-  <% end %>
+<div class="px-4 pt-4 bg-white dark:bg-gray-900">
+<div class="grid w-full grid-cols-2 gap-4 mb-3">
+  <div class="col-span-1">
+    <h1 class="text-gray-800 text-md dark:text-gray-100">Empties</h1>
+  </div>
+  <div class="col-span-1 text-right">
+    <%= link_to new_sale_empty_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> Load Empties to NBL<%end%>
+  </div>  
 </div>
 
-<%= link_to "New sale empty", new_sale_empty_path %>
+<div class="mb-3">
+    <div class="flex items-start max-w-sm">
+        <label for="simple-search" class="sr-only">Search</label>
+        <div class="relative w-full">
+            <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
+                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                </svg>
+                <span class="sr-only">Search</span>
+            </div>
+            <%= text_field_tag "query", nil, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder:"Search sale_empty ..." %>
+            
+        </div>
+    </div>
+</div>
+<!-- Table -->
+<div class="flex flex-col mt-6">
+  <div class="overflow-x-auto rounded-lg">
+    <div class="inline-block min-w-full align-middle">
+      <div class="overflow-hidden shadow sm:rounded-lg">
+        <div id="sale_empties">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                    #
+                    </th>
+                    <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                    Empty 
+                    </th>
+                    <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                    Quantity Available 
+                    </th>
+                    <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                    Expected Remaining Qty 
+                    </th>
+                    <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                    Variance 
+                    </th>
+                    <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                    Total 
+                    </th>
+                    <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                    Action
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800">
+                <% @sale_empties.each_with_index do |sale_empty, index| %>
+                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                    <span class="font-semibold"><%=sale_empty.empty_type.name %></span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                    <span class="font-semibold"><%=sale_empty.expected%></span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                    <span class="font-semibold"><%=sale_empty.received%></span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                    <span class="font-semibold"><%=sale_empty.variance%></span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                    <span class="font-semibold"><%=sale_empty.variance.to_i%></span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                    <span class="font-semibold">10</span>
+                    </td>
+                    <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                    <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="sale_empty-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=sale_empty.id%>" data-dropdown-placement="bottom">
+                        <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
+                        <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
+                        </svg>
+                    </button>
+                
+                    <!-- Dropdown menu -->
+                    <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=sale_empty.id%>">
+                        
+                        <ul class="py-2" aria-labelledby="sale_empty-menu-button">
+                            <li>
+                                <%= link_to edit_sale_empty_path(sale_empty), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                            </li>
+                            <li>
+                                <button data-modal-target="popup-modal-<%=sale_empty.id%>" data-modal-toggle="popup-modal-<%=sale_empty.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
+                            </li>
+                        </ul>
+                    </div>
+                    </td>
+                </tr>
+                <%= render "/sale_empties/confirm_delete_modal", sale_empty: sale_empty%>
+                <%end%>
+                </tbody>
+            </table>
+            <%= render "pagination" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

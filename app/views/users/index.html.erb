@@ -46,6 +46,9 @@
                   Modules
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Store
+                </th>
+                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Status
                 </th>
               </tr>
@@ -73,6 +76,9 @@
                     <%= render "confirm_remove_module_modal", um: um%>
                     <%end%> 
                   <%end%>
+                </td>
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <%= user.store&.name %>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=user.id%>" data-dropdown-placement="bottom">

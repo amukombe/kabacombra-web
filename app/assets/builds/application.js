@@ -16254,7 +16254,12 @@ var sale_controller_default = class extends Controller {
     console.log("Sale controller connected");
   }
   async fetchProductDetails(event) {
-    const loading_order_item_id = event.target.value;
+    const nile_product_id = event.target.value;
+    console.log("Selected product ID:", nile_product_id);
+    if (!nile_product_id) {
+      console.error("No product ID selected");
+      return;
+    }
     const row = event.target.closest(".order-item-row");
     if (!row) {
       console.error("Row not found for product selection");
@@ -16267,7 +16272,7 @@ var sale_controller_default = class extends Controller {
       return;
     }
     try {
-      const response = await fetch(`/nile_products/${loading_order_item_id}/orderitemdetails`);
+      const response = await fetch(`/nile_products/${nile_product_id}/orderitemdetails`);
       if (!response.ok) throw new Error("Failed to fetch product details");
       const productDetails = await response.json();
       amountField.value = productDetails.selling_price || "";

@@ -15,7 +15,8 @@ class StatementsController < ApplicationController
 
   def payments
     @active_link='payments'
-    @vendor_payments = current_territory.vendor_payments.page(params[:page]).per(20)
+    @territory = Territory.find(current_territory.id)
+    @vendor_payments = @territory.payments.where(recipient_type: "Supplier").page(params[:page]).per(20).order(payment_date: :desc)
   end
 
   def adjustments

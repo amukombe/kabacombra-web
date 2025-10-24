@@ -103,11 +103,19 @@ class NileProductsController < ApplicationController
   end
 
   def orderitemdetails
-    loading_order_item = LoadingOrderItem.find_by(id: params[:id])
-    product = loading_order_item.nile_product #NileProduct.find_by(id: params[:id])
+    product = NileProduct.find_by(id: params[:id])
 
     if product
-      qty_available = InventoryTransaction.where(territory_id: current_territory.id, nile_product_id: product.id).sum(:transaction_quantity)
+      qty_available = StoreTransaction.where(
+        territory_id: current_territory.id,
+        nile_product_id: product.id,
+        store_id: current_user.store.id
+      ).sum(
+        "CASE WHEN direction = 'in' THEN quantity 
+              WHEN direction = 'out' THEN -quantity 
+              ELSE 0 END"
+      )
+
       render json: {
         unit_price: product.buying_price,
         selling_price: product.selling_price,

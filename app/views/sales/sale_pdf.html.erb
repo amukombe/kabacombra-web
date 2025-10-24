@@ -1,0 +1,93 @@
+<div class="rounded-lg shadow-lg dark:bg-gray-800">
+    <div class="flex justify-center p-4 font-semibold text-center fs-2">
+        <span class="p-4 text-lg font-semibold text-gray-700 dark:text-gray-300">Sales Receipt</span>
+    </div>
+    <div class="px-4">
+        <div class="d-flex justify-content-between">
+            <div class="text-sm text-gray-600 dark:text-gray-400">
+                <p><span class="font-semibold">Receipt No:</span> <%= @sale.receipt_no %></p>
+                <p><span class="font-semibold">Date:</span> <%= @sale.sale_date.strftime("%d-%m-%Y %I:%M %p") %></p>
+                <p><span class="font-semibold">Customer:</span> <%= @sale.customer_name %></p>
+                <p><span class="font-semibold">Mobile:</span> <%= @sale.customer_mobile %></p>
+                <p><span class="font-semibold">TIN:</span> <%= @sale.tin %></p>
+                <p><span class="font-semibold">Sales Route:</span> <%= @sale.sales_route %></p>
+            </div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 text-end">
+                <p><span class="font-semibold">Store:</span> <%= @sale.store.name %></p>
+                <p><span class="font-semibold">Territory:</span> <%= @sale.territory.name %></p>
+                <p><span class="font-semibold">Served By:</span> <%= @sale.user.employee.fullname %></p>
+                <p><span class="font-semibold">Status:</span> <%= @sale.status.name %></p>
+            </div>
+        </div>
+    </div>
+    <div class="p-4">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-sm text-gray-600 dark:text-gray-400">#</th>
+                    <th class="text-sm text-gray-600 dark:text-gray-400">Item</th>
+                    <th class="text-sm text-gray-600 dark:text-gray-400">Quantity</th>
+                    <th class="text-sm text-gray-600 dark:text-gray-400">Unit Price</th>
+                    <th class="text-sm text-gray-600 dark:text-gray-400">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @sale.sale_items.each_with_index do |item, index| %>
+                    <tr>
+                        <td class="text-sm text-gray-900 dark:text-white"><%= index + 1 %></td>
+                        <td class="text-sm text-gray-900 dark:text-white"><%= item.nile_product.name %></td>
+                        <td class="text-sm text-gray-900 dark:text-white"><%= item.quantity_sold %> Crates</td>
+                        <td class="text-sm text-gray-900 dark:text-white"><%= item.amount %></td>
+                        <td class="text-sm text-gray-900 dark:text-white"><%= item.total %></td>
+                    </tr>
+                <% end %>
+            </tbody>
+            <tfoot>
+                <tr class="table-light">
+                    <th colspan="4" class="text-sm text-gray-600 text-end dark:text-gray-400">VAT (18%)</th>
+                    <th class="text-sm text-gray-900 dark:text-white"><%= @sale.total_price * 0.18 %></th>
+                </tr>
+                <tr class="table-light">
+                    <th colspan="4" class="text-sm text-gray-600 text-end dark:text-gray-400">Grand Total</th>
+                    <th class="text-sm text-gray-900 dark:text-white"><%= @sale.total_price + (@sale.total_price * 0.18) %></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+
+    <div class="p-4 row">
+        <div class="col-4">
+            
+            <span class="px-4 text-sm text-gray-600 dark:text-gray-400">Notes</span>
+            <p class="px-4 text-sm text-gray-900 dark:text-white"><%= @sale.notes %></p>
+        </div>
+        <div class="col-8">
+            
+            <span class="px-4 text-sm text-gray-600 dark:text-gray-400">Empties Returned</span>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-sm text-gray-600 dark:text-gray-400">#</th>
+                        <th class="text-sm text-gray-600 dark:text-gray-400">Empty Type</th>
+                        <th class="text-sm text-gray-600 dark:text-gray-400">Expected</th>
+                        <th class="text-sm text-gray-600 dark:text-gray-400">Received</th>
+                        <th class="text-sm text-gray-600 dark:text-gray-400">Variance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @sale.sale_empties.each_with_index do |empty, index| %>
+                        <tr>
+                            <td class="text-sm text-gray-900 dark:text-white"><%= index + 1 %></td>
+                            <td class="text-sm text-gray-900 dark:text-white"><%= empty.empty_type.name %></td>
+                            <td class="text-sm text-gray-900 dark:text-white"><%= empty.expected %></td>
+                            <td class="text-sm text-gray-900 dark:text-white"><%= empty.received %></td>
+                            <td class="text-sm text-gray-900 dark:text-white"><%= empty.variance %></td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
