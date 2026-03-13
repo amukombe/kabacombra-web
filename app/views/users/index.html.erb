@@ -70,7 +70,7 @@
                   <% if user.user_modules.present? %>
                     <%user.user_modules.each do |um|%>
                       <div class="flex m-1 text-center">
-                        <%=um.system_module.name%> 
+                        <%="#{um.system_module.name} - #{um.territory.name}"%> 
                         <span class="w-5 h-5 mx-2 text-[9px] text-red-800 bg-red-100 rounded-full dark:bg-red-900 dark:text-red-300"><button data-modal-target="remove-department-modal-<%=um.id%>" data-modal-toggle="remove-department-modal-<%=um.id%>" type="button"><i class="fas fa-trash"></i></button></span>
                     </div>
                     <%= render "confirm_remove_module_modal", um: um%>
