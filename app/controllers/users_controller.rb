@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   #before_action :check_admin, only: [:index,:new, :create, :update, :destroy] # Ensure only admins can manage users
   before_action :set_user, only: %i[ show edit update destroy ]
   def index
-    @users = User.search(params).page(params[:page]).per(3)
+    @users = User.search(params).page(params[:page]).per(20)
   end
 
   def new
