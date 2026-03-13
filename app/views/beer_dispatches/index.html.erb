@@ -101,6 +101,9 @@
                           <li>
                             <%= link_to new_inventory_path(id: dispatch.id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Receive order<%end%>
                           </li>
+                          <li>
+                              <%= link_to edit_beer_dispatch_path(dispatch), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                          </li>
                         <%end%>
                     </ul>
                 </div>

@@ -56,12 +56,11 @@ class BeerDispatchesController < ApplicationController
 
   # PATCH/PUT /beer_dispatches/1 or /beer_dispatches/1.json
   def update
-    @order = Order.find(params[:id])
-    @beer_dispatch.dispatch_items.build(beer_dispatch_params)
+    @order = @beer_dispatch.order
     @order_items = @order.order_items
     respond_to do |format|
       if @beer_dispatch.update(beer_dispatch_params)
-        format.html { redirect_to @beer_dispatch, notice: "Beer dispatch was successfully updated." }
+        format.html { redirect_to beer_dispatches_path, notice: "Beer dispatch was successfully updated." }
         format.json { render :show, status: :ok, location: @beer_dispatch }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -102,3 +101,5 @@ class BeerDispatchesController < ApplicationController
       dispatch_items_attributes: [:id,:beer_dispatch_id, :order_item_id, :quantity_dispatched, :quantity_ordered, :_destroy])
     end
 end
+
+

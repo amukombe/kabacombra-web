@@ -1,5 +1,5 @@
 <div class="rounded-lg shadow-lg dark:bg-gray-800">
-<%= form_with(model: beer_dispatch, url: beer_dispatches_path(order_id: @order.id)) do |form| %>
+<%= form_with(model: beer_dispatch) do |form| %>
 
   <% if @beer_dispatch.errors.any? %>
     <div class="grid-cols-1" data-controller="alert" data-alert-target="alertDialog">
