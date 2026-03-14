@@ -4,7 +4,7 @@ class InventoriesController < ApplicationController
 
   # GET /inventories or /inventories.json
   def index
-    @inventories = Inventory.all
+    @inventories = Inventory.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
   # GET /inventories/1 or /inventories/1.json
@@ -31,6 +31,20 @@ class InventoriesController < ApplicationController
 
   # GET /inventories/1/edit
   def edit
+    @dispatch = BeerDispatch.find(@inventory.beer_dispatch_id)
+    @inventory = Inventory.new(delivery_time: Time.now)
+    @warehouses = current_territory.warehouses
+    # Build dispatch items based on existing order items
+    @dispatch.dispatch_items.each do |item|
+      @inventory.inventory_items.build(
+        dispatch_item_id: item.id, 
+        quantity_dispatched: item.quantity_dispatched,
+        quantity_received: item.quantity_dispatched,
+        purchase_price: item.order_item.unit_price,
+        selling_price: item.order_item.nile_product.selling_price
+      )
+    end
+    @dispatch_items = @dispatch.dispatch_items
   end
 
   # POST /inventories or /inventories.json
@@ -54,9 +68,14 @@ class InventoriesController < ApplicationController
 
   # PATCH/PUT /inventories/1 or /inventories/1.json
   def update
+    dispatch_id = inventory_params[:beer_dispatch_id]
+    @dispatch = BeerDispatch.find(dispatch_id)
+    @warehouses = current_territory.warehouses
+    @inventory = Inventory.new(inventory_params)
+    @dispatch_items = @dispatch.dispatch_items
     respond_to do |format|
       if @inventory.update(inventory_params)
-        format.html { redirect_to beer_dispatches_path, notice: "Inventory was successfully updated." }
+        format.html { redirect_to inventories_path, notice: "Inventory was successfully updated." }
         format.json { render :show, status: :ok, location: @inventory }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -88,11 +107,16 @@ class InventoriesController < ApplicationController
 
   # DELETE /inventories/1 or /inventories/1.json
   def destroy
-    @inventory.destroy!
+    @beer_dispatch = @inventory.beer_dispatch
+    if @beer_dispatch.present?
+      @beer_dispatch.order.update(status_id: 3) # Assuming 3 is the status for "Reversed"
+      
+      @inventory.destroy!
 
-    respond_to do |format|
-      format.html { redirect_to inventories_path, status: :see_other, notice: "Inventory was successfully destroyed." }
-      format.json { head :no_content }
+      respond_to do |format|
+        format.html { redirect_to inventories_path, status: :see_other, notice: "Inventory was successfully destroyed." }
+        format.json { head :no_content }
+      end
     end
   end
 
