@@ -78,7 +78,7 @@
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.breakages) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.missing_bottles) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.complaints) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_received + item.breakages + item.missing_bottles + item.complaints) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_received.to_i + item.breakages.to_i + item.missing_bottles.to_i + item.complaints.to_i) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.purchase_price, precision: 2) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total, precision: 2) %></td>
                         </tr>
