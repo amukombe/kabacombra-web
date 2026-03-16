@@ -45,6 +45,10 @@ class InventoryItem < ApplicationRecord
     return (self.quantity_received - self.quantity_sold)
   end
 
+  def total
+    self.quantity_received * self.purchase_price
+  end
+
   private
   def generate_stock_number
     if self.stock_no.blank?

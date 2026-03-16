@@ -35,22 +35,10 @@
             <thead class="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  #
+                  Order Details
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Order No.
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Route Description
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Total
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Assigned Driver
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Status
+                  Product Details.
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Action
@@ -61,34 +49,39 @@
             <% @orders.each_with_index do |order, index| %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=index+1%></span>
+                  <div class="flex flex-col space-y-1">
+                    <span class="text-sm font-medium"><%= order.order_date&.strftime("%d %b, %Y") %> (<%= order.order_number %>)</span>
+                    <span class="text-sm">Order #: <span class="font-normal"><%= order.order_number %></span></span>
+                    <span class="text-xs">Route: <span class="font-normal"><%= order.description %></span></span>
+                    <span class="text-xs">Status: <span class="font-normal"><%= render "order_status", order: order %></span></span>
+                  </div>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-semibold"><%=order.order_number%></span> (
-                  <% order.order_items.each do |item|%>
-                    <span class="text-xs font-normal"><%=item.nile_product.name%>- <%=item.quantity%> Crates</span>,
-                  <%end%>)
+                  <table class="min-w-full border border-collapse border-gray-300 dark:border-gray-700">
+                    <thead>
+                      <tr class="bg-gray-100 dark:bg-gray-800">
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">#</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Product</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Ordered</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Rate</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% order.order_items.each_with_index do |item, index| %>
+                        <tr>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= index+1 %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.name %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.unit_price, precision: 2) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total, precision: 2) %></td>
+                        </tr>
+                      <% end %>
+                      <tr><td></td><td></td><td></td><td></td><td><span class="text-xs font-bold"><%= number_with_delimiter(order.total_price, precision: 2) %></span></td></tr>
+                    </tbody>
+                  </table>
                 </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=order.description%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-normal"><%=order.total_price%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">                
-                  <% order.order_drivers.each do |order_driver|%>
-                    <div class="flex m-1 text-center">
-                        <%=order_driver.driver.name%>
-                        <%if order.status.name=="Driver Assigned" %>
-                        <span class="w-5 h-5 mx-2 text-[9px] text-red-800 bg-red-100 rounded-full dark:bg-red-900 dark:text-red-300"><button data-modal-target="remove-department-modal-<%=order_driver.id%>" data-modal-toggle="remove-department-modal-<%=order_driver.id%>" type="button"><i class="fas fa-trash"></i></button></span>
-                        <%end%>
-                    </div>
-                    <%= render "confirm_remove_driver_modal", order_driver: order_driver %>
-                  <%end%>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <%= render "order_status", order: order %>
-                </td>
+                
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=order.id%>" data-dropdown-placement="bottom">
                     <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>

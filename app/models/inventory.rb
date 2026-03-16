@@ -2,6 +2,7 @@ class Inventory < ApplicationRecord
   belongs_to :beer_dispatch, optional: true
   has_many :inventory_items, dependent: :destroy
   belongs_to :user
+  belongs_to :warehouse
   accepts_nested_attributes_for :inventory_items, allow_destroy: true, reject_if: :all_blank
   
   def self.search(params, territory_id)
@@ -10,5 +11,9 @@ class Inventory < ApplicationRecord
     else
       joins(:beer_dispatch).where(territory_id: territory_id)
     end
+  end
+
+  def total_price
+    inventory_items.sum(&:total)
   end
 end

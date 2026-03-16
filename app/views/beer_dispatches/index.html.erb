@@ -34,22 +34,10 @@
             <thead class="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  #
+                  Order Details
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Dispatch No.
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Route Description
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Total
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Assigned Driver
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Status
+                  Products
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Action
@@ -60,31 +48,40 @@
             <% @dispatches.each_with_index do |dispatch, index| %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=index+1%></span>
+                  <div class="flex flex-col space-y-1">
+                    <span class="text-sm font-medium"><%= dispatch.loading_time&.strftime("%d %b, %Y") %> (<%= dispatch.order.order_number %>)</span>
+                    <span class="text-sm">Dispatch #: <span class="font-normal"><%= dispatch.dispatch_no %></span></span>
+                    <span class="text-xs">Invoice #: <span class="font-normal"><%= dispatch.invoice_no %></span></span>
+                    <span class="text-xs">FDN: <span class="font-normal"><%= dispatch.fdn_number %></span></span>
+                    <span class="text-xs">Truck No: <span class="font-normal"><%= dispatch.truck_numberplate %> <%if dispatch.driver_name? %>(<%= dispatch.driver_name %>)<% end %></span></span>
+                  </div>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-semibold"><%=dispatch.dispatch_no%></span> (
-                  <% dispatch.dispatch_items.each do |item|%>
-                    <span class="text-xs font-normal"><%=item.order_item.nile_product.name%>- <%=item.quantity_dispatched%> Crates</span>,
-                  <%end%>)
+                  <table class="min-w-full border border-collapse border-gray-300 dark:border-gray-700">
+                    <thead>
+                      <tr class="bg-gray-100 dark:bg-gray-800">
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">#</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Product</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Ordered</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Rate</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% dispatch.dispatch_items.each_with_index do |item, index| %>
+                        <tr>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= index+1 %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.name %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_dispatched) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.order_item.nile_product.buying_price, precision: 2) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_price, precision: 2) %></td>
+                        </tr>
+                      <% end %>
+                      <tr><td></td><td></td><td></td><td></td><td><span class="text-xs font-bold"><%= number_with_delimiter(dispatch.total_price, precision: 2) %></span></td></tr>
+                    </tbody>
+                  </table>
                 </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=dispatch.order.description%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-normal"><%=dispatch.total_price%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-normal"><%=dispatch.driver_name%> , <%=dispatch.driver_mobile%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <%if dispatch.order.status.id == 3%>
-                      <span class="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-purple-100 dark:bg-gray-700 dark:border-purple-300 dark:text-purple-300"><%=dispatch.order.status.name%></span>
-                      <%= link_to dispatch_pdf_beer_dispatch_path(dispatch, format: :pdf) do %>
-                          <span class="mr-2 px-2.5 py-0.5 rounded-md text-purple-200 bg-purple-700 dark:text-purple-700 dark:bg-purple-200 hover:bg-purple-300 hover:text-purple-800"><i class="fas fa-print"></i>Print</span>
-                      <%end%>
-                  <%end%>
-                </td>
+                
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=dispatch.order.id%>" data-dropdown-placement="bottom">
                     <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>

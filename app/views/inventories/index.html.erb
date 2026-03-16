@@ -8,7 +8,6 @@
     
   </div>  
 </div>
-``
 <div class="mb-3">
     <%= form_tag inventories_path, class:"flex items-start max-w-sm", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do |form| %>
     <label for="simple-search" class="sr-only">Search</label>
@@ -34,20 +33,12 @@
             <thead class="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  #
+                  Order Details
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Dispatch No.
+                  Product Details
                 </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Route Description
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Total
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Assigned Driver
-                </th>
+                
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Action
                 </th>
@@ -57,23 +48,46 @@
             <% @inventories.each_with_index do |inventory, index| %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=index+1%></span>
+                  <div class="flex flex-col space-y-1">
+                    <span class="text-sm font-medium"><%= inventory.delivery_time&.strftime("%d %b, %Y") %> (<%= inventory.beer_dispatch.order.order_number %>)</span>
+                    <span class="text-xs">Invoice #: <span class="font-normal"><%= inventory.beer_dispatch.invoice_no %></span></span>
+                    <span class="text-xs">FDN: <span class="font-normal"><%= inventory.beer_dispatch.fdn_number %></span></span>
+                    <span class="text-xs">Truck No: <span class="font-normal"><%= inventory.beer_dispatch.truck_numberplate %> <%if inventory.beer_dispatch.driver_name? %>(<%= inventory.beer_dispatch.driver_name %>)<% end %></span></span>
+                    <span class="text-xs">Warehouse: <span class="font-normal"><%= inventory.warehouse.name %></span></span>
+                  </div>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-semibold"><%=inventory.beer_dispatch.fdn_number%></span> (
-                  <% inventory.inventory_items.each do |item|%>
-                    <span class="text-xs font-normal"><%=item.nile_product.name%>- <%=item.quantity_received%> Crates</span>,
-                  <%end%>)
+                  <table class="min-w-full border border-collapse border-gray-300 dark:border-gray-700">
+                    <thead>
+                      <tr class="bg-gray-100 dark:bg-gray-800">
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Product</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Received</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Breakages</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Missing</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Complaints</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Total Qty</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Rate</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Total Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% inventory.inventory_items.each_with_index do |item, index| %>
+                        <tr>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.name %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_received) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.breakages) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.missing_bottles) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.complaints) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_received + item.breakages + item.missing_bottles + item.complaints) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.purchase_price, precision: 2) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total, precision: 2) %></td>
+                        </tr>
+                      <% end %>
+                      <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="text-xs font-bold"><%= number_with_delimiter(inventory.total_price, precision: 2) %></span></td></tr>
+                    </tbody>
+                  </table>
                 </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=inventory.beer_dispatch.order.description%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-normal"><%=inventory.beer_dispatch.total_price%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-normal"><%=inventory.beer_dispatch.driver_name%> , <%=inventory.beer_dispatch.driver_mobile%></span>
-                </td>
+                
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=inventory.beer_dispatch.order.id%>" data-dropdown-placement="bottom">
                     <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
