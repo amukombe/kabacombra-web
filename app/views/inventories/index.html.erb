@@ -53,7 +53,7 @@
                     <span class="text-xs">Invoice #: <span class="font-normal"><%= inventory.beer_dispatch.invoice_no %></span></span>
                     <span class="text-xs">FDN: <span class="font-normal"><%= inventory.beer_dispatch.fdn_number %></span></span>
                     <span class="text-xs">Truck No: <span class="font-normal"><%= inventory.beer_dispatch.truck_numberplate %> <%if inventory.beer_dispatch.driver_name? %>(<%= inventory.beer_dispatch.driver_name %>)<% end %></span></span>
-                    <span class="text-xs">Warehouse: <span class="font-normal"><%= inventory.warehouse.name %></span></span>
+                    <span class="text-xs">Warehouse: <span class="font-normal"><%= inventory.warehouse&.name %></span></span>
                   </div>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
