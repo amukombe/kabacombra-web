@@ -72,27 +72,3 @@
 <% end %>
 </div>
 
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const addOrderItemLink = document.querySelector('.add-order-item');
-  const removeOrderItemLinks = document.querySelectorAll('.remove-order-item');
-  const orderItemsContainer = document.querySelector('.order-item');
-
-  // Add new order item
-  addOrderItemLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    const newItem = orderItemsContainer.cloneNode(true);
-    newItem.querySelectorAll('input').forEach(input => input.value = '');
-    document.querySelector('form').appendChild(newItem);
-  });
-
-  // Remove order item
-  removeOrderItemLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      link.closest('.order-item').remove();
-    });
-  });
-});
-</script>

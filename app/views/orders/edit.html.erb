@@ -1,12 +1,4 @@
 <% content_for :title, "Editing order" %>
-
-<h1>Editing order</h1>
+<h1  class="text-lg text-gray-600 dark:text-gray-400">Edit Order</h1> <i class="text-xs text-red-600 dark:text-red-400">(All fields marked with * are mandetory)</i>
 
 <%= render "form", order: @order %>
-
-<br>
-
-<div>
-  <%= link_to "Show this order", @order %> |
-  <%= link_to "Back to orders", orders_path %>
-</div>
