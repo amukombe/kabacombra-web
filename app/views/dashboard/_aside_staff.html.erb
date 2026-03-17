@@ -2,7 +2,7 @@
 <div class="flex flex-col flex-1 overflow-y-auto scrollbar scrollbar-w-2 scrollbar-thumb-rounded-[0.1667rem] scrollbar-thumb-slate-200 scrollbar-track-gray-400 dark:scrollbar-thumb-slate-900 dark:scrollbar-track-gray-800">
     <div class="flex-1 px-3 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
         <ul class="py-2 pt-3">
-            <% @um = current_user.user_modules %>
+            <% @um = current_user.user_modules.where(territory_id: current_territory.id) %>
             <% if @um.present?%>
                 <% @um.each do |user_m| %>
                     <% if user_m.territory.department.name == "Beer"%>
