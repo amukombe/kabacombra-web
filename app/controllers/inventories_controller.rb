@@ -108,15 +108,13 @@ class InventoriesController < ApplicationController
   # DELETE /inventories/1 or /inventories/1.json
   def destroy
     @beer_dispatch = @inventory.beer_dispatch
-    if @beer_dispatch.present?
-      @beer_dispatch.order.update(status_id: 3) # Assuming 3 is the status for "Reversed"
-      
-      @inventory.destroy!
+    @beer_dispatch&.order&.update(status_id: 3)
 
-      respond_to do |format|
-        format.html { redirect_to inventories_path, status: :see_other, notice: "Inventory was successfully destroyed." }
-        format.json { head :no_content }
-      end
+    @inventory.destroy!
+
+    respond_to do |format|
+      format.html { redirect_to inventories_path, status: :see_other, notice: "Inventory was successfully destroyed." }
+      format.json { head :no_content }
     end
   end
 
@@ -137,3 +135,4 @@ class InventoriesController < ApplicationController
       inventory_items_attributes: [:id, :inventory_id,:nile_product_id,:good_beer, :quantity_sold, :purchase_price, :selling_price, :is_active, :is_closed, :is_deleted, :manufacture_date, :expiry_date, :breakages, :bad_beer, :complaints, :_destroy])
     end
 end
+

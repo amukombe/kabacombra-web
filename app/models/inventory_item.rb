@@ -1,18 +1,19 @@
 class InventoryItem < ApplicationRecord
   scope :oldest, -> { order(created_at: :asc) }
+
   belongs_to :inventory
   belongs_to :nile_product
   belongs_to :dispatch_item, optional: true
-  has_many :inventory_item_stores
-  has_many :store, through: :inventory_item_store
+
+  has_many :inventory_item_stores, dependent: :destroy
+  has_many :stores, through: :inventory_item_stores
   # has_many :inventory_transactions, dependent: :destroy
-  
-  
+
   before_save :initialize_quantity_sold
   before_validation :generate_stock_number, on: :create
   after_create :create_transactions
+  before_destroy :remove_transactions
 
-  
   def self.search(params, territory_id)
     query = joins(:inventory_transactions, :inventory, :nile_product)
       .where("inventories.territory_id = ?", territory_id)
@@ -32,26 +33,28 @@ class InventoryItem < ApplicationRecord
   end
 
   def self.search_stock(params, territory_id, product_id)
-    query = joins(inventory: {}, nile_product:{})
-    .where("inventories.territory_id = ? AND nile_products.id=?", territory_id, product_id)
+    query = joins(inventory: {}, nile_product: {})
+      .where("inventories.territory_id = ? AND nile_products.id=?", territory_id, product_id)
 
     if params[:query].present?
       query = query.where("nile_products.name LIKE ? AND nile_products.id=?", "%#{sanitize_sql_like(params[:query])}%", product_id)
     end
+
     query
   end
 
   def quantity
-    return (self.quantity_received - self.quantity_sold)
+    quantity_received - quantity_sold
   end
 
   def total
-    self.quantity_received * self.purchase_price
+    quantity_received * purchase_price
   end
 
   private
+
   def generate_stock_number
-    if self.stock_no.blank?
+    if stock_no.blank?
       last_stock = InventoryItem.order(:created_at).last
       next_number = last_stock&.stock_no.to_i + 1 || 1
       self.stock_no = next_number.to_s.rjust(5, '0')
@@ -59,98 +62,76 @@ class InventoryItem < ApplicationRecord
   end
 
   def validate_quantity
-      total_qty = self.quantity_received + self.breakages + self.missing_bottles
-      if total_qty != self.quantity_dispatched
-        errors.add(:quantity_dispatched, "must be equal to received + breakages + missing bottles")
-      end
+    total_qty = quantity_received + breakages + missing_bottles
+    if total_qty != quantity_dispatched
+      errors.add(:quantity_dispatched, "must be equal to received + breakages + missing bottles")
+    end
   end
-  
+
   def initialize_quantity_sold
     self.quantity_sold ||= 0
   end
 
   def create_transactions
     return unless inventory.persisted?
-  
-    InventoryTransaction.create!(
-      nile_product_id: nile_product_id,
-      territory_id: inventory.territory_id,
-      transaction_quantity: quantity_received,
-      transaction_type: 'purchase',
-      direction: 'in',
-      transaction_date: inventory.delivery_time
-    ) if quantity_received.present? && quantity_received > 0
 
-    InventoryTransaction.create!(
-      nile_product_id: nile_product_id,
-      territory_id: inventory.territory_id,
-      transaction_quantity: breakages,
-      transaction_type: 'purchase breakage',
-      direction: 'out',
-      transaction_date: inventory.delivery_time
-    ) if breakages.present? && breakages > 0
+    transaction_definitions.each do |attributes|
+      InventoryTransaction.create!(attributes)
+    end
+  end
 
-    InventoryTransaction.create!(
-      nile_product_id: nile_product_id,
-      territory_id: inventory.territory_id,
-      transaction_quantity: missing_bottles,
-      transaction_type: 'missing bottles',
-      direction: 'out',
-      transaction_date: inventory.delivery_time
-    ) if missing_bottles.present? && missing_bottles > 0
+  def remove_transactions
+    InventoryTransaction.where("note LIKE ?", "#{transaction_note_prefix}%").delete_all
 
-    InventoryTransaction.create!(
-      nile_product_id: nile_product_id,
-      territory_id: inventory.territory_id,
-      transaction_quantity: complaints,
-      transaction_type: 'complaint',
-      direction: 'out',
-      transaction_date: inventory.delivery_time
-    ) if complaints.present? && complaints > 0
+    transaction_definitions.each do |attributes|
+      legacy_transaction_id = InventoryTransaction.where(
+        nile_product_id: attributes[:nile_product_id],
+        territory_id: attributes[:territory_id],
+        transaction_quantity: attributes[:transaction_quantity],
+        transaction_type: attributes[:transaction_type],
+        direction: attributes[:direction],
+        transaction_date: attributes[:transaction_date],
+        note: [nil, ""]
+      ).order(created_at: :desc).limit(1).pick(:id)
 
-    InventoryTransaction.create!(
-      nile_product_id: nile_product_id,
-      territory_id: inventory.territory_id,
-      transaction_quantity: bad_beer,
-      transaction_type: 'bad beer',
-      direction: 'out',
-      transaction_date: inventory.delivery_time
-    ) if bad_beer.present? && bad_beer > 0
+      InventoryTransaction.where(id: legacy_transaction_id).delete_all if legacy_transaction_id.present?
+    end
+  end
 
-    InventoryTransaction.create!(
-      nile_product_id: nile_product_id,
-      territory_id: inventory.territory_id,
-      transaction_quantity: good_beer,
-      transaction_type: 'good beer',
-      direction: 'in',
-      transaction_date: inventory.delivery_time
-    ) if good_beer.present? && good_beer > 0
+  def transaction_definitions
+    [
+      build_transaction(quantity_received, 'purchase', 'in'),
+      build_transaction(breakages, 'purchase breakage', 'out'),
+      build_transaction(missing_bottles, 'missing bottles', 'out'),
+      build_transaction(complaints, 'complaint', 'out'),
+      build_transaction(bad_beer, 'bad beer', 'out'),
+      build_transaction(good_beer, 'good beer', 'in'),
+      build_transaction(transfers, 'transfers', 'out'),
+      build_transaction(returns, 'returns', 'in'),
+      build_transaction(nbl_return, 'nbl_return', 'out')
+    ].compact
+  end
 
-    InventoryTransaction.create!(
-      nile_product_id: nile_product_id,
-      territory_id: inventory.territory_id,
-      transaction_quantity: transfers,
-      transaction_type: 'transfers',
-      direction: 'out',
-      transaction_date: inventory.delivery_time
-    ) if transfers.present? && transfers > 0
+  def build_transaction(quantity, transaction_type, direction)
+    return if quantity.blank? || quantity.to_d <= 0
 
-    InventoryTransaction.create!(
+    {
       nile_product_id: nile_product_id,
       territory_id: inventory.territory_id,
-      transaction_quantity: returns,
-      transaction_type: 'returns',
-      direction: 'in',
-      transaction_date: inventory.delivery_time
-    ) if returns.present? && returns > 0
+      transaction_quantity: quantity,
+      transaction_type: transaction_type,
+      direction: direction,
+      transaction_date: inventory.delivery_time,
+      note: transaction_note(transaction_type, direction)
+    }
+  end
 
-    InventoryTransaction.create!(
-      nile_product_id: nile_product_id,
-      territory_id: inventory.territory_id,
-      transaction_quantity: nbl_return,
-      transaction_type: 'nbl_return',
-      direction: 'out',
-      transaction_date: inventory.delivery_time
-    ) if nbl_return.present? && nbl_return > 0
+  def transaction_note_prefix
+    "inventory_item:#{id}:"
+  end
+
+  def transaction_note(transaction_type, direction)
+    "#{transaction_note_prefix}#{transaction_type}:#{direction}"
   end
 end
+
