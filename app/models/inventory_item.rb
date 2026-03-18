@@ -101,9 +101,9 @@ class InventoryItem < ApplicationRecord
   def transaction_definitions
     [
       build_transaction(quantity_received, 'purchase', 'in'),
-      build_transaction(breakages, 'purchase breakage', 'out'),
-      build_transaction(missing_bottles, 'missing bottles', 'out'),
-      build_transaction(complaints, 'complaint', 'out'),
+      #build_transaction(breakages, 'purchase breakage', 'out'),
+      #build_transaction(missing_bottles, 'missing bottles', 'out'),
+      #build_transaction(complaints, 'complaint', 'out'),
       build_transaction(bad_beer, 'bad beer', 'out'),
       build_transaction(good_beer, 'good beer', 'in'),
       build_transaction(transfers, 'transfers', 'out'),
