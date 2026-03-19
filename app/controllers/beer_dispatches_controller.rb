@@ -71,11 +71,14 @@ class BeerDispatchesController < ApplicationController
 
   # DELETE /beer_dispatches/1 or /beer_dispatches/1.json
   def destroy
-    @beer_dispatch.destroy!
+    @order = @beer_dispatch.order
+    if @order.update(status_id: 2)
+      @beer_dispatch.destroy!
 
-    respond_to do |format|
-      format.html { redirect_to beer_dispatches_path, status: :see_other, notice: "Beer dispatch was successfully destroyed." }
-      format.json { head :no_content }
+      respond_to do |format|
+        format.html { redirect_to beer_dispatches_path, status: :see_other, notice: "Beer dispatch was successfully destroyed." }
+        format.json { head :no_content }
+      end
     end
   end
 

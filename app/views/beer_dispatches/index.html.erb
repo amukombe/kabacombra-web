@@ -101,11 +101,15 @@
                           <li>
                               <%= link_to edit_beer_dispatch_path(dispatch), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
                           </li>
+                          <li>
+                            <button data-modal-target="popup-modal-<%=dispatch.id%>" data-modal-toggle="popup-modal-<%=dispatch.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Reject Order</button>
+                          </li>
                         <%end%>
                     </ul>
                 </div>
                 </td>
               </tr>
+              <%= render "confirm_delete_modal", dispatch: dispatch%>
             <%end%>
             </tbody>
           </table>
