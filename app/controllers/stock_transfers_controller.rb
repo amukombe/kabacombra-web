@@ -12,6 +12,7 @@ class StockTransfersController < ApplicationController
 
   # GET /stock_transfers/new
   def new
+    @active_link = "stock_transfers"
     @stock_transfer = StockTransfer.new
     @warehouses = current_territory.warehouses
     @territories = Territory.all
@@ -21,10 +22,15 @@ class StockTransfersController < ApplicationController
 
   # GET /stock_transfers/1/edit
   def edit
+    @active_link = "stock_transfers"
+    @warehouses = current_territory.warehouses
+    @territories = Territory.all
+    @products = NileProduct.all
   end
 
   # POST /stock_transfers or /stock_transfers.json
   def create
+    @active_link = "stock_transfers"
     @stock_transfer = StockTransfer.new(stock_transfer_params)
     @warehouses = current_territory.warehouses
     @territories = Territory.all
@@ -43,6 +49,8 @@ class StockTransfersController < ApplicationController
 
   # PATCH/PUT /stock_transfers/1 or /stock_transfers/1.json
   def update
+    @active_link = "stock_transfers"
+    
     respond_to do |format|
       if @stock_transfer.update(stock_transfer_params)
         format.html { redirect_to inventory_items_path, notice: "Stock transfer was successfully updated." }

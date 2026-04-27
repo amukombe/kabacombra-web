@@ -13,6 +13,7 @@ class LoadingOrdersController < ApplicationController
 
   # GET /loading_orders/new
   def new
+    @active_link = "loading_orders"
     @loading_order = LoadingOrder.new
     @products = NileProduct.all
     @units = UnitOfMeasurement.all
@@ -24,6 +25,7 @@ class LoadingOrdersController < ApplicationController
 
   # GET /loading_orders/1/edit
   def edit
+    @active_link = "loading_orders"
     @products = NileProduct.all
     @units = UnitOfMeasurement.all
     @employees = current_territory.employees
@@ -33,6 +35,7 @@ class LoadingOrdersController < ApplicationController
 
   # POST /loading_orders or /loading_orders.json
   def create
+    @active_link = "loading_orders"
     @loading_order = LoadingOrder.new(loading_order_params)
     @products = NileProduct.all
     @units = UnitOfMeasurement.all
@@ -55,6 +58,7 @@ class LoadingOrdersController < ApplicationController
 
   # PATCH/PUT /loading_orders/1 or /loading_orders/1.json
   def update
+    @active_link = "loading_orders"
     @products = NileProduct.all
     @units = UnitOfMeasurement.all
     @employees = current_territory.employees

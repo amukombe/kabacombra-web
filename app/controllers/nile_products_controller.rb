@@ -147,6 +147,7 @@ class NileProductsController < ApplicationController
   end
 
   def breakages
+    @active_link = "breakages"
     @products = NileProduct.all
     @inventory_transaction = InventoryTransaction.new
   end

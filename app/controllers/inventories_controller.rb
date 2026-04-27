@@ -86,12 +86,14 @@ class InventoriesController < ApplicationController
 
   #Additional method for inventory not coming from dispatches
   def existing_stock
+    @active_link = "opening_stock"
     @inventory = Inventory.new
     @inventory.inventory_items.build
     @nile_products = NileProduct.all
     @warehouses = current_territory.warehouses
   end
   def create_existing_stock
+    @active_link = "opening_stock"
     @inventory = Inventory.new(existing_stock_params)
     @inventory.user_id = current_user.id # Optional: Set user if not in form
     @inventory.territory_id = current_territory.id
