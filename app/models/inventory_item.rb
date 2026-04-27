@@ -52,7 +52,7 @@ class InventoryItem < ApplicationRecord
   end
 
   def total_quantity
-    quantity_received + breakages + missing_bottles + complaints
+    quantity_received.to_i + breakages.to_i + complaints.to_i
   end
 
   def total_case
