@@ -103,25 +103,25 @@
                   <span class="font-semibold"><%=item.name%></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to openning_stock_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%= item.opening_stock %></span><%end%>
+                  <%= link_to openning_stock_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%= number_with_delimiter(item.opening_stock, delimiter:",") %></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to quantity_in_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=item.quantity_in %></span><%end%>
+                  <%= link_to quantity_in_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=number_with_delimiter(item.quantity_in, delimeter:",") %></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to quantity_out_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=item.quantity_out %></span><%end%>
+                  <%= link_to quantity_out_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=number_with_delimiter(item.quantity_out, delimeter:",") %></span><%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= item.opening_stock.to_f + item.quantity_in.to_f - item.quantity_out.to_f %></span>
+                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i), delimiter:",") %></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.selling_price.to_i, delimiter: ',' )%></span>
+                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.nile_product.buying_price.to_i, delimiter: ',' )%></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.selling_price.to_i, delimiter: ',' )%></span>
+                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.nile_product.empty_type.price.to_i, delimiter: ',' )%></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.selling_price.to_i, delimiter: ',' )%></span>
+                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.nile_product.buying_price.to_i, delimiter: ',' )%></span>
                 </td>
               </tr>
             <%end%>
