@@ -39,9 +39,6 @@
                   Product Details
                 </th>
                 
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Action
-                </th>
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
@@ -49,6 +46,11 @@
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   <div class="flex flex-col space-y-1">
+                    <span class="text-sm font-medium"><%= inventory.delivery_time&.strftime("%d %b, %Y") %> (<%= inventory.beer_dispatch.order.order_number %>)</span>
+                    <span class="text-xs">Invoice #: <span class="font-normal"><%= inventory.beer_dispatch.invoice_no %></span></span>
+                    <span class="text-xs">FDN: <span class="font-normal"><%= inventory.beer_dispatch.fdn_number %></span></span>
+                    <span class="text-xs">Truck No: <span class="font-normal"><%= inventory.beer_dispatch.truck_numberplate %> <%if inventory.beer_dispatch.driver_name? %>(<%= inventory.beer_dispatch.driver_name %>)<% end %></span></span>
+                    <span class="text-xs">Warehouse: <span class="font-normal"><%= inventory.warehouse&.name %></span></span>
                     <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=inventory.beer_dispatch.order.id%>" data-dropdown-placement="bottom">
                         <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
                         <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -65,13 +67,6 @@
                             </li>
                         </ul>
                     </div>
-                    
-                    <span class="text-sm font-medium"><%= inventory.delivery_time&.strftime("%d %b, %Y") %> (<%= inventory.beer_dispatch.order.order_number %>)</span>
-                    <span class="text-xs">Invoice #: <span class="font-normal"><%= inventory.beer_dispatch.invoice_no %></span></span>
-                    <span class="text-xs">FDN: <span class="font-normal"><%= inventory.beer_dispatch.fdn_number %></span></span>
-                    <span class="text-xs">Truck No: <span class="font-normal"><%= inventory.beer_dispatch.truck_numberplate %> <%if inventory.beer_dispatch.driver_name? %>(<%= inventory.beer_dispatch.driver_name %>)<% end %></span></span>
-                    <span class="text-xs">Warehouse: <span class="font-normal"><%= inventory.warehouse&.name %></span></span>
-                    
                   </div>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
@@ -108,9 +103,6 @@
                   </table>
                 </td>
                 
-                <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                  
-                </td>
               </tr>
               <%= render "confirm_delete_modal", inventory: inventory%>
             <%end%>
