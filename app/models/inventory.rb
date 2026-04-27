@@ -16,4 +16,10 @@ class Inventory < ApplicationRecord
   def total_price
     inventory_items.sum(&:total)
   end
+  def total_case_value
+    inventory_items.sum(&:total_case)
+  end
+  def total_Purchase
+    total_price + total_case_value
+  end
 end

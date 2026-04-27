@@ -48,7 +48,19 @@ class InventoryItem < ApplicationRecord
   end
 
   def total
-    quantity_received * purchase_price
+    total_quantity * purchase_price
+  end
+
+  def total_quantity
+    quantity_received + breakages + missing_bottles + complaints
+  end
+
+  def total_case
+    total_quantity * nile_product.empty_type.price
+  end
+
+  def total_Purchase
+    total + total_case
   end
 
   private

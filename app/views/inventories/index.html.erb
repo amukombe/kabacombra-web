@@ -78,11 +78,11 @@
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_received) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.breakages) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.complaints) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_received.to_i + item.breakages.to_i + item.missing_bottles.to_i + item.complaints.to_i) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_quantity) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.purchase_price, precision: 2) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total, precision: 2) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total, precision: 2) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total, precision: 2) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_case, precision: 2) %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_Purchase, precision: 2) %></td>
                         </tr>
                       <% end %>
                       <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="text-xs font-bold"><%= number_with_delimiter(inventory.total_price, precision: 2) %></span></td></tr>
