@@ -81,6 +81,12 @@
                   Closing Stock
                 </th>
                 <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Beer Value
+                </th>
+                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                  Empty Value
+                </th>
+                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Closing Stock Value
                 </th>
               </tr>
@@ -107,6 +113,12 @@
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
                   <span class="font-normal"><%= item.opening_stock.to_f + item.quantity_in.to_f - item.quantity_out.to_f %></span>
+                </td>
+                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.selling_price.to_i, delimiter: ',' )%></span>
+                </td>
+                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.selling_price.to_i, delimiter: ',' )%></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
                   <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.selling_price.to_i, delimiter: ',' )%></span>
