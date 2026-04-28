@@ -76,6 +76,9 @@ Rails.application.routes.draw do
       patch :update_store
       delete :remove_store
     end
+    collection do
+        get :empties
+    end
   end
   resources :inventories do
     collection do
