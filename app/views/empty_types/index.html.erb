@@ -52,10 +52,10 @@
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
-            <% @empty_types.each_with_index do |empty_type, index| %>
+            <% @empty_types.each do |empty_type| %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=index+1%></span>
+                  <span class="font-semibold"><%= empty_type.empty_number %></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   <span class="font-semibold"><%=empty_type.name%></span>

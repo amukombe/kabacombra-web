@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_28_132117) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_28_133126) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -252,6 +252,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_28_132117) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "bottle_price", precision: 10
+    t.integer "empty_number"
   end
 
   create_table "expense_categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -422,6 +423,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_28_132117) do
     t.string "buying_price"
     t.string "selling_price"
     t.bigint "empty_type_id"
+    t.integer "product_number"
     t.index ["empty_type_id"], name: "index_nile_products_on_empty_type_id"
     t.index ["nile_category_id"], name: "index_nile_products_on_nile_category_id"
   end

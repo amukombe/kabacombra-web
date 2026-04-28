@@ -3,7 +3,7 @@ class NileProductsController < ApplicationController
 
   # GET /nile_products or /nile_products.json
   def index
-    @nile_products = NileProduct.search(params).page(params[:page]).per(20)
+    @nile_products = NileProduct.search(params).order(product_number: :asc).page(params[:page]).per(20)
   end
 
   # GET /nile_products/1 or /nile_products/1.json
@@ -170,7 +170,7 @@ class NileProductsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def nile_product_params
-      params.require(:nile_product).permit(:name, :crate_size, :bottle_size, :pcode, :nile_category_id, :buying_price, :selling_price, :empty_type_id)
+      params.require(:nile_product).permit(:name, :crate_size, :bottle_size, :pcode, :nile_category_id, :buying_price, :selling_price, :empty_type_id, :product_number)
     end
     def breakage_params
       params.require(:inventory_item).permit(:nile_product_id, :breakages)
