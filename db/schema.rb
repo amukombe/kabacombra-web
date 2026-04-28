@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_03_072519) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_28_132117) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -251,6 +251,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_03_072519) do
     t.decimal "price", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "bottle_price", precision: 10
   end
 
   create_table "expense_categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
