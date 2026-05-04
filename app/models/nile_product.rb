@@ -1,10 +1,10 @@
 class NileProduct < ApplicationRecord
   belongs_to :nile_category
-  has_many :order_items
-  has_many :loading_order_items
-  has_many :inventory_items
+  has_many :order_items, dependent: :destroy
+  has_many :loading_order_items, dependent: :destroy
+  has_many :inventory_items, dependent: :destroy
   belongs_to :empty_type, optional: true
-  has_many :inventory_transactions
+  has_many :inventory_transactions, dependent: :destroy
   has_many :vendor_adjustiment_items, dependent: :destroy
   has_many :sale_items, dependent: :destroy
   has_many :stock_transfer_items, dependent: :destroy
