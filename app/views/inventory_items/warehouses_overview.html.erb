@@ -1,0 +1,39 @@
+<%= render "/shared/inventory_nav"%>
+<h2 class="mb-6 text-xl font-bold">Warehouses Overview</h2>
+
+<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+  <% @warehouse_stats.each do |w| %>
+    <div class="p-4 bg-white rounded shadow">
+
+      <h3 class="mb-2 text-lg font-semibold">
+        <%= w[:store].name %>
+      </h3>
+
+      <p class="text-sm text-gray-500">
+        Products: <%= w[:total_products] %>
+      </p>
+
+      <p class="text-sm">
+        Stock: <strong><%= w[:total_stock] %></strong>
+      </p>
+
+      <p class="text-sm">
+        Value: <strong>
+          <%= number_with_delimiter(w[:stock_value]) %>
+        </strong>
+      </p>
+
+      <p class="mt-2 text-xs text-gray-500">
+        Today → In: <%= w[:today_in] %> | Out: <%= w[:today_out] %>
+      </p>
+
+      <!-- Optional: link to detailed warehouse -->
+      <%= link_to "View Details",
+          warehouse_overview_path(w[:store].id),
+          class: "text-blue-500 text-xs mt-2 inline-block" %>
+
+    </div>
+  <% end %>
+
+</div>

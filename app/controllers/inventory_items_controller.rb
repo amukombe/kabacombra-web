@@ -71,6 +71,56 @@ class InventoryItemsController < ApplicationController
     @warehouses = current_territory.warehouses
   end
 
+  def warehouses_overview
+    @territory = current_territory
+
+    today = Date.today.beginning_of_day
+    tomorrow = today + 1.day
+
+    @warehouses = @territory.warehouses
+
+    @warehouse_stats = @warehouses.map do |store|
+
+      base_query = @territory.inventory_transactions
+        .joins(:nile_product)
+        .joins("LEFT JOIN inventory_items ON inventory_items.nile_product_id = inventory_transactions.nile_product_id")
+        .joins("INNER JOIN inventory_item_stores ON inventory_item_stores.inventory_item_id = inventory_items.id")
+        .where("inventory_item_stores.store_id = ?", store.id)
+
+      summary = base_query.select(
+        "COUNT(DISTINCT nile_products.id) AS total_products",
+
+        "COALESCE(SUM(CASE WHEN direction = 'in' THEN transaction_quantity ELSE 0 END), 0)
+        -
+        COALESCE(SUM(CASE WHEN direction = 'out' THEN transaction_quantity ELSE 0 END), 0)
+        AS total_stock",
+
+        "COALESCE(SUM(
+          (
+            CASE WHEN direction = 'in' THEN transaction_quantity ELSE 0 END
+            -
+            CASE WHEN direction = 'out' THEN transaction_quantity ELSE 0 END
+          ) * nile_products.selling_price
+        ), 0) AS stock_value",
+
+        "COALESCE(SUM(CASE WHEN transaction_date >= '#{today}' AND transaction_date < '#{tomorrow}' AND direction = 'in'
+        THEN transaction_quantity ELSE 0 END), 0) AS today_in",
+
+        "COALESCE(SUM(CASE WHEN transaction_date >= '#{today}' AND transaction_date < '#{tomorrow}' AND direction = 'out'
+        THEN transaction_quantity ELSE 0 END), 0) AS today_out"
+      ).take
+
+      {
+        store: store,
+        total_products: summary.total_products,
+        total_stock: summary.total_stock.to_i,
+        stock_value: summary.stock_value.to_i,
+        today_in: summary.today_in.to_i,
+        today_out: summary.today_out.to_i
+      }
+    end
+  end
+
   # GET /inventory_items/1 or /inventory_items/1.json
   def show
   end
