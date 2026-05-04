@@ -3,7 +3,8 @@ class LoadingOrdersController < ApplicationController
 
   # GET /loading_orders or /loading_orders.json
   def index
-    @active_link = "loading_orders"
+    @active_link = "purchases"
+    @active_sub_link = "loading_orders"
     @loading_orders = LoadingOrder.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 

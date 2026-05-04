@@ -1,9 +1,33 @@
 class StockTransfer < ApplicationRecord
     belongs_to :territory
+    belongs_to :source, class_name: "Store", foreign_key: "source_id", optional: true
+    belongs_to :destination, class_name: "Store", foreign_key: "destination_id", optional: true
     has_many :stock_transfer_items, dependent: :destroy
     accepts_nested_attributes_for :stock_transfer_items, allow_destroy: true
     enum transfer_type: { warehouse_transfer: "warehouse_transfer",branch_transfer: "branch_transfer", distributor_transfer: "distributor_transfer"}
     after_create :create_inventory_transactions
+
+    def self.search(params, territory_id)
+        stock_transfers = StockTransfer.where(territory_id: territory_id)
+    
+        if params[:transfer_type].present?
+          stock_transfers = stock_transfers.where(transfer_type: params[:transfer_type])
+        end
+    
+        if params[:source_id].present?
+          stock_transfers = stock_transfers.where(source_id: params[:source_id])
+        end
+    
+        if params[:destination_id].present?
+          stock_transfers = stock_transfers.where(destination_id: params[:destination_id])
+        end
+    
+        if params[:start_date].present? && params[:end_date].present?
+          stock_transfers = stock_transfers.where(transfer_date: params[:start_date].to_date..params[:end_date].to_date)
+        end
+    
+        stock_transfers
+    end
 
     private
     def create_inventory_transactions

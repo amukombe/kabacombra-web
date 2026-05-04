@@ -3,7 +3,9 @@ class StockTransfersController < ApplicationController
 
   # GET /stock_transfers or /stock_transfers.json
   def index
-    @stock_transfers = StockTransfer.all
+    @active_link = "purchases"
+    @active_sub_link = "stock_transfers"
+    @stock_transfers = StockTransfer.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 
   # GET /stock_transfers/1 or /stock_transfers/1.json
@@ -12,7 +14,8 @@ class StockTransfersController < ApplicationController
 
   # GET /stock_transfers/new
   def new
-    @active_link = "stock_transfers"
+    @active_link = "purchases"
+    @active_sub_link = "stock_transfers"
     @stock_transfer = StockTransfer.new
     @warehouses = current_territory.warehouses
     @territories = Territory.all
@@ -22,7 +25,8 @@ class StockTransfersController < ApplicationController
 
   # GET /stock_transfers/1/edit
   def edit
-    @active_link = "stock_transfers"
+    @active_link = "purchases"
+    @active_sub_link = "stock_transfers"
     @warehouses = current_territory.warehouses
     @territories = Territory.all
     @products = NileProduct.all
@@ -30,7 +34,8 @@ class StockTransfersController < ApplicationController
 
   # POST /stock_transfers or /stock_transfers.json
   def create
-    @active_link = "stock_transfers"
+    @active_link = "purchases"
+    @active_sub_link = "stock_transfers"
     @stock_transfer = StockTransfer.new(stock_transfer_params)
     @warehouses = current_territory.warehouses
     @territories = Territory.all
@@ -49,8 +54,11 @@ class StockTransfersController < ApplicationController
 
   # PATCH/PUT /stock_transfers/1 or /stock_transfers/1.json
   def update
-    @active_link = "stock_transfers"
-    
+    @active_link = "purchases"
+    @active_sub_link = "stock_transfers"
+    @warehouses = current_territory.warehouses
+    @territories = Territory.all
+    @products = NileProduct.all
     respond_to do |format|
       if @stock_transfer.update(stock_transfer_params)
         format.html { redirect_to inventory_items_path, notice: "Stock transfer was successfully updated." }

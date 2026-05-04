@@ -4,19 +4,11 @@
     <%= stock_transfer.transfer_type %>
   </p>
 
-  <p>
-    <strong>Source type:</strong>
-    <%= stock_transfer.source_type %>
-  </p>
 
   <p>
     <strong>Source:</strong>
     <%= stock_transfer.source_id %>
-  </p>
-
-  <p>
-    <strong>Destination type:</strong>
-    <%= stock_transfer.destination_type %>
+    <%= stock_transfer.territory.name %>
   </p>
 
   <p>
