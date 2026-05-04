@@ -65,6 +65,7 @@ class InventoryItemsController < ApplicationController
         "
       )
     .group("nile_products.id, nile_products.name, nile_products.selling_price")
+    .order("nile_products.product_number ASC")
     .page(params["page"]).per(10)
     
     @active_link = "purchases"

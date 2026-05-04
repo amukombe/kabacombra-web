@@ -29,6 +29,7 @@ class InventoryItem < ApplicationRecord
           'SUM(CASE WHEN inventory_transactions.direction = "in" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_in',
           'SUM(CASE WHEN inventory_transactions.direction = "out" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_out'
         )
+        .order("nile_products.product_number ASC")
         #select("nile_product_id, nile_products.name, SUM(quantity_received-quantity_sold) as openning_stock, SUM(quantity_received) as total_purchases, SUM(quantity_sold) as total_quantity_sold, SUM(breakages) as total_breakages, SUM(returns) as total_returns, SUM(nbl_return) as total_nbl_returns, SUM(transfers) as total_transfers, SUM(remaining_quantity*nile_products.selling_price) as total_closing_stock_value")
   end
 
@@ -64,6 +65,7 @@ class InventoryItem < ApplicationRecord
               COALESCE(inventory_items.complaints, 0)
             ELSE 0 END) AS total_quantity"
         )
+        .order("nile_products.product_number ASC")
   end
 
   def self.search_stock(params, territory_id, product_id)
