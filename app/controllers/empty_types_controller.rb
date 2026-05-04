@@ -65,6 +65,7 @@ class EmptyTypesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def empty_type_params
-      params.require(:empty_type).permit(:name, :price, :bottle_price, :empty_number)
+      params.require(:empty_type).permit(:name, :recode, :price, :shell_type, :scode, :shell_price, 
+      :bottle_type, :bcode, :bottle_price, :empty_number, :shell_number, :crate_size)
     end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_28_133126) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_04_135216) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -253,6 +253,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_28_133126) do
     t.datetime "updated_at", null: false
     t.decimal "bottle_price", precision: 10
     t.integer "empty_number"
+    t.string "rcode"
+    t.string "shell_type"
+    t.string "scode"
+    t.decimal "shell_price", precision: 10
+    t.string "bottle_type"
+    t.string "bcode"
+    t.integer "shell_number"
+    t.integer "crate_size"
   end
 
   create_table "expense_categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

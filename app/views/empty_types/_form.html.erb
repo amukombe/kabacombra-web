@@ -32,16 +32,29 @@
       <%= form.text_field :rcode, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
     </div>
     <div class="grid-cols-3">
-      <%= form.label :price, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+      <%= form.label :empty_price, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
       <%= form.text_field :price, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
     </div>
     <div class="grid-cols-3">
-      <%= form.label :empty_size, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-      <%= form.text_field :empty_size, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
+      <%= form.label :shell_type, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+      <%= form.text_field :shell_type, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
+    </div>
+    <div class="grid-cols-3">
+      <%= form.label :scode, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+      <%= form.text_field :scode, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
     </div>
     <div class="grid-cols-3">
       <%= form.label :shell_price, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-      <%= form.text_field :empty_size, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
+      <%= form.text_field :shell_price, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
+    </div>
+
+    <div class="grid-cols-3">
+      <%= form.label :bottle_type, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+      <%= form.text_field :bottle_type, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
+    </div>
+    <div class="grid-cols-3">
+      <%= form.label :bcode, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+      <%= form.text_field :bcode, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
     </div>
     <div class="grid-cols-3">
       <%= form.label :bottle_price, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
@@ -50,6 +63,14 @@
     <div class="grid-cols-3">
       <%= form.label :empty_number, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
       <%= form.number_field :empty_number, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
+    </div>
+    <div class="grid-cols-3">
+      <%= form.label :shell_number, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+      <%= form.number_field :shell_number, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
+    </div>
+    <div class="grid-cols-3">
+      <%= form.label :crate_size, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+      <%= form.number_field :crate_size, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
     </div>
   </div>
   <div class="flex justify-end gap-4 p-4 mx-auto">
