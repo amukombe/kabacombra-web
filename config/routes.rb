@@ -85,6 +85,7 @@ Rails.application.routes.draw do
   resources :inventories do
     collection do
       get :existing_stock
+      get :received_stock
       post :create_existing_stock
     end
   end

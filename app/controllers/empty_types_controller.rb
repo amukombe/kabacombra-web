@@ -3,7 +3,7 @@ class EmptyTypesController < ApplicationController
 
   # GET /empty_types or /empty_types.json
   def index
-    @empty_types = EmptyType.search(params).page(params[:page]).per(20)
+    @empty_types = EmptyType.search(params).order(empty_number: :asc).page(params[:page]).per(20)
   end
 
   # GET /empty_types/1 or /empty_types/1.json
@@ -65,7 +65,7 @@ class EmptyTypesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def empty_type_params
-      params.require(:empty_type).permit(:name, :recode, :price, :shell_type, :scode, :shell_price, 
+      params.require(:empty_type).permit(:name, :rcode, :price, :shell_type, :scode, :shell_price, 
       :bottle_type, :bcode, :bottle_price, :empty_number, :shell_number, :crate_size)
     end
 end
