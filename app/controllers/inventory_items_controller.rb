@@ -68,6 +68,7 @@ class InventoryItemsController < ApplicationController
     .page(params["page"]).per(10)
     
     @active_link = "purchases"
+    @active_sub_link = "purchases"
     @warehouses = current_territory.warehouses
   end
 
