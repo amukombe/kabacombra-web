@@ -79,10 +79,6 @@
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Shortages</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Complaints</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Total Qty</th>
-                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Rate</th>
-                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Beer Value</th>
-                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Case Value</th>
-                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Purchase Value</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -93,13 +89,8 @@
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.breakages) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.complaints) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_quantity) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.purchase_price, precision: 2) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total, precision: 2) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_case, precision: 2) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_Purchase, precision: 2) %></td>
                         </tr>
                       <% end %>
-                      <tr><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="text-xs font-bold"><%= number_with_delimiter(inventory.total_price, precision: 2) %></span></td><td><span class="text-xs font-bold"><%= number_with_delimiter(inventory.total_case, precision: 2) %></span></td><td><span class="text-xs font-bold"><%= number_with_delimiter(inventory.total_Purchase, precision: 2) %></span></td></tr>
                     </tbody>
                   </table>
                 </td>
