@@ -41,6 +41,7 @@ class BeerDispatchesController < ApplicationController
     order_id = beer_dispatch_params[:order_id]
     @order = Order.find(order_id)
     @beer_dispatch = BeerDispatch.new(beer_dispatch_params)
+    @beer_dispatch.status_id = 4 # Set status to "Dispatched"
     @order_items = @order.order_items
     respond_to do |format|
       if @beer_dispatch.save

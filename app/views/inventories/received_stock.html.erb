@@ -34,9 +34,6 @@
             <thead class="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Order Details
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Product Details
                 </th>
                 
@@ -45,8 +42,9 @@
             <tbody class="bg-white dark:bg-gray-800">
             <% @inventories.each_with_index do |inventory, index| %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <div class="flex flex-col space-y-1">
+                
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
+                  <div class="flex flex-row space-x-2">
                     <span class="text-sm font-medium"><%= inventory.delivery_time&.strftime("%d %b, %Y") %> (<%= inventory.beer_dispatch.order.order_number %>)</span>
                     <% if inventory.beer_dispatch.order.status.code != "POS" %>
                     <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=inventory.beer_dispatch.order.id%>" data-dropdown-placement="bottom">
@@ -74,8 +72,7 @@
                     </div>
                     <% end %>
                   </div>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
+                  
                   <table class="min-w-full border border-collapse border-gray-300 dark:border-gray-700">
                     <thead>
                       <tr class="bg-gray-100 dark:bg-gray-800">
