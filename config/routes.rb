@@ -80,6 +80,7 @@ Rails.application.routes.draw do
     end
     collection do
         get :empties
+        get :received_stock
     end
   end
   resources :inventories do
@@ -88,7 +89,7 @@ Rails.application.routes.draw do
     end
     collection do
       get :existing_stock
-      get :received_stock
+      get :received_stock_details
       post :create_existing_stock
     end
   end

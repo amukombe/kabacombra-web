@@ -32,6 +32,40 @@ class InventoryItem < ApplicationRecord
         #select("nile_product_id, nile_products.name, SUM(quantity_received-quantity_sold) as openning_stock, SUM(quantity_received) as total_purchases, SUM(quantity_sold) as total_quantity_sold, SUM(breakages) as total_breakages, SUM(returns) as total_returns, SUM(nbl_return) as total_nbl_returns, SUM(transfers) as total_transfers, SUM(remaining_quantity*nile_products.selling_price) as total_closing_stock_value")
   end
 
+  def self.product_summary(params, territory_id)
+    query = NileProduct
+      .left_joins(inventory_items: :inventory)
+      .where("inventories.territory_id = ? OR inventories.id IS NULL", territory_id)
+
+    if params[:query].present?
+      query = query.where("nile_products.name LIKE ?", "%#{sanitize_sql_like(params[:query])}%")
+    end
+
+    query.group("nile_products.id, nile_products.name")
+        .select(
+          "nile_products.name AS product_name",
+
+          "SUM(CASE WHEN inventories.status_id = 13 
+            THEN COALESCE(inventory_items.quantity_received, 0) 
+            ELSE 0 END) AS total_received",
+
+          "SUM(CASE WHEN inventories.status_id = 13 
+            THEN COALESCE(inventory_items.breakages, 0) 
+            ELSE 0 END) AS total_breakages",
+
+          "SUM(CASE WHEN inventories.status_id = 13 
+            THEN COALESCE(inventory_items.complaints, 0) 
+            ELSE 0 END) AS total_complaints",
+
+          "SUM(CASE WHEN inventories.status_id = 13 
+            THEN 
+              COALESCE(inventory_items.quantity_received, 0) +
+              COALESCE(inventory_items.breakages, 0) +
+              COALESCE(inventory_items.complaints, 0)
+            ELSE 0 END) AS total_quantity"
+        )
+  end
+
   def self.search_stock(params, territory_id, product_id)
     query = joins(inventory: {}, nile_product: {})
       .where("inventories.territory_id = ? AND nile_products.id=?", territory_id, product_id)

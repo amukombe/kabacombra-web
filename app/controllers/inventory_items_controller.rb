@@ -72,6 +72,17 @@ class InventoryItemsController < ApplicationController
     @warehouses = current_territory.warehouses
   end
 
+  def received_stock
+    @active_link = "purchases"
+    @active_sub_link = "received"
+    @warehouses = current_territory.warehouses
+
+    @inventory_items = InventoryItem
+      .product_summary(params,current_territory.id)
+      .page(params[:page])
+      .per(20)
+  end
+
   def warehouses_overview
     @territory = current_territory
 

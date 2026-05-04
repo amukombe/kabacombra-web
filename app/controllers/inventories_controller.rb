@@ -7,7 +7,7 @@ class InventoriesController < ApplicationController
     @inventories = Inventory.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
-  def received_stock
+  def received_stock_details
     @active_link = "purchases"
     @active_sub_link = "received"
     @inventories = Inventory.search_received(params, current_territory.id).page(params[:page]).per(20)
@@ -19,9 +19,10 @@ class InventoriesController < ApplicationController
     @order = @inventory.beer_dispatch.order
     if @beer_dispatch.update(status_id: 13) # Update beer dispatch status to "Received"
       @order.update(status_id: 13) # Update order status to "Completed"
-      redirect_to received_stock_inventories_path, notice: "Inventory received successfully"
+      @inventory.update(status_id: 13) # Update inventory status to "Received"
+      redirect_to received_stock_inventory_items_path, notice: "Inventory received successfully"
     else
-      redirect_to received_stock_inventories_path, alert: "Failed to update inventory"
+      redirect_to received_stock_inventory_items_path, alert: "Failed to update inventory"
     end
   end
 
@@ -85,6 +86,7 @@ class InventoriesController < ApplicationController
     @dispatch = BeerDispatch.find(dispatch_id)
     @warehouses = current_territory.warehouses
     @inventory = Inventory.new(inventory_params)
+    @inventory.status_id = 4 # Set inventory status to "Received"
     @dispatch_items = @dispatch.dispatch_items
     respond_to do |format|
       if @inventory.save

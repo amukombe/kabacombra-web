@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_04_191619) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_04_212039) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -322,7 +322,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_04_191619) do
     t.bigint "territory_id", null: false
     t.bigint "beer_dispatch_id"
     t.bigint "warehouse_id"
+    t.bigint "status_id"
     t.index ["beer_dispatch_id"], name: "index_inventories_on_beer_dispatch_id"
+    t.index ["status_id"], name: "index_inventories_on_status_id"
     t.index ["territory_id"], name: "index_inventories_on_territory_id"
     t.index ["user_id"], name: "index_inventories_on_user_id"
     t.index ["warehouse_id"], name: "index_inventories_on_warehouse_id"
@@ -876,6 +878,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_04_191619) do
   add_foreign_key "financial_transactions", "territories"
   add_foreign_key "financial_transactions", "users"
   add_foreign_key "inventories", "beer_dispatches"
+  add_foreign_key "inventories", "statuses"
   add_foreign_key "inventories", "territories"
   add_foreign_key "inventories", "users"
   add_foreign_key "inventories", "warehouses"
