@@ -83,6 +83,9 @@ Rails.application.routes.draw do
     end
   end
   resources :inventories do
+    member do
+      patch :receive
+    end
     collection do
       get :existing_stock
       get :received_stock

@@ -9,9 +9,9 @@ class BeerDispatch < ApplicationRecord
   
   def self.search(params, territory_id)
     if params[:query].present?
-      joins(:order).where("fdn_number LIKE ? AND orders.status_id = ? AND territory_id = ?", "%#{sanitize_sql_like(params[:query])}%", 3, territory_id)
+      joins(:order).where("fdn_number LIKE ? AND orders.status_id IN (?) AND territory_id = ?", "%#{sanitize_sql_like(params[:query])}%", [3,4], territory_id)
     else
-      joins(:order).where(orders: { status_id: 3 }, territory_id: territory_id)
+      joins(:order).where(orders: { status_id: [3,4] }, territory_id: territory_id)
     end
   end
 

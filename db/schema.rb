@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_04_135216) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_04_191619) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -121,7 +121,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_04_135216) do
     t.string "driver_name"
     t.string "driver_mobile"
     t.string "invoice_no"
+    t.bigint "status_id"
     t.index ["order_id"], name: "index_beer_dispatches_on_order_id"
+    t.index ["status_id"], name: "index_beer_dispatches_on_status_id"
     t.index ["territory_id"], name: "index_beer_dispatches_on_territory_id"
     t.index ["user_id"], name: "index_beer_dispatches_on_user_id"
   end
@@ -848,6 +850,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_04_135216) do
   add_foreign_key "bank_withdraws", "territories"
   add_foreign_key "bank_withdraws", "users"
   add_foreign_key "beer_dispatches", "orders"
+  add_foreign_key "beer_dispatches", "statuses"
   add_foreign_key "beer_dispatches", "territories"
   add_foreign_key "beer_dispatches", "users"
   add_foreign_key "cheques", "bank_transactions"

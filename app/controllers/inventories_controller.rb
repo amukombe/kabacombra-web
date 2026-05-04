@@ -10,11 +10,37 @@ class InventoriesController < ApplicationController
   def received_stock
     @active_link = "purchases"
     @active_sub_link = "received"
-    @inventories = Inventory.search(params, current_territory.id).page(params[:page]).per(20)
+    @inventories = Inventory.search_received(params, current_territory.id).page(params[:page]).per(20)
+  end
+
+  def receive
+    @inventory = Inventory.find(params[:id])
+    @beer_dispatch = @inventory.beer_dispatch
+    @order = @inventory.beer_dispatch.order
+    if @beer_dispatch.update(status_id: 13) # Update beer dispatch status to "Received"
+      @order.update(status_id: 13) # Update order status to "Completed"
+      redirect_to received_stock_inventories_path, notice: "Inventory received successfully"
+    else
+      redirect_to received_stock_inventories_path, alert: "Failed to update inventory"
+    end
   end
 
   # GET /inventories/1 or /inventories/1.json
   def show
+    @dispatch = BeerDispatch.find(@inventory.beer_dispatch_id)
+    @inventory = Inventory.new(delivery_time: Time.now)
+    @warehouses = current_territory.warehouses
+    # Build dispatch items based on existing order items
+    @dispatch.dispatch_items.each do |item|
+      @inventory.inventory_items.build(
+        dispatch_item_id: item.id, 
+        quantity_dispatched: item.quantity_dispatched,
+        quantity_received: item.quantity_dispatched,
+        purchase_price: item.order_item.unit_price,
+        selling_price: item.order_item.nile_product.selling_price
+      )
+    end
+    @dispatch_items = @dispatch.dispatch_items
   end
 
   # GET /inventories/new
