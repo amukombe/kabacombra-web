@@ -1,0 +1,70 @@
+<div class="overflow-x-auto">
+
+  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+
+    <!-- HEADER -->
+    <thead class="bg-gray-50 dark:bg-gray-700">
+      <tr>
+
+        <!-- PRODUCT -->
+        <th class="p-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+          Product
+        </th>
+
+        <!-- STORES -->
+        <% @stores.each do |store| %>
+          <th class="p-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-white whitespace-nowrap">
+            <%= store.name %>
+          </th>
+        <% end %>
+
+        <!-- TOTAL -->
+        <th class="p-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-white">
+          Total
+        </th>
+
+      </tr>
+    </thead>
+
+
+    <!-- BODY -->
+    <tbody class="bg-white dark:bg-gray-800">
+
+      <% @products.each do |product| %>
+
+        <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+
+          <!-- PRODUCT NAME -->
+          <td class="p-3 text-sm font-semibold whitespace-nowrap dark:text-white">
+            <%= product.name %>
+          </td>
+
+          <% row_total = 0 %>
+
+          <!-- STORE VALUES -->
+          <% @stores.each do |store| %>
+
+            <% quantity = @report_data.dig(product.id, store.id).to_f %>
+
+            <% row_total += quantity %>
+
+            <td class="p-3 text-sm text-right dark:text-white">
+              <%= number_with_delimiter(quantity.to_i, delimiter: ',') %>
+            </td>
+
+          <% end %>
+
+          <!-- ROW TOTAL -->
+          <td class="p-3 text-sm font-bold text-right dark:text-white">
+            <%= number_with_delimiter(row_total.to_i, delimiter: ',' ) %>
+          </td>
+
+        </tr>
+
+      <% end %>
+
+    </tbody>
+
+  </table>
+
+</div>

@@ -8,6 +8,35 @@ class LoadingOrdersController < ApplicationController
     @loading_orders = LoadingOrder.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 
+  def loading_summary
+    @active_link = "purchases"
+    @active_sub_link = "loading_orders"
+
+    @stores = current_territory.stores.order(:name)
+
+    @products = NileProduct.order(:product_number)
+
+    # Single query for all totals
+    raw_data = LoadingOrderItem
+      .joins(:loading_order)
+      .where(loading_orders: {
+        territory_id: current_territory.id
+      })
+      .group(
+        :nile_product_id,
+        "loading_orders.store_id"
+      )
+      .sum(:quantity_loaded)
+
+    # Transform into easy lookup hash
+    @report_data = {}
+
+    raw_data.each do |(product_id, store_id), quantity|
+      @report_data[product_id] ||= {}
+      @report_data[product_id][store_id] = quantity
+    end
+  end
+
   # GET /loading_orders/1 or /loading_orders/1.json
   def show
   end

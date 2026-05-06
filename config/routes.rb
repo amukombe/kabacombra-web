@@ -69,7 +69,7 @@ Rails.application.routes.draw do
       patch :approve
     end
     collection do
-      
+      get :loading_summary
     end
   end
   resources :inventory_items do
