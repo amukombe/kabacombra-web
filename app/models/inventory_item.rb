@@ -22,7 +22,7 @@ class InventoryItem < ApplicationRecord
       query = query.where("nile_products.name LIKE ?", "%#{sanitize_sql_like(params[:query])}%")
     end
 
-    query.group('nile_products.id, nile_products.name,inventory_items.selling_price')
+    query.group('nile_products.id')
         .select(
           'nile_products.id  AS nile_product_id, nile_products.name, inventory_items.selling_price',
           'SUM(CASE WHEN inventory_transactions.direction = "in" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_opening_stock',
