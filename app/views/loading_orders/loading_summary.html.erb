@@ -21,6 +21,9 @@
                         <li>
                             <%= link_to loading_orders_path, data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>View Details<%end%>
                         </li>
+                        <li>
+                            <%= link_to new_loading_order_path, data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Create Loading Order<%end%>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -92,5 +95,5 @@
     </tbody>
 
   </table>
-
+    <%= render "summary_pagination" %>
 </div>

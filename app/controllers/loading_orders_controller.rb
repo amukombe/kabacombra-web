@@ -14,7 +14,7 @@ class LoadingOrdersController < ApplicationController
 
     @stores = current_territory.stores.order(:name)
 
-    @products = NileProduct.order(:product_number)
+    @products = NileProduct.order(:product_number).page(params[:page]).per(20)
 
     # Single query for all totals
     raw_data = LoadingOrderItem
