@@ -5,12 +5,9 @@
   <div class="col-span-1">
     <h1 class="text-gray-800 text-md dark:text-gray-100">Loading Orders</h1>
   </div> 
-  <div class="col-span-1 text-right">
-    <%= link_to new_loading_order_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> New loading order<%end%>
-  </div> 
 </div>
 <div class="mb-3">
-    <%= form_tag loading_orders_path, class:"flex items-start max-w-sm", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do |form| %>
+    <%= form_tag beer_returns_path, class:"flex items-start max-w-sm", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do |form| %>
     <label for="simple-search" class="sr-only">Search</label>
     <div class="relative w-full">
         <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
@@ -46,33 +43,28 @@
                   Sales Rep
                 </th>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Status
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Action
                 </th>
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
-            <% @loading_orders.each_with_index do |item, index| %>
+            <% @beer_returns.each_with_index do |item, index| %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=  item.order_number%></span>
+                  <span class="font-semibold"><%=  item.loading_order.order_number%></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%item.loading_order_items.each do |product|%>
+                  <%item.beer_return_items.each do |product|%>
                   <span class="font-semibold"><%=product.nile_product.name%></span><br/>
-                  <span class="font-normal">Qty: <%=product.quantity_loaded%></span>
+                  <span class="font-normal">Qty Loaded: <%=product.quantity_loaded%></span>
+                  <span class="font-normal">Qty Returned: <%=product.quantity_returned%></span>
                   <%end%>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=item.store.name%></span>
+                  <span class="font-normal"><%=item.loading_order.store.name%></span>
                 </td>
                 <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=Employee.find_by(id: item.sales_man).fullname%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= render "order_status", order: item%>
+                  <span class="font-normal"><%=item.loading_order.sales_person %></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=item.id%>" data-dropdown-placement="bottom">
@@ -86,20 +78,13 @@
                 <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=item.id%>">
                     
                     <ul class="py-2" aria-labelledby="order-menu-button">
-                        
-                      <% if item.status.code =="LOS" %>
                         <li>
-                          <%= link_to edit_loading_order_path(item), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                          <%= link_to edit_beer_return_path(item), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
                         </li>
 
                         <li>
                           <button data-modal-target="popup-modal-<%=item.id%>" data-modal-toggle="popup-modal-<%=item.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
                         </li>
-                      <% else %>
-                        <li>
-                          <%= link_to new_beer_return_path(id: item.id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Record Return<%end%>
-                        </li>
-                      <%end%>
                     </ul>
                 </div>
                 </td>

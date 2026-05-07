@@ -4,6 +4,8 @@ class LoadingOrder < ApplicationRecord
   has_many :loading_order_items, dependent: :destroy
   belongs_to :status
   belongs_to :store, optional: true
+  # belongs_to :sales_person, class_name: "Employee", foreign_key: "sales_man"
+  has_one :beer_return, dependent: :destroy
   accepts_nested_attributes_for :loading_order_items, allow_destroy: true, reject_if: :all_blank
   validates :loading_date, :order_number, :sales_man, :authorized_by, presence: true
   before_validation :generate_order_number, on: :create
@@ -25,6 +27,10 @@ class LoadingOrder < ApplicationRecord
     end
   
     query
+  end
+
+  def sales_person
+    Employee.find_by(id: sales_man)&.fullname
   end
 
   private

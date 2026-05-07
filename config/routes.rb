@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  resources :beer_returns do
+    collection do
+      get :return_summary
+    end
+  end
   resources :bank_transfers
   resources :suppliers
   resources :payments

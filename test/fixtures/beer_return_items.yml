@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  beer_return: one
+  nile_product: one
+  quantity_loaded: 9.99
+  quantity_returned: 9.99
+  holding_sale_quantity: 9.99
+  missing_bottles: 9.99
+
+two:
+  beer_return: two
+  nile_product: two
+  quantity_loaded: 9.99
+  quantity_returned: 9.99
+  holding_sale_quantity: 9.99
+  missing_bottles: 9.99

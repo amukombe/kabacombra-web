@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_04_212039) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_06_215829) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -126,6 +126,29 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_04_212039) do
     t.index ["status_id"], name: "index_beer_dispatches_on_status_id"
     t.index ["territory_id"], name: "index_beer_dispatches_on_territory_id"
     t.index ["user_id"], name: "index_beer_dispatches_on_user_id"
+  end
+
+  create_table "beer_return_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "beer_return_id", null: false
+    t.bigint "nile_product_id", null: false
+    t.decimal "quantity_loaded", precision: 10
+    t.decimal "quantity_returned", precision: 10
+    t.decimal "holding_sale_quantity", precision: 10
+    t.decimal "missing_bottles", precision: 10
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["beer_return_id"], name: "index_beer_return_items_on_beer_return_id"
+    t.index ["nile_product_id"], name: "index_beer_return_items_on_nile_product_id"
+  end
+
+  create_table "beer_returns", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "loading_order_id", null: false
+    t.datetime "return_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "territory_id", null: false
+    t.index ["loading_order_id"], name: "index_beer_returns_on_loading_order_id"
+    t.index ["territory_id"], name: "index_beer_returns_on_territory_id"
   end
 
   create_table "car_makes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -855,6 +878,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_04_212039) do
   add_foreign_key "beer_dispatches", "statuses"
   add_foreign_key "beer_dispatches", "territories"
   add_foreign_key "beer_dispatches", "users"
+  add_foreign_key "beer_return_items", "beer_returns"
+  add_foreign_key "beer_return_items", "nile_products"
+  add_foreign_key "beer_returns", "loading_orders"
+  add_foreign_key "beer_returns", "territories"
   add_foreign_key "cheques", "bank_transactions"
   add_foreign_key "cheques", "territories"
   add_foreign_key "cheques", "users"
