@@ -16,7 +16,7 @@ class BeerReturnsController < ApplicationController
     @stores = current_territory.stores.order(:name)
 
     @products = NileProduct
-                  .order(:name)
+                  .order(:product_number)
                   .page(params[:page])
                   .per(20)
 
