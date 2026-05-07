@@ -7,6 +7,13 @@ class BeerReturnsController < ApplicationController
     @active_sub_link = "returns"
     @beer_returns = BeerReturn.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
+
+  # GET /beer_returns/holding_sale or /beer_returns/holding_sale.json
+  def holding_sale
+    @active_link = "purchases"
+    @active_sub_link = "holding_sale"
+    @beer_returns = BeerReturn.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
+  end
   
   # GET /beer_returns/summary
   def return_summary
@@ -51,12 +58,57 @@ class BeerReturnsController < ApplicationController
     end
   end
 
+  # GET /beer_returns/holding_sale_summary
+  def holding_sale_summary
+    @active_link = "purchases"
+    @active_sub_link = "holding_sale"
+
+    @stores = current_territory.stores.order(:name)
+
+    @products = NileProduct
+                  .order(:product_number)
+                  .page(params[:page])
+                  .per(20)
+
+    # Optional search
+    if params[:query].present?
+      @products = @products.where(
+        "nile_products.name LIKE ?",
+        "%#{params[:query]}%"
+      )
+    end
+
+    # Summary data
+    raw_data = BeerReturnItem
+      .joins(beer_return: :loading_order)
+      .where(
+        beer_returns: {
+          territory_id: current_territory.id
+        }
+      )
+      .group(
+        :nile_product_id,
+        "loading_orders.store_id"
+      )
+      .sum(:holding_sale_quantity)
+
+    # Convert to nested hash
+    @report_data = {}
+
+    raw_data.each do |(product_id, store_id), quantity|
+      @report_data[product_id] ||= {}
+      @report_data[product_id][store_id] = quantity
+    end
+  end
+
   # GET /beer_returns/1 or /beer_returns/1.json
   def show
   end
 
   # GET /beer_returns/new
   def new
+    @active_link = "purchases"
+    @active_sub_link = "returns"
     @order = LoadingOrder.find(params[:id])
 
     @beer_return = BeerReturn.new
@@ -74,10 +126,19 @@ class BeerReturnsController < ApplicationController
   end
   # GET /beer_returns/1/edit
   def edit
+    @active_link = "purchases"
+    @active_sub_link = "returns"
+    @order = LoadingOrder.find(@beer_return.loading_order_id)
+
+    @order_items = NileProduct.where(
+      id: @order.loading_order_items.pluck(:nile_product_id)
+    )
   end
 
   # POST /beer_returns or /beer_returns.json
   def create
+    @active_link = "purchases"
+    @active_sub_link = "returns"
     order_id = beer_return_params[:loading_order_id]
 
     @order = LoadingOrder.find(order_id)
@@ -104,8 +165,13 @@ class BeerReturnsController < ApplicationController
 
   # PATCH/PUT /beer_returns/1 or /beer_returns/1.json
   def update
+    @active_link = "purchases"
+    @active_sub_link = "returns"
     @order = LoadingOrder.find(@beer_return.loading_order_id)
-    @order_items = @order.loading_order_items
+
+    @order_items = NileProduct.where(
+      id: @order.loading_order_items.pluck(:nile_product_id)
+    )
     respond_to do |format|
       if @beer_return.update(beer_return_params)
         format.html { redirect_to beer_returns_path, notice: "Beer return was successfully updated." }

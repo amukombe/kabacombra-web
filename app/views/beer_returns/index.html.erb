@@ -3,8 +3,11 @@
 <div class="px-4 pt-4 bg-white dark:bg-gray-900">
 <div class="grid w-full grid-cols-2 gap-4 mb-3">
   <div class="col-span-1">
-    <h1 class="text-gray-800 text-md dark:text-gray-100">Loading Orders</h1>
-  </div> 
+    <h1 class="text-gray-800 text-md dark:text-gray-100">Beer inventories</h1>
+  </div>
+  <div class="col-span-1 text-right">
+    
+  </div>  
 </div>
 <div class="mb-3">
     <%= form_tag beer_returns_path, class:"flex items-start max-w-sm", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do |form| %>
@@ -16,7 +19,7 @@
             </svg>
             <span class="sr-only">Search</span>
         </div>
-        <%= text_field_tag "query", nil, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder:"Search product ..." %>  
+        <%= text_field_tag "query", nil, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder:"Search order ..." %>  
     </div>
     <%end%>
 </div>
@@ -25,71 +28,78 @@
   <div class="overflow-x-auto rounded-lg">
     <div class="inline-block min-w-full align-middle">
       <div class="overflow-hidden shadow sm:rounded-lg">
-        <div id="beer_dispatches">
+        <div id="inventories">
         <%= turbo_frame_tag "search_results" do%>
           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
             <thead class="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  #
+                  Product Details
                 </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Product.
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Store
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Sales Rep
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Action
-                </th>
+                
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
-            <% @beer_returns.each_with_index do |item, index| %>
+            <% @beer_returns.each do |beer_return| %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=  item.loading_order.order_number%></span>
+                <td class="w-1/4 p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                  <div class="flex flex-col space-y-1">
+                    <span class="text-sm font-medium"><%= beer_return.return_date&.strftime("%d %b, %Y") %> (<%= beer_return.loading_order.order_number %>)</span>
+                    <span class="text-xs">Sales Man #: <span class="font-normal"><%= beer_return.loading_order.sales_person %></span></span>
+                    <span class="text-xs">Driver: <span class="font-normal"><%= beer_return.loading_order.driver_name %></span></span>
+                    <span class="text-xs">Vehicle: <span class="font-normal"><%= beer_return.loading_order.vehicle_numperplate %></span></span>
+                    <span class="text-xs">Store: <span class="font-normal"><%= beer_return.loading_order.store&.name %></span></span>
+                    <div class="flex items-center gap-2 mt-2">  
+                      <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=beer_return.id%>" data-dropdown-placement="bottom">
+                          <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
+                          <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
+                          </svg>
+                      </button>
+                  
+                      <!-- Dropdown menu -->
+                      <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=beer_return.id%>">
+                          
+                          <ul class="py-2" aria-labelledby="order-menu-button">
+                              <li>
+                                <%= link_to edit_beer_return_path(beer_return), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                              </li>
+
+                              <li>
+                                <button data-modal-target="popup-modal-<%=beer_return.id%>" data-modal-toggle="popup-modal-<%=beer_return.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
+                              </li>
+                              
+                            
+                          </ul>
+                      </div>
+                    </div>
+                  </div>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%item.beer_return_items.each do |product|%>
-                  <span class="font-semibold"><%=product.nile_product.name%></span><br/>
-                  <span class="font-normal">Qty Loaded: <%=product.quantity_loaded%></span>
-                  <span class="font-normal">Qty Returned: <%=product.quantity_returned%></span>
-                  <%end%>
+                  <table class="min-w-full border border-collapse border-gray-300 dark:border-gray-700">
+                    <thead>
+                      <tr class="bg-gray-100 dark:bg-gray-800">
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Product</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Loaded</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Returned</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Missing Bottles</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% beer_return.beer_return_items.each_with_index do |item, index| %>
+                        <tr>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.name %></td>
+                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_loaded, delimiter: ",") %></td>
+                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_returned, delimiter: ",") %></td>
+                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.missing_bottles, delimiter: ",") %></td>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
                 </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=item.loading_order.store.name%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=item.loading_order.sales_person %></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                  <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=item.id%>" data-dropdown-placement="bottom">
-                    <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
-                    <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
-                    </svg>
-                </button>
-            
-                <!-- Dropdown menu -->
-                <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=item.id%>">
-                    
-                    <ul class="py-2" aria-labelledby="order-menu-button">
-                        <li>
-                          <%= link_to edit_beer_return_path(item), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
-                        </li>
-
-                        <li>
-                          <button data-modal-target="popup-modal-<%=item.id%>" data-modal-toggle="popup-modal-<%=item.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
-                        </li>
-                    </ul>
-                </div>
-                </td>
+                
               </tr>
-              <%= render "confirm_delete_modal", item: item%>
+              <%= render "confirm_delete_modal", item: beer_return%>
             <%end%>
             </tbody>
           </table>

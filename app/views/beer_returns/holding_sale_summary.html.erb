@@ -1,0 +1,132 @@
+<%= render "/shared/inventory_nav"%>
+<%= render "/shared/beer_movement_nav"%>
+<div class="overflow-x-auto rounded-lg shadow-lg dark:bg-gray-800">
+    <div class="flex flex-row w-full grid-cols-2 gap-4 mb-3">
+        <div class="w-1/3">
+            <h1 class="text-gray-800 text-md dark:text-gray-100">Holding Sale</h1>
+        </div>
+        <div class="w-2/3">
+            <div class="flex flex-row justify-end gap-1">
+                <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="sub-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-menu" data-dropdown-placement="bottom">
+                    <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
+                    <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+            
+                <!-- Dropdown menu -->
+                <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-menu">
+                    
+                    <ul class="py-2" aria-labelledby="sub-menu-button">
+                        <li>
+                            <%= link_to holding_sale_beer_returns_path, data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>View Details<%end%>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div> 
+    </div>
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+
+        <!-- HEADER -->
+        <thead class="bg-gray-50 dark:bg-gray-700">
+        <tr>
+
+            <!-- PRODUCT -->
+            <th class="p-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+            Product
+            </th>
+
+            <!-- STORES -->
+            <% @stores.each do |store| %>
+            <th class="p-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-white whitespace-nowrap">
+                <%= store.name %>
+            </th>
+            <% end %>
+
+            <!-- TOTAL -->
+            <th class="p-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-white">
+            Total Returned
+            </th>
+
+        </tr>
+        </thead>
+
+
+        <!-- BODY -->
+        <tbody class="bg-white dark:bg-gray-800">
+
+        <% @products.each do |product| %>
+
+            <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+
+            <!-- PRODUCT -->
+            <td class="p-3 text-sm font-semibold whitespace-nowrap dark:text-white">
+                <%= product.name %>
+            </td>
+
+            <% row_total = 0 %>
+
+            <!-- STORE VALUES -->
+            <% @stores.each do |store| %>
+
+                <% quantity = @report_data.dig(product.id, store.id).to_i %>
+
+                <% row_total += quantity %>
+
+                <td class="p-3 text-sm text-right dark:text-white">
+                <%= number_with_delimiter(quantity.to_i, delimiter: ",") %>
+                </td>
+
+            <% end %>
+
+            <!-- ROW TOTAL -->
+            <td class="p-3 text-sm font-bold text-right text-green-700 dark:text-green-400">
+                <%= number_with_delimiter(row_total.to_i, delimiter: ",") %>
+            </td>
+
+            </tr>
+
+        <% end %>
+
+        </tbody>
+
+
+        <!-- FOOTER -->
+        <tfoot class="font-bold bg-gray-100 dark:bg-gray-900">
+
+        <tr>
+
+            <td class="p-3 text-right dark:text-white">
+            Totals
+            </td>
+
+            <% grand_total = 0 %>
+
+            <% @stores.each do |store| %>
+
+            <% store_total = @products.sum do |product|
+                @report_data.dig(product.id, store.id).to_i
+                end
+            %>
+
+            <% grand_total += store_total %>
+
+            <td class="p-3 text-right dark:text-white">
+                <%= number_with_delimiter(store_total.to_i, delimiter: ",") %>
+            </td>
+
+            <% end %>
+
+            <td class="p-3 text-right text-green-700 dark:text-green-400">
+            <%= number_with_delimiter(grand_total.to_i, delimiter: ",") %>
+            </td>
+
+        </tr>
+
+        </tfoot>
+
+    </table>
+    <%= render "summary_pagination" %>
+</div>
+
