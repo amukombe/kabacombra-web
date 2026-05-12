@@ -91,7 +91,7 @@
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.name %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_loaded, delimiter: ",") %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_returned, delimiter: ",") %></td>
-                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.holding_sale_quantity, delimiter: ",") %></td>
+                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.holding_sale_quantity, delimiter: ",") %> <i>(Missing bottles: <%= number_with_delimiter(item.missing_bottles, delimiter: ",") %>)</i></td>
                         </tr>
                       <% end %>
                     </tbody>
