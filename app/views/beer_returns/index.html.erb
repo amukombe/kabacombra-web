@@ -82,7 +82,7 @@
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Product</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Loaded</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Returned</th>
-                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Missing Bottles</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Stashed</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -91,7 +91,7 @@
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.name %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_loaded, delimiter: ",") %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_returned, delimiter: ",") %></td>
-                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.missing_bottles, delimiter: ",") %></td>
+                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.holding_sale_quantity, delimiter: ",") %></td>
                         </tr>
                       <% end %>
                     </tbody>

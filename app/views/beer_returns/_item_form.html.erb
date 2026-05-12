@@ -9,15 +9,15 @@
     </div>
     <div>
         <%= f.label :quantity_returned , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.text_field :quantity_returned, step: 1, min: 1 , class:"quantity-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
+        <%= f.text_field :quantity_returned, value:"0", step: 1, min: 1 , class:"quantity-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
     </div>
     <div>
-        <%= f.label :holding_sale_quantity , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.text_field :holding_sale_quantity, step: 1, min: 1 , class:"quantity-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
+        <%= f.label :quantity_stashed , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
+        <%= f.text_field :holding_sale_quantity, value:"0", step: 1, min: 1 , class:"quantity-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
     </div>
     <div>
         <%= f.label :missing_bottles , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.text_field :missing_bottles, step: 1, min: 1 , class:"quantity-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
+        <%= f.text_field :missing_bottles, value:"0", step: 1, min: 1 , class:"quantity-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"%>
     </div>
 </div>
 <%= f.hidden_field :_destroy %>
