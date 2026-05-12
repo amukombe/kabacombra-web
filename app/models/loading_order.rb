@@ -12,11 +12,39 @@ class LoadingOrder < ApplicationRecord
   after_create :create_inventory_transactions
   
   def self.search(params, territory_id)
+
+    query = where(
+      status_id: [6, 7],
+      territory_id: territory_id
+    )
+
+    # Search filter
     if params[:query].present?
-      where("order_number LIKE ? AND status_id IN (?) AND territory_id = ?", "%#{sanitize_sql_like(params[:query])}%", [6,7], territory_id)
-    else
-      where(status_id: [6,7], territory_id: territory_id)
+      search = "%#{sanitize_sql_like(params[:query])}%"
+
+      query = query.where(
+        "order_number LIKE :search",
+        search: search
+      )
     end
+
+    # Start date filter
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(loading_date) >= ?",
+        params[:start_date]
+      )
+    end
+
+    # End date filter
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(loading_date) <= ?",
+        params[:end_date]
+      )
+    end
+
+    query
   end
 
   def self.my_approvals(params, territory_id, user_id, status_id)

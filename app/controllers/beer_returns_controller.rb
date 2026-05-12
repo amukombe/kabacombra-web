@@ -35,14 +35,32 @@ class BeerReturnsController < ApplicationController
       )
     end
 
-    # Summary data
-    raw_data = BeerReturnItem
+    # Base query
+    query = BeerReturnItem
       .joins(beer_return: :loading_order)
       .where(
         beer_returns: {
           territory_id: current_territory.id
         }
       )
+
+    # Date filters
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(beer_returns.return_date) >= ?",
+        params[:start_date]
+      )
+    end
+
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(beer_returns.return_date) <= ?",
+        params[:end_date]
+      )
+    end
+
+    # Summary data
+    raw_data = query
       .group(
         :nile_product_id,
         "loading_orders.store_id"

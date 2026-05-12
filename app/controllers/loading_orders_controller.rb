@@ -14,14 +14,37 @@ class LoadingOrdersController < ApplicationController
 
     @stores = current_territory.stores.order(:name)
 
-    @products = NileProduct.order(:product_number).page(params[:page]).per(20)
+    @products = NileProduct
+      .order(:product_number)
+      .page(params[:page])
+      .per(20)
+
+    # Base query
+    query = LoadingOrderItem
+      .joins(:loading_order)
+      .where(
+        loading_orders: {
+          territory_id: current_territory.id
+        }
+      )
+
+    # Date filters
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(loading_orders.loading_date) >= ?",
+        params[:start_date]
+      )
+    end
+
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(loading_orders.loading_date) <= ?",
+        params[:end_date]
+      )
+    end
 
     # Single query for all totals
-    raw_data = LoadingOrderItem
-      .joins(:loading_order)
-      .where(loading_orders: {
-        territory_id: current_territory.id
-      })
+    raw_data = query
       .group(
         :nile_product_id,
         "loading_orders.store_id"

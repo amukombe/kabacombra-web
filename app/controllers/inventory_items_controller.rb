@@ -37,7 +37,7 @@ class InventoryItemsController < ApplicationController
     @warehouses = current_territory.warehouses
   end
 
-  def index
+  def index_old
     @territory= Territory.find(current_territory.id)
     today = Date.today.beginning_of_day
     tomorrow = today + 1.day
@@ -68,6 +68,92 @@ class InventoryItemsController < ApplicationController
     .order("nile_products.product_number ASC")
     .page(params["page"]).per(10)
     
+    @active_link = "purchases"
+    @active_sub_link = "purchases"
+    @warehouses = current_territory.warehouses
+  end
+
+  def index
+    @territory = Territory.find(current_territory.id)
+
+    # Date filters
+    start_date =
+      params[:start_date].present? ?
+        Date.parse(params[:start_date]).beginning_of_day :
+        Date.today.beginning_of_day
+
+    end_date =
+      params[:end_date].present? ?
+        Date.parse(params[:end_date]).end_of_day :
+        Date.today.end_of_day
+
+    @inventory_items = @territory.inventory_transactions
+      .joins(:nile_product)
+      .select(
+        "
+        nile_products.id AS nile_product_id,
+        nile_products.name,
+        nile_products.selling_price,
+
+        -- Opening Stock
+        COALESCE(
+          SUM(
+            CASE
+              WHEN inventory_transactions.transaction_date < '#{start_date}'
+              AND inventory_transactions.direction = 'in'
+              THEN inventory_transactions.transaction_quantity
+              ELSE 0
+            END
+          ), 0
+        )
+        -
+        COALESCE(
+          SUM(
+            CASE
+              WHEN inventory_transactions.transaction_date < '#{start_date}'
+              AND inventory_transactions.direction = 'out'
+              THEN inventory_transactions.transaction_quantity
+              ELSE 0
+            END
+          ), 0
+        ) AS opening_stock,
+
+        -- Quantity In
+        COALESCE(
+          SUM(
+            CASE
+              WHEN inventory_transactions.transaction_date >= '#{start_date}'
+              AND inventory_transactions.transaction_date <= '#{end_date}'
+              AND inventory_transactions.direction = 'in'
+              THEN inventory_transactions.transaction_quantity
+              ELSE 0
+            END
+          ), 0
+        ) AS quantity_in,
+
+        -- Quantity Out
+        COALESCE(
+          SUM(
+            CASE
+              WHEN inventory_transactions.transaction_date >= '#{start_date}'
+              AND inventory_transactions.transaction_date <= '#{end_date}'
+              AND inventory_transactions.direction = 'out'
+              THEN inventory_transactions.transaction_quantity
+              ELSE 0
+            END
+          ), 0
+        ) AS quantity_out
+        "
+      )
+      .group(
+        "nile_products.id,
+        nile_products.name,
+        nile_products.selling_price"
+      )
+      .order("nile_products.product_number ASC")
+      .page(params[:page])
+      .per(10)
+
     @active_link = "purchases"
     @active_sub_link = "purchases"
     @warehouses = current_territory.warehouses

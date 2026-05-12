@@ -34,39 +34,78 @@ class InventoryItem < ApplicationRecord
   end
 
   def self.product_summary(params, territory_id)
-    query = NileProduct
-      .left_joins(inventory_items: :inventory)
-      .where("inventories.territory_id = ? OR inventories.id IS NULL", territory_id)
 
-    if params[:query].present?
-      query = query.where("nile_products.name LIKE ?", "%#{sanitize_sql_like(params[:query])}%")
-    end
+  date_condition = []
 
-    query.group("nile_products.id, nile_products.name")
-        .select(
-          "nile_products.name AS product_name",
-
-          "SUM(CASE WHEN inventories.status_id = 13 
-            THEN COALESCE(inventory_items.quantity_received, 0) 
-            ELSE 0 END) AS total_received",
-
-          "SUM(CASE WHEN inventories.status_id = 13 
-            THEN COALESCE(inventory_items.breakages, 0) 
-            ELSE 0 END) AS total_breakages",
-
-          "SUM(CASE WHEN inventories.status_id = 13 
-            THEN COALESCE(inventory_items.complaints, 0) 
-            ELSE 0 END) AS total_complaints",
-
-          "SUM(CASE WHEN inventories.status_id = 13 
-            THEN 
-              COALESCE(inventory_items.quantity_received, 0) +
-              COALESCE(inventory_items.breakages, 0) +
-              COALESCE(inventory_items.complaints, 0)
-            ELSE 0 END) AS total_quantity"
-        )
-        .order("nile_products.product_number ASC")
+  if params[:start_date].present?
+    date_condition << ActiveRecord::Base.send(
+      :sanitize_sql_array,
+      ["DATE(inventories.delivery_time) >= ?", params[:start_date]]
+    )
   end
+
+  if params[:end_date].present?
+    date_condition << ActiveRecord::Base.send(
+      :sanitize_sql_array,
+      ["DATE(inventories.delivery_time) <= ?", params[:end_date]]
+    )
+  end
+
+  date_sql = date_condition.present? ? "AND #{date_condition.join(' AND ')}" : ""
+
+  query = NileProduct
+    .left_joins(inventory_items: :inventory)
+    .where("inventories.territory_id = ? OR inventories.id IS NULL", territory_id)
+
+  # Search filter
+  if params[:query].present?
+    query = query.where(
+      "nile_products.name LIKE ?",
+      "%#{sanitize_sql_like(params[:query])}%"
+    )
+  end
+
+  query.group("nile_products.id, nile_products.name")
+       .select(
+         "nile_products.name AS product_name",
+
+         "SUM(
+            CASE
+              WHEN inventories.status_id = 13 #{date_sql}
+              THEN COALESCE(inventory_items.quantity_received, 0)
+              ELSE 0
+            END
+          ) AS total_received",
+
+         "SUM(
+            CASE
+              WHEN inventories.status_id = 13 #{date_sql}
+              THEN COALESCE(inventory_items.breakages, 0)
+              ELSE 0
+            END
+          ) AS total_breakages",
+
+         "SUM(
+            CASE
+              WHEN inventories.status_id = 13 #{date_sql}
+              THEN COALESCE(inventory_items.complaints, 0)
+              ELSE 0
+            END
+          ) AS total_complaints",
+
+         "SUM(
+            CASE
+              WHEN inventories.status_id = 13 #{date_sql}
+              THEN
+                COALESCE(inventory_items.quantity_received, 0) +
+                COALESCE(inventory_items.breakages, 0) +
+                COALESCE(inventory_items.complaints, 0)
+              ELSE 0
+            END
+          ) AS total_quantity"
+       )
+       .order("nile_products.product_number ASC")
+end
 
   def self.search_stock(params, territory_id, product_id)
     query = joins(inventory: {}, nile_product: {})

@@ -9,19 +9,57 @@
     
   </div>  
 </div>
-<div class="mb-3">
-    <%= form_tag inventories_path, class:"flex items-start max-w-sm", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do |form| %>
+<div class="flex w-full mb-3">
+    <%= form_tag loading_orders_path, class:"flex items-start  space-x-2", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do %>
     <label for="simple-search" class="sr-only">Search</label>
-    <div class="relative w-full">
-        <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
-            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-            </svg>
-            <span class="sr-only">Search</span>
+    <div class="flex w-full">
+      <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
+        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+        </svg>
+        <span class="sr-only">Search</span>
+      </div>
+      <%= form_tag loading_orders_path,
+        class:"flex items-end gap-2 flex-wrap",
+        method: :get,
+        data:{
+          turbo_frame:"search_results",
+          turbo_action:"advance",
+          controller:"search",
+          action:"input->search#submit"
+        } do %>
+
+      <!-- Search -->
+      <div class="flex items-center justify-end w-full gap-2 md:w-auto">
+        <div class="relative">
+          <%= label_tag :search, "Search", class:"block mb-1 text-xs" %>
+          <%= text_field_tag "query",
+              params[:query],
+              class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5",
+              placeholder:"Search product ..." %>
         </div>
-        <%= text_field_tag "query", nil, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder:"Search order ..." %>  
+
+        <!-- Start Date -->
+        <div>
+          <%= label_tag :start_date, "From", class:"block mb-1 text-xs" %>
+          <%= date_field_tag :start_date,
+              params[:start_date],
+              class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+        </div>
+
+        <!-- End Date -->
+        <div>
+          <%= label_tag :end_date, "To", class:"block mb-1 text-xs" %>
+          <%= date_field_tag :end_date,
+              params[:end_date],
+              class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+        </div>
+      </div>
+    <% end %> 
     </div>
-    <%end%>
+
+  <% end %>
+
 </div>
 <!-- Table -->
 <div class="flex flex-col mt-6">

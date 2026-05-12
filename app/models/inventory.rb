@@ -14,11 +14,43 @@ class Inventory < ApplicationRecord
   end
 
   def self.search_received(params, territory_id)
+
+    query = joins(:beer_dispatch)
+              .where(
+                territory_id: territory_id,
+                beer_dispatches: {
+                  status_id: [4, 13]
+                }
+              )
+
+    # Search filter
     if params[:query].present?
-      joins(:beer_dispatch).where("fdn_number LIKE ? AND territory_id = ? AND beer_dispatches.status_id IN (?)", "%#{sanitize_sql_like(params[:query])}%", territory_id, [4,13])
-    else
-      joins(:beer_dispatch).where(territory_id: territory_id, beer_dispatches: { status_id: [4,13] })
+      search = "%#{sanitize_sql_like(params[:query])}%"
+
+      query = query.where(
+        "beer_dispatches.fdn_number LIKE :search
+        OR beer_dispatches.dispatch_no LIKE :search",
+        search: search
+      )
     end
+
+    # Start date filter
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(beer_dispatches.loading_time) >= ?",
+        params[:start_date]
+      )
+    end
+
+    # End date filter
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(beer_dispatches.loading_time) <= ?",
+        params[:end_date]
+      )
+    end
+
+    query
   end
 
   def total_price
