@@ -76,6 +76,7 @@ class InventoryItemsController < ApplicationController
   def index
     @territory = Territory.find(current_territory.id)
 
+    # Date filters
     start_date =
       params[:start_date].present? ?
         Date.parse(params[:start_date]).beginning_of_day :
@@ -88,20 +89,17 @@ class InventoryItemsController < ApplicationController
 
     @inventory_items = NileProduct
       .left_joins(:inventory_transactions)
-      .where(
-        "inventory_transactions.territory_id = ?
-        OR inventory_transactions.id IS NULL",
-        current_territory.id
-      )
       .includes(:empty_type)
       .select(
         "
         nile_products.*,
 
+        -- Opening Stock
         COALESCE(
           SUM(
             CASE
-              WHEN inventory_transactions.transaction_date < '#{start_date}'
+              WHEN inventory_transactions.territory_id = #{current_territory.id}
+              AND inventory_transactions.transaction_date < '#{start_date}'
               AND inventory_transactions.direction = 'in'
               THEN inventory_transactions.transaction_quantity
               ELSE 0
@@ -112,7 +110,8 @@ class InventoryItemsController < ApplicationController
         COALESCE(
           SUM(
             CASE
-              WHEN inventory_transactions.transaction_date < '#{start_date}'
+              WHEN inventory_transactions.territory_id = #{current_territory.id}
+              AND inventory_transactions.transaction_date < '#{start_date}'
               AND inventory_transactions.direction = 'out'
               THEN inventory_transactions.transaction_quantity
               ELSE 0
@@ -120,10 +119,12 @@ class InventoryItemsController < ApplicationController
           ), 0
         ) AS opening_stock,
 
+        -- Quantity In
         COALESCE(
           SUM(
             CASE
-              WHEN inventory_transactions.transaction_date >= '#{start_date}'
+              WHEN inventory_transactions.territory_id = #{current_territory.id}
+              AND inventory_transactions.transaction_date >= '#{start_date}'
               AND inventory_transactions.transaction_date <= '#{end_date}'
               AND inventory_transactions.direction = 'in'
               THEN inventory_transactions.transaction_quantity
@@ -132,10 +133,12 @@ class InventoryItemsController < ApplicationController
           ), 0
         ) AS quantity_in,
 
+        -- Quantity Out
         COALESCE(
           SUM(
             CASE
-              WHEN inventory_transactions.transaction_date >= '#{start_date}'
+              WHEN inventory_transactions.territory_id = #{current_territory.id}
+              AND inventory_transactions.transaction_date >= '#{start_date}'
               AND inventory_transactions.transaction_date <= '#{end_date}'
               AND inventory_transactions.direction = 'out'
               THEN inventory_transactions.transaction_quantity
@@ -145,6 +148,16 @@ class InventoryItemsController < ApplicationController
         ) AS quantity_out
         "
       )
+
+    # Optional search
+    if params[:query].present?
+      @inventory_items = @inventory_items.where(
+        "nile_products.name LIKE ?",
+        "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+      )
+    end
+
+    @inventory_items = @inventory_items
       .group("nile_products.id")
       .order("nile_products.product_number ASC")
       .page(params[:page])
