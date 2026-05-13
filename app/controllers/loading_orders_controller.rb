@@ -18,7 +18,13 @@ class LoadingOrdersController < ApplicationController
       .order(:product_number)
       .page(params[:page])
       .per(20)
-
+    
+    if params[:query].present?
+      @products = @products.where(
+        "name LIKE ?",
+        "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+      )
+    end
     # Base query
     query = LoadingOrderItem
       .joins(:loading_order)
@@ -42,6 +48,7 @@ class LoadingOrdersController < ApplicationController
         params[:end_date]
       )
     end
+    
 
     # Single query for all totals
     raw_data = query
