@@ -76,7 +76,6 @@ class InventoryItemsController < ApplicationController
   def index
     @territory = Territory.find(current_territory.id)
 
-    # Date filters
     start_date =
       params[:start_date].present? ?
         Date.parse(params[:start_date]).beginning_of_day :
@@ -87,15 +86,18 @@ class InventoryItemsController < ApplicationController
         Date.parse(params[:end_date]).end_of_day :
         Date.today.end_of_day
 
-    @inventory_items = @territory.inventory_transactions
-      .joins(:nile_product)
+    @inventory_items = NileProduct
+      .left_joins(:inventory_transactions)
+      .where(
+        "inventory_transactions.territory_id = ?
+        OR inventory_transactions.id IS NULL",
+        current_territory.id
+      )
+      .includes(:empty_type)
       .select(
         "
-        nile_products.id AS nile_product_id,
-        nile_products.name,
-        nile_products.selling_price,
+        nile_products.*,
 
-        -- Opening Stock
         COALESCE(
           SUM(
             CASE
@@ -118,7 +120,6 @@ class InventoryItemsController < ApplicationController
           ), 0
         ) AS opening_stock,
 
-        -- Quantity In
         COALESCE(
           SUM(
             CASE
@@ -131,7 +132,6 @@ class InventoryItemsController < ApplicationController
           ), 0
         ) AS quantity_in,
 
-        -- Quantity Out
         COALESCE(
           SUM(
             CASE
@@ -145,18 +145,13 @@ class InventoryItemsController < ApplicationController
         ) AS quantity_out
         "
       )
-      .group(
-        "nile_products.id,
-        nile_products.name,
-        nile_products.selling_price"
-      )
+      .group("nile_products.id")
       .order("nile_products.product_number ASC")
       .page(params[:page])
       .per(20)
 
     @active_link = "purchases"
     @active_sub_link = "purchases"
-    @warehouses = current_territory.warehouses
   end
 
   def received_stock

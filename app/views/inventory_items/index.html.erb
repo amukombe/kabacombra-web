@@ -1,170 +1,312 @@
-
 <%= render "/shared/inventory_nav"%>
 <%= render "/shared/beer_movement_nav"%>
+
 <div class="px-4 pt-4 bg-white dark:bg-gray-900">
-<div class="flex flex-row w-full grid-cols-2 gap-4 mb-3">
-  <div class="w-1/3">
-    <h1 class="text-gray-800 text-md dark:text-gray-100">Beer Movement</h1>
-  </div>
-  <div class="w-2/3">
-    <div class="flex flex-row justify-end gap-1">
-      <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="sub-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-menu" data-dropdown-placement="bottom">
-          <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
-          <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
+
+  <div class="flex flex-row w-full grid-cols-2 gap-4 mb-3">
+    <div class="w-1/3">
+      <h1 class="text-gray-800 text-md dark:text-gray-100">
+        Beer Movement
+      </h1>
+    </div>
+
+    <div class="w-2/3">
+      <div class="flex flex-row justify-end gap-1">
+
+        <button type="button"
+          class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800"
+          id="sub-menu-button"
+          aria-expanded="false"
+          data-dropdown-toggle="action-dropdown-menu"
+          data-dropdown-placement="bottom">
+
+          <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">
+            Action
+          </span>
+
+          <svg class="w-2 h-2"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 10 6">
+
+            <path stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1"
+              d="m1 1 4 4 4-4"/>
           </svg>
-      </button>
-  
-      <!-- Dropdown menu -->
-      <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-menu">
-          
+        </button>
+
+        <!-- Dropdown -->
+        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+          id="action-dropdown-menu">
+
           <ul class="py-2" aria-labelledby="sub-menu-button">
-              <li>
-                  <%= link_to new_loading_order_path, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Assign Store<%end%>
-              </li>
-              <li>
-                  <%= link_to new_stock_transfer_path, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Create Transfer<%end%>
-              </li>
-              <li>
-                  <%= link_to breakages_nile_products_path, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Add Breakages<%end%>
-              </li>
-              <li>
-                  <%= link_to existing_stock_inventories_path, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Add Openning Stock<%end%>
-              </li>
+
+            <li>
+              <%= link_to new_loading_order_path,
+                class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+
+                Assign Store
+              <% end %>
+            </li>
+
+            <li>
+              <%= link_to new_stock_transfer_path,
+                class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+
+                Create Transfer
+              <% end %>
+            </li>
+
+            <li>
+              <%= link_to breakages_nile_products_path,
+                class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+
+                Add Breakages
+              <% end %>
+            </li>
+
+            <li>
+              <%= link_to existing_stock_inventories_path,
+                class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+
+                Add Opening Stock
+              <% end %>
+            </li>
+
           </ul>
+        </div>
       </div>
     </div>
-  </div>  
-</div>
-<div class="flex w-full mb-3">
-    <%= form_tag inventory_items_path, class:"flex items-start  space-x-2", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do %>
-    <label for="simple-search" class="sr-only">Search</label>
-    <div class="flex w-full">
-      <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
-        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-        </svg>
-        <span class="sr-only">Search</span>
-      </div>
-      <%= form_tag inventory_items_path,
-        class:"flex items-end gap-2 flex-wrap",
-        method: :get,
-        data:{
-          turbo_frame:"search_results",
-          turbo_action:"advance",
-          controller:"search",
-          action:"input->search#submit"
-        } do %>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex w-full mb-3">
+
+    <%= form_tag inventory_items_path,
+      class:"flex items-end gap-2 flex-wrap",
+      method: :get,
+      data:{
+        turbo_frame:"search_results",
+        turbo_action:"advance",
+        controller:"search",
+        action:"input->search#submit"
+      } do %>
 
       <!-- Search -->
-      <div class="flex items-center justify-end w-full gap-2 md:w-auto">
-        <div class="relative">
-          <%= label_tag :search, "Search", class:"block mb-1 text-xs" %>
-          <%= text_field_tag "query",
-              params[:query],
-              class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5",
-              placeholder:"Search product ..." %>
-        </div>
+      <div class="relative">
+        <%= label_tag :query, "Search", class:"block mb-1 text-xs" %>
 
-        <!-- Start Date -->
-        <div>
-          <%= label_tag :start_date, "From", class:"block mb-1 text-xs" %>
-          <%= date_field_tag :start_date,
-              params[:start_date],
-              class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
-        </div>
-
-        <!-- End Date -->
-        <div>
-          <%= label_tag :end_date, "To", class:"block mb-1 text-xs" %>
-          <%= date_field_tag :end_date,
-              params[:end_date],
-              class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
-        </div>
+        <%= text_field_tag "query",
+          params[:query],
+          class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5",
+          placeholder:"Search product ..." %>
       </div>
-    <% end %> 
-    </div>
 
-  <% end %>
+      <!-- Start Date -->
+      <div>
+        <%= label_tag :start_date, "From", class:"block mb-1 text-xs" %>
 
-</div>
-<!-- Table -->
-<div class="flex flex-col mt-6">
-  <div class="overflow-x-auto rounded-lg">
-    <div class="inline-block min-w-full align-middle">
-      <div class="overflow-hidden shadow sm:rounded-lg">
-        <div id="beer_dispatches">
-        <%= turbo_frame_tag "search_results" do%>
-          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  #
-                </th>
-                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Product.
-                </th>
-                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Openning Stock
-                </th>
-                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Quantity In
-                </th>
-                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Quantity Out
-                </th>
-                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Closing Stock
-                </th>
-                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Beer Value
-                </th>
-                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Empty Value
-                </th>
-                <th scope="col" class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Closing Stock Value
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white dark:bg-gray-800">
-            <% @inventory_items.each_with_index do |item, index| %>
-            <% total_stock_in = InventoryTransaction.opening_stock(item.nile_product_id, current_territory.id, Date.today) %>
-            <% total_stock_out = InventoryTransaction.opening_stock(item.nile_product_id, current_territory.id, Date.today) %>
-              <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=index+1%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-semibold"><%=item.name%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to openning_stock_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%= number_with_delimiter(item.opening_stock, delimiter:",") %></span><%end%>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to quantity_in_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=number_with_delimiter(item.quantity_in, delimeter:",") %></span><%end%>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <%= link_to quantity_out_nile_product_path(item.nile_product_id), data:{turbo: false} do%><span class="font-normal"><%=number_with_delimiter(item.quantity_out, delimeter:",") %></span><%end%>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i), delimiter:",") %></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.nile_product.buying_price.to_i, delimiter: ',' )%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.nile_product.empty_type.price.to_i, delimiter: ',' )%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%= number_with_delimiter((item.opening_stock.to_i + item.quantity_in.to_i - item.quantity_out.to_i) * item.nile_product.buying_price.to_i, delimiter: ',' )%></span>
-                </td>
-              </tr>
-            <%end%>
-            </tbody>
-          </table>
-          <%= render "pagination" %>
-        <%end%>
+        <%= date_field_tag :start_date,
+          params[:start_date],
+          class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+      </div>
+
+      <!-- End Date -->
+      <div>
+        <%= label_tag :end_date, "To", class:"block mb-1 text-xs" %>
+
+        <%= date_field_tag :end_date,
+          params[:end_date],
+          class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+      </div>
+
+    <% end %>
+
+  </div>
+
+  <!-- Table -->
+  <div class="flex flex-col mt-6">
+    <div class="overflow-x-auto rounded-lg">
+      <div class="inline-block min-w-full align-middle">
+        <div class="overflow-hidden shadow sm:rounded-lg">
+
+          <div id="beer_dispatches">
+
+            <%= turbo_frame_tag "search_results" do %>
+
+              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+
+                <thead class="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+
+                    <th class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      #
+                    </th>
+
+                    <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Product
+                    </th>
+
+                    <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Opening Stock
+                    </th>
+
+                    <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Quantity In
+                    </th>
+
+                    <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Quantity Out
+                    </th>
+
+                    <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Closing Stock
+                    </th>
+
+                    <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Beer Value
+                    </th>
+
+                    <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Empty Value
+                    </th>
+
+                    <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Closing Stock Value
+                    </th>
+
+                  </tr>
+                </thead>
+
+                <tbody class="bg-white dark:bg-gray-800">
+
+                  <% @inventory_items.each_with_index do |item, index| %>
+
+                    <% closing_stock =
+                      item.opening_stock.to_i +
+                      item.quantity_in.to_i -
+                      item.quantity_out.to_i %>
+
+                    <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+
+                      <!-- Index -->
+                      <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">
+                          <%= index + 1 %>
+                        </span>
+                      </td>
+
+                      <!-- Product -->
+                      <td class="p-4 text-sm font-normal text-gray-900 whitespace-normal dark:text-white">
+                        <span class="font-semibold">
+                          <%= item.name %>
+                        </span>
+                      </td>
+
+                      <!-- Opening Stock -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <%= link_to openning_stock_nile_product_path(item.id),
+                          data:{turbo: false} do %>
+
+                          <span class="font-normal">
+                            <%= number_with_delimiter(item.opening_stock.to_i, delimiter:",") %>
+                          </span>
+
+                        <% end %>
+
+                      </td>
+
+                      <!-- Quantity In -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <%= link_to quantity_in_nile_product_path(item.id),
+                          data:{turbo: false} do %>
+
+                          <span class="font-normal">
+                            <%= number_with_delimiter(item.quantity_in.to_i, delimiter:",") %>
+                          </span>
+
+                        <% end %>
+
+                      </td>
+
+                      <!-- Quantity Out -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <%= link_to quantity_out_nile_product_path(item.id),
+                          data:{turbo: false} do %>
+
+                          <span class="font-normal">
+                            <%= number_with_delimiter(item.quantity_out.to_i, delimiter:",") %>
+                          </span>
+
+                        <% end %>
+
+                      </td>
+
+                      <!-- Closing Stock -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <span class="font-normal">
+                          <%= number_with_delimiter(closing_stock, delimiter:",") %>
+                        </span>
+
+                      </td>
+
+                      <!-- Beer Value -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <span class="font-normal">
+                          <%= number_with_delimiter(
+                            closing_stock * item.buying_price.to_i,
+                            delimiter: ','
+                          ) %>
+                        </span>
+
+                      </td>
+
+                      <!-- Empty Value -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <span class="font-normal">
+                          <%= number_with_delimiter(
+                            closing_stock * item.empty_type.price.to_i,
+                            delimiter: ','
+                          ) %>
+                        </span>
+
+                      </td>
+
+                      <!-- Closing Stock Value -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <span class="font-normal">
+                          <%= number_with_delimiter(
+                            closing_stock * item.buying_price.to_i,
+                            delimiter: ','
+                          ) %>
+                        </span>
+
+                      </td>
+
+                    </tr>
+
+                  <% end %>
+
+                </tbody>
+
+              </table>
+
+              <%= render "pagination" %>
+
+            <% end %>
+
+          </div>
+
         </div>
       </div>
     </div>
