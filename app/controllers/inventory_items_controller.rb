@@ -152,7 +152,7 @@ class InventoryItemsController < ApplicationController
       )
       .order("nile_products.product_number ASC")
       .page(params[:page])
-      .per(10)
+      .per(20)
 
     @active_link = "purchases"
     @active_sub_link = "purchases"
