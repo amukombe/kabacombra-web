@@ -4,6 +4,8 @@ Rails.application.routes.draw do
       get :return_summary
       get :holding_sale_summary
       get :holding_sale
+      get :export_return_summary
+      get :export
     end
   end
   resources :bank_transfers
@@ -77,6 +79,8 @@ Rails.application.routes.draw do
     end
     collection do
       get :loading_summary
+      get :export_loading_summary
+      get :export
     end
   end
   resources :inventory_items do
@@ -88,6 +92,8 @@ Rails.application.routes.draw do
     collection do
         get :empties
         get :received_stock
+        get :export
+        get :export_received_stock
     end
   end
   resources :inventories do
@@ -98,11 +104,16 @@ Rails.application.routes.draw do
       get :existing_stock
       get :received_stock_details
       post :create_existing_stock
+      get :export
+      get :export_received_stock_details
     end
   end
   resources :beer_dispatches do
     member do
       get "dispatch_pdf"
+    end
+    collection do
+      get :export
     end
   end
   resources :system_modules
@@ -125,6 +136,7 @@ Rails.application.routes.draw do
     end
     collection do
       get "vendor_statement"
+      get :export
     end
   end
   resources :statuses

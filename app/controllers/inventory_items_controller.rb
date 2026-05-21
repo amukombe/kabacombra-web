@@ -167,6 +167,140 @@ class InventoryItemsController < ApplicationController
     @active_sub_link = "purchases"
   end
 
+  def export
+    @territory = Territory.find(current_territory.id)
+
+    # Date filters
+    start_date =
+      params[:start_date].present? ?
+        Date.parse(params[:start_date]).beginning_of_day :
+        Date.today.beginning_of_day
+
+    end_date =
+      params[:end_date].present? ?
+        Date.parse(params[:end_date]).end_of_day :
+        Date.today.end_of_day
+
+    @inventory_items = NileProduct
+      .left_joins(:inventory_transactions)
+      .includes(:empty_type)
+      .select(
+        "
+        nile_products.*,
+
+        -- Opening Stock
+        COALESCE(
+          SUM(
+            CASE
+              WHEN inventory_transactions.territory_id = #{current_territory.id}
+              AND inventory_transactions.transaction_date < '#{start_date}'
+              AND inventory_transactions.direction = 'in'
+              THEN inventory_transactions.transaction_quantity
+              ELSE 0
+            END
+          ), 0
+        )
+        -
+        COALESCE(
+          SUM(
+            CASE
+              WHEN inventory_transactions.territory_id = #{current_territory.id}
+              AND inventory_transactions.transaction_date < '#{start_date}'
+              AND inventory_transactions.direction = 'out'
+              THEN inventory_transactions.transaction_quantity
+              ELSE 0
+            END
+          ), 0
+        ) AS opening_stock,
+
+        -- Quantity In
+        COALESCE(
+          SUM(
+            CASE
+              WHEN inventory_transactions.territory_id = #{current_territory.id}
+              AND inventory_transactions.transaction_date >= '#{start_date}'
+              AND inventory_transactions.transaction_date <= '#{end_date}'
+              AND inventory_transactions.direction = 'in'
+              THEN inventory_transactions.transaction_quantity
+              ELSE 0
+            END
+          ), 0
+        ) AS quantity_in,
+
+        -- Quantity Out
+        COALESCE(
+          SUM(
+            CASE
+              WHEN inventory_transactions.territory_id = #{current_territory.id}
+              AND inventory_transactions.transaction_date >= '#{start_date}'
+              AND inventory_transactions.transaction_date <= '#{end_date}'
+              AND inventory_transactions.direction = 'out'
+              THEN inventory_transactions.transaction_quantity
+              ELSE 0
+            END
+          ), 0
+        ) AS quantity_out
+        "
+      )
+
+    # Same search as index
+    if params[:query].present?
+      @inventory_items = @inventory_items.where(
+        "nile_products.name LIKE ?",
+        "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+      )
+    end
+
+    # Same grouping/order as index (NO pagination)
+    @inventory_items = @inventory_items
+      .group("nile_products.id")
+      .order("nile_products.product_number ASC")
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Inventory Summary") do |sheet|
+      sheet.add_row [
+        "Product",
+        "Opening Stock",
+        "Quantity In",
+        "Quantity Out",
+        "Closing Stock",
+        "Beer Value",
+        "Empty Value",
+        "Closing Stock Value"
+      ]
+
+      @inventory_items.each do |item|
+        closing_stock =
+          item.opening_stock.to_i +
+          item.quantity_in.to_i -
+          item.quantity_out.to_i
+
+        beer_value = closing_stock * item.buying_price.to_i
+        empty_value = closing_stock * item.empty_type&.price.to_i
+        closing_stock_value = closing_stock * item.buying_price.to_i
+
+        sheet.add_row [
+          item.name,
+          item.opening_stock.to_i,
+          item.quantity_in.to_i,
+          item.quantity_out.to_i,
+          closing_stock,
+          beer_value,
+          empty_value,
+          closing_stock_value
+        ]
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "inventory_summary_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+  end
+
   def received_stock
     @active_link = "purchases"
     @active_sub_link = "received"
@@ -176,6 +310,41 @@ class InventoryItemsController < ApplicationController
       .product_summary(params,current_territory.id)
       .page(params[:page])
       .per(20)
+  end
+  def export_received_stock
+    @inventory_items = InventoryItem.product_summary(
+      params,
+      current_territory.id
+    )
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Received Stock Summary") do |sheet|
+      sheet.add_row [
+        "Product",
+        "Received Qty",
+        "Shortages",
+        "Complaints",
+        "Total Load"
+      ]
+
+      @inventory_items.each do |item|
+        sheet.add_row [
+          item.product_name,
+          item.total_received.to_i,
+          item.total_breakages.to_i,
+          item.total_complaints.to_i,
+          item.total_quantity.to_i
+        ]
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "received_stock_summary_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
   end
 
   def warehouses_overview

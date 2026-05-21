@@ -6,6 +6,64 @@ class OrdersController < ApplicationController
     @orders = Order.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
+  def export
+    @orders = Order
+                .search(params, current_territory.id)
+                .includes(
+                  :status,
+                  order_items: :nile_product
+                )
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Orders") do |sheet|
+      sheet.add_row [
+        "Order Date",
+        "Order Number",
+        "Route",
+        "Status",
+        "Product",
+        "Qty Ordered",
+        "Rate",
+        "Total"
+      ]
+
+      @orders.each do |order|
+        order.order_items.each do |item|
+          sheet.add_row [
+            order.order_date&.strftime("%d-%b-%Y"),
+            order.order_number,
+            order.description,
+            order.status&.name,
+            item.nile_product&.name,
+            item.quantity,
+            item.unit_price,
+            item.total
+          ]
+        end
+
+        # Total row per order
+        sheet.add_row [
+          nil,
+          nil,
+          nil,
+          nil,
+          "TOTAL",
+          nil,
+          nil,
+          order.total_price
+        ]
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "orders_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+  end
+
   # GET /orders/1 or /orders/1.json
   def show
   end

@@ -8,11 +8,43 @@ class BeerDispatch < ApplicationRecord
   validates :fdn_number, :driver_name, :driver_mobile, :truck_numberplate, :delivery_plant, :shipping_point, :loading_time, presence: true
   
   def self.search(params, territory_id)
+
+    query = joins(:order)
+              .where(
+                territory_id: territory_id,
+                orders: {
+                  status_id: [3, 4]
+                }
+              )
+
+    # Search
     if params[:query].present?
-      joins(:order).where("fdn_number LIKE ? AND orders.status_id IN (?) AND territory_id = ?", "%#{sanitize_sql_like(params[:query])}%", [3,4], territory_id)
-    else
-      joins(:order).where(orders: { status_id: [3,4] }, territory_id: territory_id)
+      search = "%#{sanitize_sql_like(params[:query])}%"
+
+      query = query.where(
+        "beer_dispatches.fdn_number LIKE :search
+        OR orders.order_number LIKE :search",
+        search: search
+      )
     end
+
+    # Start date
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(beer_dispatches.loading_time) >= ?",
+        params[:start_date]
+      )
+    end
+
+    # End date
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(beer_dispatches.loading_time) <= ?",
+        params[:end_date]
+      )
+    end
+
+    query
   end
 
   def total_price

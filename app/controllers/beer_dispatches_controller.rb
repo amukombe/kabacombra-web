@@ -7,6 +7,73 @@ class BeerDispatchesController < ApplicationController
     @dispatches = BeerDispatch.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
+  def export
+    @dispatches = BeerDispatch
+                    .search(params, current_territory.id)
+                    .includes(
+                      order: :status,
+                      dispatch_items: {
+                        order_item: :nile_product
+                      }
+                    )
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Beer Dispatches") do |sheet|
+      sheet.add_row [
+        "Date",
+        "Order Number",
+        "Dispatch No",
+        "Invoice No",
+        "FDN Number",
+        "Truck Number",
+        "Driver Name",
+        "Status",
+        "Product",
+        "Qty Dispatched",
+        "Rate",
+        "Total"
+      ]
+
+      @dispatches.each do |dispatch|
+        order = dispatch.order
+
+        dispatch.dispatch_items.each do |item|
+          sheet.add_row [
+            dispatch.loading_time&.strftime("%d-%b-%Y"),
+            order&.order_number,
+            dispatch.dispatch_no,
+            dispatch.invoice_no,
+            dispatch.fdn_number,
+            dispatch.truck_numberplate,
+            dispatch.driver_name,
+            order&.status&.name,
+            item.name,
+            item.quantity_dispatched,
+            item.order_item&.nile_product&.buying_price,
+            item.total_price
+          ]
+        end
+
+        # total row
+        sheet.add_row [
+          nil, nil, nil, nil, nil, nil, nil, nil,
+          "TOTAL",
+          nil,
+          nil,
+          dispatch.total_price
+        ]
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "beer_dispatches_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+  end
+
   # GET /beer_dispatches/1 or /beer_dispatches/1.json
   def show
   end

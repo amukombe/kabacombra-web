@@ -7,10 +7,150 @@ class InventoriesController < ApplicationController
     @inventories = Inventory.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
+  def export
+    @inventories = Inventory
+                    .search(params, current_territory.id)
+                    .includes(
+                      :warehouse,
+                      beer_dispatch: :order,
+                      inventory_items: :nile_product
+                    )
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Inventories") do |sheet|
+      sheet.add_row [
+        "Date",
+        "Order Number",
+        "Invoice No",
+        "FDN Number",
+        "Dispatch No",
+        "Truck Number",
+        "Driver Name",
+        "Warehouse",
+        "Product",
+        "Qty Received",
+        "Shortages",
+        "Complaints",
+        "Total Qty",
+        "Rate",
+        "Beer Value",
+        "Case Value",
+        "Purchase Value"
+      ]
+
+      @inventories.each do |inventory|
+        dispatch = inventory.beer_dispatch
+        order = dispatch&.order
+        warehouse = inventory.warehouse
+
+        inventory.inventory_items.each do |item|
+          sheet.add_row [
+            inventory.delivery_time&.strftime("%d-%b-%Y"),
+            order&.order_number,
+            dispatch&.invoice_no,
+            dispatch&.fdn_number,
+            dispatch&.dispatch_no,
+            dispatch&.truck_numberplate,
+            dispatch&.driver_name,
+            warehouse&.name,
+            item.nile_product&.name,
+            item.quantity_received,
+            item.breakages,
+            item.complaints,
+            item.total_quantity,
+            item.purchase_price,
+            item.total,
+            item.total_case,
+            item.total_Purchase
+          ]
+        end
+
+        # Totals row per inventory
+        sheet.add_row [
+          nil, nil, nil, nil, nil, nil, nil, nil,
+          "TOTAL",
+          nil, nil, nil, nil, nil,
+          inventory.total_price,
+          inventory.total_case,
+          inventory.total_Purchase
+        ]
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "inventories_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+  end
+
   def received_stock_details
     @active_link = "purchases"
     @active_sub_link = "received"
     @inventories = Inventory.search_received(params, current_territory.id).page(params[:page]).per(20)
+  end
+
+  def export_received_stock_details
+    @inventories = Inventory
+                    .search_received(params, current_territory.id)
+                    .includes(
+                      :warehouse,
+                      beer_dispatch: :order,
+                      inventory_items: :nile_product
+                    )
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Received Stock Details") do |sheet|
+      sheet.add_row [
+        "Date",
+        "Order Number",
+        "Invoice No",
+        "FDN Number",
+        "Dispatch No",
+        "Truck Number",
+        "Driver Name",
+        "Warehouse",
+        "Product",
+        "Qty Received",
+        "Shortages",
+        "Complaints",
+        "Total Qty"
+      ]
+
+      @inventories.each do |inventory|
+        dispatch = inventory.beer_dispatch
+        order = dispatch&.order
+        warehouse = inventory.warehouse
+
+        inventory.inventory_items.each do |item|
+          sheet.add_row [
+            inventory.delivery_time&.strftime("%d-%b-%Y"),
+            order&.order_number,
+            dispatch&.invoice_no,
+            dispatch&.fdn_number,
+            dispatch&.dispatch_no,
+            dispatch&.truck_numberplate,
+            dispatch&.driver_name,
+            warehouse&.name,
+            item.nile_product&.name,
+            item.quantity_received,
+            item.breakages,
+            item.complaints,
+            item.total_quantity
+          ]
+        end
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "received_stock_details_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
   end
 
   def receive

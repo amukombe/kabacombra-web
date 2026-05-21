@@ -7,6 +7,14 @@
         </div>
         <div class="w-2/3">
             <div class="flex flex-row justify-end gap-1">
+            <%= link_to "Export Excel",
+    export_loading_summary_loading_orders_path(
+      query: params[:query],
+      start_date: params[:start_date],
+      end_date: params[:end_date]
+    ),
+    class: "px-4 py-2 text-sm text-white bg-green-600 rounded-lg hover:bg-green-700",
+    data: { turbo: false } %>
                 <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="sub-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-menu" data-dropdown-placement="bottom">
                     <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
                     <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">

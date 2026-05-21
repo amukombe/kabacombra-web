@@ -8,6 +8,55 @@ class LoadingOrdersController < ApplicationController
     @loading_orders = LoadingOrder.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 
+  def export
+    @loading_orders = LoadingOrder
+                        .search(params, current_territory.id)
+                        .order(created_at: :desc)
+                        .includes(
+                          :store,
+                          loading_order_items: :nile_product
+                        )
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Loading Orders") do |sheet|
+      sheet.add_row [
+        "Loading Date",
+        "Order Number",
+        "Sales Person",
+        "Driver",
+        "Vehicle",
+        "Store",
+        "Product",
+        "Qty Loaded"
+      ]
+
+      @loading_orders.each do |order|
+        store = order.store
+
+        order.loading_order_items.each do |item|
+          sheet.add_row [
+            order.loading_date&.strftime("%d-%b-%Y"),
+            order.order_number,
+            order.sales_person,
+            order.driver_name,
+            order.vehicle_numperplate,
+            store&.name,
+            item.nile_product&.name,
+            item.quantity_loaded
+          ]
+        end
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "loading_orders_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+  end
+
   def loading_summary
     @active_link = "purchases"
     @active_sub_link = "loading_orders"
@@ -65,6 +114,97 @@ class LoadingOrdersController < ApplicationController
       @report_data[product_id] ||= {}
       @report_data[product_id][store_id] = quantity
     end
+  end
+
+  def export_loading_summary
+    @stores = current_territory.stores.order(:name)
+
+    # Same products query as page
+    @products = NileProduct.order(:product_number)
+
+    if params[:query].present?
+      @products = @products.where(
+        "name LIKE ?",
+        "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+      )
+    end
+
+    # Same loading query as page
+    query = LoadingOrderItem
+              .joins(:loading_order)
+              .where(
+                loading_orders: {
+                  territory_id: current_territory.id
+                }
+              )
+
+    # Start date
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(loading_orders.loading_date) >= ?",
+        params[:start_date]
+      )
+    end
+
+    # End date
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(loading_orders.loading_date) <= ?",
+        params[:end_date]
+      )
+    end
+
+    # Same grouped totals
+    raw_data = query
+                .group(
+                  :nile_product_id,
+                  "loading_orders.store_id"
+                )
+                .sum(:quantity_loaded)
+
+    @report_data = {}
+
+    raw_data.each do |(product_id, store_id), quantity|
+      @report_data[product_id] ||= {}
+      @report_data[product_id][store_id] = quantity
+    end
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Loading Summary") do |sheet|
+      # Header row
+      headers = ["Product"]
+      headers += @stores.map(&:name)
+      headers << "Total"
+
+      sheet.add_row headers
+
+      # Body rows
+      @products.each do |product|
+        row = [product.name]
+        row_total = 0
+
+        @stores.each do |store|
+          quantity =
+            @report_data
+              .dig(product.id, store.id)
+              .to_f
+
+          row_total += quantity
+          row << quantity.to_i
+        end
+
+        row << row_total.to_i
+        sheet.add_row row
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "loading_summary_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
   end
 
   # GET /loading_orders/1 or /loading_orders/1.json
