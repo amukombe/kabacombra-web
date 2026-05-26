@@ -8,25 +8,62 @@ class StockTransfer < ApplicationRecord
     after_create :create_inventory_transactions
 
     def self.search(params, territory_id)
-        stock_transfers = StockTransfer.where(territory_id: territory_id)
-    
-        if params[:transfer_type].present?
-          stock_transfers = stock_transfers.where(transfer_type: params[:transfer_type])
-        end
-    
-        if params[:source_id].present?
-          stock_transfers = stock_transfers.where(source_id: params[:source_id])
-        end
-    
-        if params[:destination_id].present?
-          stock_transfers = stock_transfers.where(destination_id: params[:destination_id])
-        end
-    
-        if params[:start_date].present? && params[:end_date].present?
-          stock_transfers = stock_transfers.where(transfer_date: params[:start_date].to_date..params[:end_date].to_date)
-        end
-    
-        stock_transfers
+    stock_transfers = StockTransfer.where(
+        territory_id: territory_id
+    )
+
+    # Search
+    if params[:query].present?
+        search = "%#{sanitize_sql_like(params[:query])}%"
+
+        stock_transfers = stock_transfers.where(
+        "
+            description LIKE :search
+            OR from_distributor LIKE :search
+            OR to_distributor LIKE :search
+        ",
+        search: search
+        )
+    end
+
+    # Transfer type
+    if params[:transfer_type].present?
+        stock_transfers = stock_transfers.where(
+        transfer_type: params[:transfer_type]
+        )
+    end
+
+    # Source
+    if params[:source_id].present?
+        stock_transfers = stock_transfers.where(
+        source_id: params[:source_id]
+        )
+    end
+
+    # Destination
+    if params[:destination_id].present?
+        stock_transfers = stock_transfers.where(
+        destination_id: params[:destination_id]
+        )
+    end
+
+    # Start date
+    if params[:start_date].present?
+        stock_transfers = stock_transfers.where(
+        "transfer_date >= ?",
+        params[:start_date]
+        )
+    end
+
+    # End date
+    if params[:end_date].present?
+        stock_transfers = stock_transfers.where(
+        "transfer_date <= ?",
+        params[:end_date]
+        )
+    end
+
+    stock_transfers
     end
 
     private

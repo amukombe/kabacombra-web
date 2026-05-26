@@ -8,6 +8,395 @@ class StockTransfersController < ApplicationController
     @stock_transfers = StockTransfer.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 
+  def export
+    @stock_transfers = StockTransfer
+                        .search(params, current_territory.id)
+                        .order(created_at: :desc)
+                        .includes(
+                          :source,
+                          :destination,
+                          stock_transfer_items: :nile_product
+                        )
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Stock Transfers") do |sheet|
+      sheet.add_row [
+        "Transfer Date",
+        "Transfer Type",
+        "Description",
+        "From",
+        "To",
+        "Product",
+        "Quantity",
+        "Status"
+      ]
+
+      @stock_transfers.each do |transfer|
+        from_location =
+          case transfer.transfer_type
+          when "branch_transfer"
+            transfer.source&.name
+          when "store_transfer"
+            transfer.source&.name
+          when "warehouse_transfer"
+            "Warehouse"
+          when "distributor_transfer"
+            transfer.from_distributor
+          else
+            "-"
+          end
+
+        to_location =
+          case transfer.transfer_type
+          when "branch_transfer"
+            transfer.destination&.name
+          when "store_transfer"
+            transfer.destination&.name
+          when "warehouse_transfer"
+            "Warehouse"
+          when "distributor_transfer"
+            transfer.to_distributor
+          else
+            "-"
+          end
+
+        transfer.stock_transfer_items.each do |item|
+          sheet.add_row [
+            transfer.transfer_date&.strftime("%d-%b-%Y"),
+            transfer.transfer_type&.humanize,
+            transfer.description,
+            from_location,
+            to_location,
+            item.nile_product&.name,
+            item.transfer_quantity,
+            transfer.status
+          ]
+        end
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "stock_transfers_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+  end
+
+  def transfer_summary
+    @active_link = "purchases"
+    @active_sub_link = "stock_transfers"
+
+    territory_id = current_territory.id
+
+    query = NileProduct
+              .left_joins(stock_transfer_items: :stock_transfer)
+
+    # Search
+    if params[:query].present?
+      query = query.where(
+        "nile_products.name LIKE ?",
+        "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+      )
+    end
+
+    # Relevant transfers
+    query = query.where(
+      "
+        stock_transfers.territory_id = :territory
+        OR stock_transfers.source_id = :territory
+        OR stock_transfers.destination_id = :territory
+        OR stock_transfers.id IS NULL
+      ",
+      territory: territory_id
+    )
+
+    # Date filters
+    if params[:start_date].present?
+      query = query.where(
+        "stock_transfers.transfer_date >= ? OR stock_transfers.id IS NULL",
+        params[:start_date]
+      )
+    end
+
+    if params[:end_date].present?
+      query = query.where(
+        "stock_transfers.transfer_date <= ? OR stock_transfers.id IS NULL",
+        params[:end_date]
+      )
+    end
+
+    @transfer_items = query
+      .joins(
+        "LEFT JOIN territories source_territories
+        ON source_territories.id = stock_transfers.source_id"
+      )
+      .joins(
+        "LEFT JOIN territories destination_territories
+        ON destination_territories.id = stock_transfers.destination_id"
+      )
+      .joins(
+        "LEFT JOIN stores source_stores
+        ON source_stores.id = stock_transfers.source_id"
+      )
+      .joins(
+        "LEFT JOIN stores destination_stores
+        ON destination_stores.id = stock_transfers.destination_id"
+      )
+      .group(
+        "nile_products.id,
+        nile_products.name,
+        stock_transfers.id,
+        stock_transfers.transfer_type,
+        source_territories.name,
+        destination_territories.name,
+        source_stores.name,
+        destination_stores.name"
+      )
+      .select(
+        "
+        nile_products.id,
+        nile_products.name AS product_name,
+        stock_transfers.transfer_type,
+
+        CASE
+          -- Branch transfer
+          WHEN stock_transfers.transfer_type = 'branch_transfer'
+            THEN CONCAT(
+              'From ',
+              COALESCE(source_territories.name, '-'),
+              ' to ',
+              COALESCE(destination_territories.name, '-')
+            )
+
+          -- Store transfer
+          WHEN stock_transfers.transfer_type = 'store_transfer'
+            THEN CONCAT(
+              'From ',
+              COALESCE(source_stores.name, '-'),
+              ' to ',
+              COALESCE(destination_stores.name, '-')
+            )
+
+          -- Warehouse transfer
+          WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+            THEN 'From Warehouse to Warehouse'
+
+          -- Distributor transfer
+          WHEN stock_transfers.transfer_type = 'distributor_transfer'
+            THEN 'From Distributor'
+
+          ELSE '-'
+        END AS transfer_description,
+
+        -- Inward
+        SUM(
+          CASE
+            WHEN stock_transfers.destination_id = #{territory_id}
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            WHEN stock_transfers.transfer_type = 'distributor_transfer'
+              AND stock_transfers.territory_id = #{territory_id}
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            ELSE 0
+          END
+        ) AS inward_quantity,
+
+        -- Outward
+        SUM(
+          CASE
+            WHEN stock_transfers.source_id = #{territory_id}
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            ELSE 0
+          END
+        ) AS outward_quantity,
+
+        -- Total
+        SUM(
+          COALESCE(stock_transfer_items.transfer_quantity, 0)
+        ) AS total_quantity
+        "
+      )
+      .order("nile_products.product_number ASC")
+      .page(params[:page])
+      .per(20)
+  end
+
+  def export_transfer_summary
+    territory_id = current_territory.id
+
+    query = NileProduct
+              .left_joins(stock_transfer_items: :stock_transfer)
+
+    # Search
+    if params[:query].present?
+      query = query.where(
+        "nile_products.name LIKE ?",
+        "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+      )
+    end
+
+    # Relevant transfers
+    query = query.where(
+      "
+        stock_transfers.territory_id = :territory
+        OR stock_transfers.source_id = :territory
+        OR stock_transfers.destination_id = :territory
+        OR stock_transfers.id IS NULL
+      ",
+      territory: territory_id
+    )
+
+    # Start date
+    if params[:start_date].present?
+      query = query.where(
+        "stock_transfers.transfer_date >= ? OR stock_transfers.id IS NULL",
+        params[:start_date]
+      )
+    end
+
+    # End date
+    if params[:end_date].present?
+      query = query.where(
+        "stock_transfers.transfer_date <= ? OR stock_transfers.id IS NULL",
+        params[:end_date]
+      )
+    end
+
+    @transfer_items = query
+      .joins(
+        "LEFT JOIN territories source_territories
+        ON source_territories.id = stock_transfers.source_id"
+      )
+      .joins(
+        "LEFT JOIN territories destination_territories
+        ON destination_territories.id = stock_transfers.destination_id"
+      )
+      .joins(
+        "LEFT JOIN stores source_stores
+        ON source_stores.id = stock_transfers.source_id"
+      )
+      .joins(
+        "LEFT JOIN stores destination_stores
+        ON destination_stores.id = stock_transfers.destination_id"
+      )
+      .group(
+        "nile_products.id,
+        nile_products.name,
+        stock_transfers.id,
+        stock_transfers.transfer_type,
+        source_territories.name,
+        destination_territories.name,
+        source_stores.name,
+        destination_stores.name"
+      )
+      .select(
+        "
+        nile_products.id,
+        nile_products.name AS product_name,
+        stock_transfers.transfer_type,
+
+        CASE
+          WHEN stock_transfers.transfer_type = 'branch_transfer'
+            THEN CONCAT(
+              'From ',
+              COALESCE(source_territories.name, '-'),
+              ' to ',
+              COALESCE(destination_territories.name, '-')
+            )
+
+          WHEN stock_transfers.transfer_type = 'store_transfer'
+            THEN CONCAT(
+              'From ',
+              COALESCE(source_stores.name, '-'),
+              ' to ',
+              COALESCE(destination_stores.name, '-')
+            )
+
+          WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+            THEN 'From Warehouse to Warehouse'
+
+          WHEN stock_transfers.transfer_type = 'distributor_transfer'
+            THEN 'From Distributor'
+
+          ELSE '-'
+        END AS transfer_description,
+
+        SUM(
+          CASE
+            WHEN stock_transfers.destination_id = #{territory_id}
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            WHEN stock_transfers.transfer_type = 'distributor_transfer'
+              AND stock_transfers.territory_id = #{territory_id}
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            ELSE 0
+          END
+        ) AS inward_quantity,
+
+        SUM(
+          CASE
+            WHEN stock_transfers.source_id = #{territory_id}
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+
+            ELSE 0
+          END
+        ) AS outward_quantity,
+
+        SUM(
+          COALESCE(stock_transfer_items.transfer_quantity, 0)
+        ) AS total_quantity
+        "
+      )
+      .order("nile_products.product_number ASC")
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Transfer Summary") do |sheet|
+      sheet.add_row [
+        "Product",
+        "Transfer Type",
+        "Transfer Description",
+        "InWard",
+        "OutWard",
+        "Total"
+      ]
+
+      @transfer_items.each do |item|
+        sheet.add_row [
+          item.product_name,
+          item.transfer_type&.humanize,
+          item.transfer_description,
+          item.inward_quantity.to_i,
+          item.outward_quantity.to_i,
+          item.total_quantity.to_i
+        ]
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "transfer_summary_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+  end
   # GET /stock_transfers/1 or /stock_transfers/1.json
   def show
   end

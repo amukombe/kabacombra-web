@@ -27,7 +27,13 @@ Rails.application.routes.draw do
   get "statements/payments"
   get "statements/adjustments"
   resources :stock_transfer_items
-  resources :stock_transfers
+  resources :stock_transfers do
+    collection do
+      get :transfer_summary
+      get :export_transfer_summary
+      get :export
+    end
+  end
   get "warehouses", to: "inventory_items#warehouses_overview"
   get "warehouses/:store_id/overview", to: "inventory_items#warehouse_overview", as: :warehouse_overview
   resources :warehouses
