@@ -429,10 +429,10 @@ class StockTransfersController < ApplicationController
     @warehouses = current_territory.warehouses
     @territories = Territory.all
     @products = NileProduct.all
-    
+    @stock_transfer.user = current_user
     respond_to do |format|
       if @stock_transfer.save
-        format.html { redirect_to inventory_items_path, notice: "Stock transfer was successfully created." }
+        format.html { redirect_to stock_transfers_path, notice: "Stock transfer was successfully created." }
         format.json { render :show, status: :created, location: @stock_transfer }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -449,8 +449,9 @@ class StockTransfersController < ApplicationController
     @territories = Territory.all
     @products = NileProduct.all
     respond_to do |format|
+      @stock_transfer.user = current_user
       if @stock_transfer.update(stock_transfer_params)
-        format.html { redirect_to inventory_items_path, notice: "Stock transfer was successfully updated." }
+        format.html { redirect_to stock_transfers_path, notice: "Stock transfer was successfully updated." }
         format.json { render :show, status: :ok, location: @stock_transfer }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -477,7 +478,7 @@ class StockTransfersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def stock_transfer_params
-      params.require(:stock_transfer).permit(:transfer_type, :source_type, :source_id, :destination_type, :destination_id, :transfer_date, :description, :status,:territory_id,
+      params.require(:stock_transfer).permit(:transfer_type, :source_type, :source_id, :destination_type, :destination_id, :transfer_date, :description, :status,:territory_id, :numberplate, :driver_details,
       stock_transfer_items_attributes: [:id, :nile_product_id, :stock_transfer_id, :transfer_quantity, :_destroy ])
     end
 end

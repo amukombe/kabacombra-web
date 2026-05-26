@@ -1,4 +1,5 @@
 class StockTransfer < ApplicationRecord
+    belongs_to :user, optional: true
     belongs_to :territory
     belongs_to :source, class_name: "Store", foreign_key: "source_id", optional: true
     belongs_to :destination, class_name: "Store", foreign_key: "destination_id", optional: true

@@ -92,6 +92,7 @@
                     <span class="text-sm font-medium"><%= transfer.transfer_date&.strftime("%d %b, %Y") %></span>
                     <span class="text-xs">Type #: <span class="font-normal"><%= transfer.transfer_type.humanize %></span></span>
                     <span class="text-xs">Description: <span class="font-normal">From <%=transfer.source.name%> to <%=transfer.destination&.name%> </span></span>
+                    <span class="text-xs">Driver Details: <span class="font-normal"><%= "#{transfer.numberplate} - #{transfer.driver_details}" %></span></span>
                     <div class="flex items-center gap-2 mt-2">  
                       <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=transfer.id%>" data-dropdown-placement="bottom">
                           <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>

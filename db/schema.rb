@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_06_215829) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_26_100334) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -670,7 +670,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_06_215829) do
     t.bigint "territory_id", null: false
     t.string "from_distributor"
     t.string "to_distributor"
+    t.string "numberplate"
+    t.string "driver_details"
+    t.bigint "user_id"
     t.index ["territory_id"], name: "index_stock_transfers_on_territory_id"
+    t.index ["user_id"], name: "index_stock_transfers_on_user_id"
   end
 
   create_table "store_transactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -954,6 +958,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_06_215829) do
   add_foreign_key "stock_transfer_items", "nile_products"
   add_foreign_key "stock_transfer_items", "stock_transfers"
   add_foreign_key "stock_transfers", "territories"
+  add_foreign_key "stock_transfers", "users"
   add_foreign_key "store_transactions", "nile_products"
   add_foreign_key "store_transactions", "stores"
   add_foreign_key "store_transactions", "territories"
