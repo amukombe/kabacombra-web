@@ -470,6 +470,52 @@ class StockTransfersController < ApplicationController
     end
   end
 
+  def receive
+    @active_link = "purchases"
+    @active_sub_link = "stock_transfers"
+    @stock_transfer = StockTransfer
+                        .includes(stock_transfer_items: :nile_product)
+                        .find(params[:id])
+  end
+
+  def submit_receive
+    @stock_transfer = StockTransfer.find(params[:id])
+
+    if @stock_transfer.update(receive_params)
+      @stock_transfer.update(
+        status: "received",
+        received_by: current_user.id,
+        received_at: Time.current
+      )
+
+      redirect_to stock_transfers_path,
+                  notice: "Transfer received successfully."
+    else
+      render :receive
+    end
+  end
+
+  def reject
+    @active_link = "purchases"
+    @active_sub_link = "stock_transfers"
+    @stock_transfer = StockTransfer.find(params[:id])
+  end
+
+  def submit_reject
+    @stock_transfer = StockTransfer.find(params[:id])
+
+    if @stock_transfer.update(
+        status: "rejected",
+        rejection_reason: params[:stock_transfer][:rejection_reason]
+      )
+
+      redirect_to stock_transfers_path,
+                  notice: "Transfer rejected successfully."
+    else
+      render :reject
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_stock_transfer
@@ -481,4 +527,8 @@ class StockTransfersController < ApplicationController
       params.require(:stock_transfer).permit(:transfer_type, :source_type, :source_id, :destination_type, :destination_id, :transfer_date, :description, :status,:territory_id, :numberplate, :driver_details,
       stock_transfer_items_attributes: [:id, :nile_product_id, :stock_transfer_id, :transfer_quantity, :_destroy ])
     end
+
+    def receive_params
+  params.require(:stock_transfer).permit(stock_transfer_items_attributes: [:id, :quantity_received, :breakages, :complaints])
+end
 end

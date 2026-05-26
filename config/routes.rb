@@ -28,6 +28,13 @@ Rails.application.routes.draw do
   get "statements/adjustments"
   resources :stock_transfer_items
   resources :stock_transfers do
+    member do
+      get :receive
+      patch :submit_receive
+
+      get :reject
+      patch :submit_reject
+    end
     collection do
       get :transfer_summary
       get :export_transfer_summary

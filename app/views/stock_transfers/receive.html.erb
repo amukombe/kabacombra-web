@@ -1,0 +1,59 @@
+<%= render "/shared/inventory_nav"%>
+<%= render "/shared/beer_movement_nav"%>
+<h2 class="mb-4 text-lg font-bold">
+  Receive Transfer
+</h2>
+
+<%= form_with model: @stock_transfer,
+    url: submit_receive_stock_transfer_path(@stock_transfer),
+    method: :patch do |f| %>
+
+  <table class="min-w-full border">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Transferred</th>
+        <th>Received</th>
+        <th>Breakages</th>
+        <th>Complaints</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <%= f.fields_for :stock_transfer_items do |item_form| %>
+        <% item = item_form.object %>
+
+        <tr>
+          <td>
+            <%= item.nile_product.name %>
+          </td>
+
+          <td>
+            <%= item.transfer_quantity %>
+          </td>
+
+          <td>
+            <%= item_form.number_field :quantity_received,
+                class: "w-full rounded-lg" %>
+          </td>
+
+          <td>
+            <%= item_form.number_field :breakages,
+                class: "w-full rounded-lg" %>
+          </td>
+
+          <td>
+            <%= item_form.number_field :complaints,
+                class: "w-full rounded-lg" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="mt-4">
+    <%= f.submit "Receive Transfer",
+        class: "px-4 py-2 text-white bg-green-600 rounded-lg" %>
+  </div>
+
+<% end %>

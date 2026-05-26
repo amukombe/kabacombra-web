@@ -6,66 +6,72 @@ class StockTransfer < ApplicationRecord
     has_many :stock_transfer_items, dependent: :destroy
     accepts_nested_attributes_for :stock_transfer_items, allow_destroy: true
     enum transfer_type: { warehouse_transfer: "warehouse_transfer",branch_transfer: "branch_transfer", distributor_transfer: "distributor_transfer"}
+    enum status: { pending: "pending", completed: "received", cancelled: "rejected" }
     after_create :create_inventory_transactions
 
     def self.search(params, territory_id)
-    stock_transfers = StockTransfer.where(
-        territory_id: territory_id
-    )
-
-    # Search
-    if params[:query].present?
-        search = "%#{sanitize_sql_like(params[:query])}%"
-
-        stock_transfers = stock_transfers.where(
-        "
-            description LIKE :search
-            OR from_distributor LIKE :search
-            OR to_distributor LIKE :search
-        ",
-        search: search
+        stock_transfers = StockTransfer.where(
+            "
+            territory_id = :territory
+            OR source_id = :territory
+            OR destination_id = :territory
+            ",
+            territory: territory_id
         )
-    end
 
-    # Transfer type
-    if params[:transfer_type].present?
-        stock_transfers = stock_transfers.where(
-        transfer_type: params[:transfer_type]
-        )
-    end
+        # Search
+        if params[:query].present?
+            search = "%#{sanitize_sql_like(params[:query])}%"
 
-    # Source
-    if params[:source_id].present?
-        stock_transfers = stock_transfers.where(
-        source_id: params[:source_id]
-        )
-    end
+            stock_transfers = stock_transfers.where(
+            "
+                description LIKE :search
+                OR from_distributor LIKE :search
+                OR to_distributor LIKE :search
+            ",
+            search: search
+            )
+        end
 
-    # Destination
-    if params[:destination_id].present?
-        stock_transfers = stock_transfers.where(
-        destination_id: params[:destination_id]
-        )
-    end
+        # Transfer type
+        if params[:transfer_type].present?
+            stock_transfers = stock_transfers.where(
+            transfer_type: params[:transfer_type]
+            )
+        end
 
-    # Start date
-    if params[:start_date].present?
-        stock_transfers = stock_transfers.where(
-        "transfer_date >= ?",
-        params[:start_date]
-        )
-    end
+        # Source
+        if params[:source_id].present?
+            stock_transfers = stock_transfers.where(
+            source_id: params[:source_id]
+            )
+        end
 
-    # End date
-    if params[:end_date].present?
-        stock_transfers = stock_transfers.where(
-        "transfer_date <= ?",
-        params[:end_date]
-        )
-    end
+        # Destination
+        if params[:destination_id].present?
+            stock_transfers = stock_transfers.where(
+            destination_id: params[:destination_id]
+            )
+        end
 
-    stock_transfers
-    end
+        # Start date
+        if params[:start_date].present?
+            stock_transfers = stock_transfers.where(
+            "transfer_date >= ?",
+            params[:start_date]
+            )
+        end
+
+        # End date
+        if params[:end_date].present?
+            stock_transfers = stock_transfers.where(
+            "transfer_date <= ?",
+            params[:end_date]
+            )
+        end
+
+        stock_transfers.order(transfer_date: :desc)
+        end
 
     private
     def create_inventory_transactions

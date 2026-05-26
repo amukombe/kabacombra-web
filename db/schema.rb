@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_26_100334) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_26_122038) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -654,6 +654,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_26_100334) do
     t.decimal "transfer_quantity", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "quantity_received", precision: 10
+    t.decimal "breakages", precision: 10
+    t.decimal "complaints", precision: 10
     t.index ["nile_product_id"], name: "index_stock_transfer_items_on_nile_product_id"
     t.index ["stock_transfer_id"], name: "index_stock_transfer_items_on_stock_transfer_id"
   end
@@ -673,6 +676,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_26_100334) do
     t.string "numberplate"
     t.string "driver_details"
     t.bigint "user_id"
+    t.text "rejection_reason"
+    t.bigint "received_by"
+    t.datetime "received_at"
     t.index ["territory_id"], name: "index_stock_transfers_on_territory_id"
     t.index ["user_id"], name: "index_stock_transfers_on_user_id"
   end

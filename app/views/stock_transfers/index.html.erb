@@ -91,7 +91,46 @@
                   <div class="flex flex-col space-y-1">
                     <span class="text-sm font-medium"><%= transfer.transfer_date&.strftime("%d %b, %Y") %></span>
                     <span class="text-xs">Type #: <span class="font-normal"><%= transfer.transfer_type.humanize %></span></span>
-                    <span class="text-xs">Description: <span class="font-normal">From <%=transfer.source.name%> to <%=transfer.destination&.name%> </span></span>
+                    <%
+                      description =
+                        case transfer.transfer_type
+
+                        when "branch_transfer"
+                          if transfer.territory_id == current_territory.id
+                            "To #{transfer.destination&.territory&.name || '-'}"
+                          elsif transfer.destination_id == current_territory.id
+                            "From #{transfer.source&.territory&.name || '-'}"
+                          end
+
+                        when "store_transfer"
+                          if transfer.territory_id == current_territory.id
+                            "To #{transfer.destination&.name || '-'}"
+                          elsif transfer.destination_id == current_territory.id
+                            "From #{transfer.source&.name || '-'}"
+                          end
+
+                        when "warehouse_transfer"
+                          if transfer.territory_id == current_territory.id
+                            "To Warehouse"
+                          else
+                            "From Warehouse"
+                          end
+
+                        when "distributor_transfer"
+                          "From #{transfer.from_distributor.presence || 'Distributor'}"
+
+                        else
+                          "-"
+                        end
+                    %>
+
+                    <span class="text-xs">
+                      Description:
+                      <span class="font-normal">
+                        <%= description %>
+                      </span>
+                    </span>
+                    
                     <span class="text-xs">Driver Details: <span class="font-normal"><%= "#{transfer.numberplate} - #{transfer.driver_details}" %></span></span>
                     <div class="flex items-center gap-2 mt-2">  
                       <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=transfer.id%>" data-dropdown-placement="bottom">
@@ -105,15 +144,81 @@
                       <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=transfer.id%>">
                           
                           <ul class="py-2" aria-labelledby="order-menu-button">
-                              <li>
-                                <%= link_to edit_stock_transfer_path(transfer), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
-                              </li>
 
-                              <li>
-                                <button data-modal-target="popup-modal-<%=transfer.id%>" data-modal-toggle="popup-modal-<%=transfer.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
-                              </li>
-                              
-                            
+                            <!-- PENDING -->
+                            <% if transfer.status == "pending" %>
+
+                              <% if transfer.territory_id == current_territory.id %>
+                                <!-- Sender -->
+                                <li>
+                                  <%= link_to edit_stock_transfer_path(transfer),
+                                      data: { turbo: false },
+                                      class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+                                    Edit
+                                  <% end %>
+                                </li>
+
+                                <li>
+                                  <button
+                                    data-modal-target="popup-modal-<%= transfer.id %>"
+                                    data-modal-toggle="popup-modal-<%= transfer.id %>"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                                    type="button">
+                                    Delete
+                                  </button>
+                                </li>
+
+                              <% elsif transfer.destination_id == current_territory.id %>
+                                <!-- Receiver -->
+                                <li>
+                                  <%= link_to receive_stock_transfer_path(transfer),
+                                      method: :patch,
+                                      data: { turbo: false },
+                                      class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+                                    Receive Transfer
+                                  <% end %>
+                                </li>
+
+                                <li>
+                                  <%= link_to reject_stock_transfer_path(transfer),
+                                      method: :patch,
+                                      data: { turbo: false },
+                                      class: "block px-4 py-2 text-sm text-red-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-300 dark:hover:text-white" do %>
+                                    Reject
+                                  <% end %>
+                                </li>
+                              <% end %>
+
+                            <!-- REJECTED -->
+                            <% elsif transfer.status == "rejected" %>
+
+                              <% if transfer.territory_id == current_territory.id %>
+                                <!-- Sender -->
+                                <li>
+                                  <%= link_to edit_stock_transfer_path(transfer),
+                                      data: { turbo: false },
+                                      class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+                                    Edit
+                                  <% end %>
+                                </li>
+
+                                <li>
+                                  <button
+                                    data-modal-target="popup-modal-<%= transfer.id %>"
+                                    data-modal-toggle="popup-modal-<%= transfer.id %>"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                                    type="button">
+                                    Delete
+                                  </button>
+                                </li>
+                              <% end %>
+
+                            <!-- RECEIVED -->
+                            <% elsif transfer.status == "received" %>
+                              <!-- Hide all actions -->
+
+                            <% end %>
+
                           </ul>
                       </div>
                     </div>
