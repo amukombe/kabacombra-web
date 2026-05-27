@@ -232,7 +232,6 @@
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Transferred</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Received</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Breakages</th>
-                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Complaints</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">DNR</th>
                       </tr>
                     </thead>
@@ -243,8 +242,7 @@
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.transfer_quantity) %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item&.quantity_received) %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item&.breakages.to_i) %></td>
-                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item&.complaints.to_i) %></td>
-                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.transfer_quantity.to_i - (item&.quantity_received.to_i + item&.breakages.to_i + item&.complaints.to_i)) %></td>
+                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.transfer_quantity.to_i - (item&.quantity_received.to_i + item&.breakages.to_i)) %></td>
                         </tr>
                       <% end %>
                     </tbody>
