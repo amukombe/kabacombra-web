@@ -244,7 +244,7 @@
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item&.quantity_received) %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item&.breakages.to_i) %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item&.complaints.to_i) %></td>
-                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.transfer_quantity.to_i - item&.quantity_received.to_i) %></td>
+                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.transfer_quantity.to_i - (item&.quantity_received.to_i + item&.breakages.to_i + item&.complaints.to_i)) %></td>
                         </tr>
                       <% end %>
                     </tbody>
