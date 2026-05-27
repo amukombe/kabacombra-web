@@ -231,6 +231,7 @@
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Product</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Transferred</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Received</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">DNR</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -239,6 +240,7 @@
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.name %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.transfer_quantity) %></td>
                           <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item&.quantity_received) %></td>
+                          <td class="px-2 py-1 text-xs font-normal text-right border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.transfer_quantity.to_i - item&.quantity_received.to_i) %> <span class="text-xs">(CMP: <%= number_with_delimiter(item&.complaints.to_i) %>, BRK: <%= number_with_delimiter(item&.breakages.to_i) %>)</span></td>
                         </tr>
                       <% end %>
                     </tbody>
