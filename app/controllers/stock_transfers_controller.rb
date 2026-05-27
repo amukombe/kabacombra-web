@@ -112,7 +112,7 @@ class StockTransfersController < ApplicationController
       territory: territory_id
     )
 
-    # Date filters
+    # Start date
     if params[:start_date].present?
       query = query.where(
         "stock_transfers.transfer_date >= ? OR stock_transfers.id IS NULL",
@@ -120,6 +120,7 @@ class StockTransfersController < ApplicationController
       )
     end
 
+    # End date
     if params[:end_date].present?
       query = query.where(
         "stock_transfers.transfer_date <= ? OR stock_transfers.id IS NULL",
@@ -128,102 +129,60 @@ class StockTransfersController < ApplicationController
     end
 
     @transfer_items = query
-      .joins(
-        "LEFT JOIN territories source_territories
-        ON source_territories.id = stock_transfers.source_id"
-      )
-      .joins(
-        "LEFT JOIN territories destination_territories
-        ON destination_territories.id = stock_transfers.destination_id"
-      )
-      .joins(
-        "LEFT JOIN stores source_stores
-        ON source_stores.id = stock_transfers.source_id"
-      )
-      .joins(
-        "LEFT JOIN stores destination_stores
-        ON destination_stores.id = stock_transfers.destination_id"
-      )
       .group(
         "nile_products.id,
-        nile_products.name,
-        stock_transfers.id,
-        stock_transfers.transfer_type,
-        source_territories.name,
-        destination_territories.name,
-        source_stores.name,
-        destination_stores.name"
+        nile_products.name"
       )
       .select(
         "
         nile_products.id,
         nile_products.name AS product_name,
-        stock_transfers.transfer_type,
-
-        CASE
-          -- Branch transfer
-          WHEN stock_transfers.transfer_type = 'branch_transfer'
-            THEN CONCAT(
-              'From ',
-              COALESCE(source_territories.name, '-'),
-              ' to ',
-              COALESCE(destination_territories.name, '-')
-            )
-
-          -- Store transfer
-          WHEN stock_transfers.transfer_type = 'store_transfer'
-            THEN CONCAT(
-              'From ',
-              COALESCE(source_stores.name, '-'),
-              ' to ',
-              COALESCE(destination_stores.name, '-')
-            )
-
-          -- Warehouse transfer
-          WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-            THEN 'From Warehouse to Warehouse'
-
-          -- Distributor transfer
-          WHEN stock_transfers.transfer_type = 'distributor_transfer'
-            THEN 'From Distributor'
-
-          ELSE '-'
-        END AS transfer_description,
 
         -- Inward
-        SUM(
-          CASE
-            WHEN stock_transfers.destination_id = #{territory_id}
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+        COALESCE(
+          SUM(
+            CASE
 
-            WHEN stock_transfers.transfer_type = 'distributor_transfer'
-              AND stock_transfers.territory_id = #{territory_id}
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+              -- Received by this territory
+              WHEN stock_transfers.destination_id = #{territory_id}
+                THEN stock_transfer_items.transfer_quantity
 
-            WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+              -- Distributor transfer
+              WHEN stock_transfers.transfer_type = 'distributor_transfer'
+                AND stock_transfers.territory_id = #{territory_id}
+                THEN stock_transfer_items.transfer_quantity
 
-            ELSE 0
-          END
-        ) AS inward_quantity,
+              -- Warehouse transfer
+              WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+                THEN stock_transfer_items.transfer_quantity
+
+              ELSE 0
+            END
+          ),
+        0) AS inward_quantity,
 
         -- Outward
-        SUM(
-          CASE
-            WHEN stock_transfers.source_id = #{territory_id}
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+        COALESCE(
+          SUM(
+            CASE
 
-            WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+              -- Sent by this territory
+              WHEN stock_transfers.source_id = #{territory_id}
+                THEN stock_transfer_items.transfer_quantity
 
-            ELSE 0
-          END
-        ) AS outward_quantity,
+              -- Warehouse transfer
+              WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+                THEN stock_transfer_items.transfer_quantity
+
+              ELSE 0
+            END
+          ),
+        0) AS outward_quantity,
 
         -- Total
-        SUM(
-          COALESCE(stock_transfer_items.transfer_quantity, 0)
-        ) AS total_quantity
+        COALESCE(
+          SUM(stock_transfer_items.transfer_quantity),
+        0) AS total_quantity
         "
       )
       .order("nile_products.product_number ASC")
@@ -273,95 +232,60 @@ class StockTransfersController < ApplicationController
     end
 
     @transfer_items = query
-      .joins(
-        "LEFT JOIN territories source_territories
-        ON source_territories.id = stock_transfers.source_id"
-      )
-      .joins(
-        "LEFT JOIN territories destination_territories
-        ON destination_territories.id = stock_transfers.destination_id"
-      )
-      .joins(
-        "LEFT JOIN stores source_stores
-        ON source_stores.id = stock_transfers.source_id"
-      )
-      .joins(
-        "LEFT JOIN stores destination_stores
-        ON destination_stores.id = stock_transfers.destination_id"
-      )
       .group(
         "nile_products.id,
-        nile_products.name,
-        stock_transfers.id,
-        stock_transfers.transfer_type,
-        source_territories.name,
-        destination_territories.name,
-        source_stores.name,
-        destination_stores.name"
+        nile_products.name"
       )
       .select(
         "
         nile_products.id,
         nile_products.name AS product_name,
-        stock_transfers.transfer_type,
 
-        CASE
-          WHEN stock_transfers.transfer_type = 'branch_transfer'
-            THEN CONCAT(
-              'From ',
-              COALESCE(source_territories.name, '-'),
-              ' to ',
-              COALESCE(destination_territories.name, '-')
-            )
+        -- Inward
+        COALESCE(
+          SUM(
+            CASE
 
-          WHEN stock_transfers.transfer_type = 'store_transfer'
-            THEN CONCAT(
-              'From ',
-              COALESCE(source_stores.name, '-'),
-              ' to ',
-              COALESCE(destination_stores.name, '-')
-            )
+              -- Received by this territory
+              WHEN stock_transfers.destination_id = #{territory_id}
+                THEN stock_transfer_items.transfer_quantity
 
-          WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-            THEN 'From Warehouse to Warehouse'
+              -- Distributor transfer
+              WHEN stock_transfers.transfer_type = 'distributor_transfer'
+                AND stock_transfers.territory_id = #{territory_id}
+                THEN stock_transfer_items.transfer_quantity
 
-          WHEN stock_transfers.transfer_type = 'distributor_transfer'
-            THEN 'From Distributor'
+              -- Warehouse transfer
+              WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+                THEN stock_transfer_items.transfer_quantity
 
-          ELSE '-'
-        END AS transfer_description,
+              ELSE 0
+            END
+          ),
+        0) AS inward_quantity,
 
-        SUM(
-          CASE
-            WHEN stock_transfers.destination_id = #{territory_id}
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+        -- Outward
+        COALESCE(
+          SUM(
+            CASE
 
-            WHEN stock_transfers.transfer_type = 'distributor_transfer'
-              AND stock_transfers.territory_id = #{territory_id}
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+              -- Sent by this territory
+              WHEN stock_transfers.source_id = #{territory_id}
+                THEN stock_transfer_items.transfer_quantity
 
-            WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
+              -- Warehouse transfer
+              WHEN stock_transfers.transfer_type = 'warehouse_transfer'
+                THEN stock_transfer_items.transfer_quantity
 
-            ELSE 0
-          END
-        ) AS inward_quantity,
+              ELSE 0
+            END
+          ),
+        0) AS outward_quantity,
 
-        SUM(
-          CASE
-            WHEN stock_transfers.source_id = #{territory_id}
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
-
-            WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-              THEN COALESCE(stock_transfer_items.transfer_quantity, 0)
-
-            ELSE 0
-          END
-        ) AS outward_quantity,
-
-        SUM(
-          COALESCE(stock_transfer_items.transfer_quantity, 0)
-        ) AS total_quantity
+        -- Total
+        COALESCE(
+          SUM(stock_transfer_items.transfer_quantity),
+        0) AS total_quantity
         "
       )
       .order("nile_products.product_number ASC")
@@ -370,20 +294,19 @@ class StockTransfersController < ApplicationController
     workbook = package.workbook
 
     workbook.add_worksheet(name: "Transfer Summary") do |sheet|
+
+      # Header
       sheet.add_row [
         "Product",
-        "Transfer Type",
-        "Transfer Description",
         "InWard",
         "OutWard",
         "Total"
       ]
 
+      # Rows
       @transfer_items.each do |item|
         sheet.add_row [
           item.product_name,
-          item.transfer_type&.humanize,
-          item.transfer_description,
           item.inward_quantity.to_i,
           item.outward_quantity.to_i,
           item.total_quantity.to_i
