@@ -7,7 +7,7 @@ class StockTransfer < ApplicationRecord
     accepts_nested_attributes_for :stock_transfer_items, allow_destroy: true
     enum transfer_type: { warehouse_transfer: "warehouse_transfer",branch_transfer: "branch_transfer", distributor_transfer: "distributor_transfer"}
     enum status: { pending: "pending", completed: "received", cancelled: "rejected" }
-    after_create :create_inventory_transactions
+    #after_create :create_inventory_transactions
 
     def self.search(params, territory_id)
         stock_transfers = StockTransfer.where(
@@ -73,71 +73,86 @@ class StockTransfer < ApplicationRecord
         stock_transfers.order(transfer_date: :desc)
         end
 
-    private
     def create_inventory_transactions
-        if(self.transfer_type=="warehouse_transfer")
-            stock_transfer_items.each do |item|
+        return if inventory_transactions_created?
+
+        if warehouse_transfer?
+
+        stock_transfer_items.each do |item|
             quantity = item.transfer_quantity
-            transaction_type = item.stock_transfer.transfer_type
+
             next unless quantity.present? && quantity > 0
-                # deduct from where it's coming from
-                InventoryTransaction.create!(
-                    nile_product_id: item.nile_product_id,
-                    territory_id: self.territory_id,
-                    transaction_quantity: quantity,
-                    transaction_type: 'warehouse transfer out',
-                    direction: 'out',
-                    transaction_date: self.transfer_date
-                )
-                # transfer to another warehouse
-                InventoryTransaction.create!(
-                    nile_product_id: item.nile_product_id,
-                    territory_id: self.territory_id,
-                    transaction_quantity: quantity,
-                    transaction_type: 'warehouse transfer in',
-                    direction: 'in',
-                    transaction_date: self.transfer_date
-                )
-            end
-        elsif self.transfer_type=="branch_transfer"
-            stock_transfer_items.each do |item|
-                quantity = item.transfer_quantity
-                transaction_type = item.stock_transfer.transfer_type
-                next unless quantity.present? && quantity > 0
-                # deduct from where house to another
-                InventoryTransaction.create!(
-                    nile_product_id: item.nile_product_id,
-                    territory_id: self.source_id,
-                    transaction_quantity: quantity,
-                    transaction_type: 'branch transfer out',
-                    direction: 'out',
-                    transaction_date: self.transfer_date
-                )
-                # transfer to another
-                InventoryTransaction.create!(
-                    nile_product_id: item.nile_product_id,
-                    territory_id: self.destination_id,
-                    transaction_quantity: quantity,
-                    transaction_type: 'branch transfer in',
-                    direction: 'in',
-                    transaction_date: self.transfer_date
-                )
-            end
-        elsif self.transfer_type=="distributor_transfer"
-            stock_transfer_items.each do |item|
-                quantity = item.transfer_quantity
-                transaction_type = item.stock_transfer.transfer_type
-                next unless quantity.present? && quantity > 0
-                # deduct from where house to another
-                InventoryTransaction.create!(
-                    nile_product_id: item.nile_product_id,
-                    territory_id: self.territory_id,
-                    transaction_quantity: quantity,
-                    transaction_type: 'distributor_transfer',
-                    direction: 'in',
-                    transaction_date: self.transfer_date
-                )
-            end
+
+            InventoryTransaction.create!(
+            nile_product_id: item.nile_product_id,
+            territory_id: self.territory_id,
+            transaction_quantity: quantity,
+            transaction_type: 'warehouse transfer out',
+            direction: 'out',
+            transaction_date: self.transfer_date
+            )
+
+            InventoryTransaction.create!(
+            nile_product_id: item.nile_product_id,
+            territory_id: self.territory_id,
+            transaction_quantity: quantity,
+            transaction_type: 'warehouse transfer in',
+            direction: 'in',
+            transaction_date: self.transfer_date
+            )
         end
-      end
+
+        elsif branch_transfer?
+
+        stock_transfer_items.each do |item|
+            quantity = item.transfer_quantity
+
+            next unless quantity.present? && quantity > 0
+
+            InventoryTransaction.create!(
+            nile_product_id: item.nile_product_id,
+            territory_id: self.source_id,
+            transaction_quantity: quantity,
+            transaction_type: 'branch transfer out',
+            direction: 'out',
+            transaction_date: self.transfer_date
+            )
+
+            InventoryTransaction.create!(
+            nile_product_id: item.nile_product_id,
+            territory_id: self.destination_id,
+            transaction_quantity: quantity,
+            transaction_type: 'branch transfer in',
+            direction: 'in',
+            transaction_date: self.transfer_date
+            )
+        end
+
+        elsif distributor_transfer?
+
+        stock_transfer_items.each do |item|
+            quantity = item.transfer_quantity
+
+            next unless quantity.present? && quantity > 0
+
+            InventoryTransaction.create!(
+            nile_product_id: item.nile_product_id,
+            territory_id: self.territory_id,
+            transaction_quantity: quantity,
+            transaction_type: 'distributor_transfer',
+            direction: 'in',
+            transaction_date: self.transfer_date
+            )
+        end
+
+        end
+
+        update_column(:inventory_transactions_created, true)
+    end
+
+    private
+
+    def inventory_transactions_created?
+        self.inventory_transactions_created == true
+    end
 end

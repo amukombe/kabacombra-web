@@ -145,16 +145,16 @@ class StockTransfersController < ApplicationController
 
               -- Received by this territory
               WHEN stock_transfers.destination_id = #{territory_id}
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               -- Distributor transfer
               WHEN stock_transfers.transfer_type = 'distributor_transfer'
                 AND stock_transfers.territory_id = #{territory_id}
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               -- Warehouse transfer
               WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               ELSE 0
             END
@@ -168,11 +168,11 @@ class StockTransfersController < ApplicationController
 
               -- Sent by this territory
               WHEN stock_transfers.source_id = #{territory_id}
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               -- Warehouse transfer
               WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               ELSE 0
             END
@@ -181,7 +181,7 @@ class StockTransfersController < ApplicationController
 
         -- Total
         COALESCE(
-          SUM(stock_transfer_items.transfer_quantity),
+          SUM(stock_transfer_items.quantity_received),
         0) AS total_quantity
         "
       )
@@ -248,16 +248,16 @@ class StockTransfersController < ApplicationController
 
               -- Received by this territory
               WHEN stock_transfers.destination_id = #{territory_id}
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               -- Distributor transfer
               WHEN stock_transfers.transfer_type = 'distributor_transfer'
                 AND stock_transfers.territory_id = #{territory_id}
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               -- Warehouse transfer
               WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               ELSE 0
             END
@@ -271,11 +271,11 @@ class StockTransfersController < ApplicationController
 
               -- Sent by this territory
               WHEN stock_transfers.source_id = #{territory_id}
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               -- Warehouse transfer
               WHEN stock_transfers.transfer_type = 'warehouse_transfer'
-                THEN stock_transfer_items.transfer_quantity
+                THEN stock_transfer_items.quantity_received
 
               ELSE 0
             END
@@ -284,7 +284,7 @@ class StockTransfersController < ApplicationController
 
         -- Total
         COALESCE(
-          SUM(stock_transfer_items.transfer_quantity),
+          SUM(stock_transfer_items.quantity_received),
         0) AS total_quantity
         "
       )
@@ -404,17 +404,26 @@ class StockTransfersController < ApplicationController
   def submit_receive
     @stock_transfer = StockTransfer.find(params[:id])
 
-    if @stock_transfer.update(receive_params)
-      @stock_transfer.update(
-        status: "received",
-        received_by: current_user.id,
-        received_at: Time.current
-      )
+    ActiveRecord::Base.transaction do
 
-      redirect_to stock_transfers_path,
-                  notice: "Transfer received successfully."
-    else
-      render :receive
+      if @stock_transfer.update(receive_params)
+
+        @stock_transfer.update!(
+          status: "received",
+          received_by: current_user.id,
+          received_at: Time.current
+        )
+
+        # CREATE TRANSACTIONS HERE
+        @stock_transfer.create_inventory_transactions
+
+        redirect_to stock_transfers_path,
+                    notice: "Transfer received successfully."
+
+      else
+        render :receive
+      end
+
     end
   end
 

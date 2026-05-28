@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_26_122038) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -679,6 +679,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_26_122038) do
     t.text "rejection_reason"
     t.bigint "received_by"
     t.datetime "received_at"
+    t.boolean "inventory_transactions_created", default: false
     t.index ["territory_id"], name: "index_stock_transfers_on_territory_id"
     t.index ["user_id"], name: "index_stock_transfers_on_user_id"
   end
