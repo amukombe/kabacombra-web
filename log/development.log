@@ -6414,3 +6414,99 @@ Processing by UsersController#index as TURBO_STREAM
 Completed 200 OK in 67ms (Views: 52.5ms | ActiveRecord: 12.0ms (35 queries, 3 cached) | GC: 7.0ms)
 
 
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :role, {:staff=>0, :supplier=>1, :admin=>2}
+ (called from <class:User> at /home/david/kabacombra-web/app/models/user.rb:2)
+Started GET "/" for ::1 at 2026-06-03 13:32:35 +0300
+  [1m[36mActiveRecord::SchemaMigration Load (2.3ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by HomeController#index as HTML
+  Rendering layout layouts/home.html.erb
+  Rendering home/index.html.erb within layouts/home
+  Rendered home/index.html.erb within layouts/home (Duration: 2.0ms | GC: 0.0ms)
+  Rendered layout layouts/home.html.erb (Duration: 2.4ms | GC: 0.0ms)
+Completed 500 Internal Server Error in 29ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.3ms)
+
+
+  
+ActionView::Template::Error (undefined local variable or method `login_path' for an instance of #<Class:0x0000722807137300>):
+
+Causes:
+NameError (undefined local variable or method `login_path' for an instance of #<Class:0x0000722807137300>)
+    12:       </div>
+    13: 
+    14:       <div class="flex items-center gap-2">
+    15:         <%= link_to "Sign in", login_path,
+    16:             class: "px-4 py-2 text-sm font-medium hover:text-green-700" %>
+    17: 
+    18:         <%= link_to "Create account", signup_path,
+  
+app/views/home/index.html.erb:15
+Started GET "/favicon.ico" for ::1 at 2026-06-03 13:32:36 +0300
+  
+ActionController::RoutingError (No route matches [GET] "/favicon.ico"):
+  
+Started GET "/" for ::1 at 2026-06-03 13:34:47 +0300
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :role, {:staff=>0, :supplier=>1, :admin=>2}
+ (called from <class:User> at /home/david/kabacombra-web/app/models/user.rb:2)
+Processing by HomeController#index as HTML
+  Rendering layout layouts/home.html.erb
+  Rendering home/index.html.erb within layouts/home
+  Rendered home/index.html.erb within layouts/home (Duration: 0.9ms | GC: 0.0ms)
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/home.html.erb:65
+  [1m[36mEmployee Load (2.1ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/home.html.erb:82
+  Rendered layout layouts/home.html.erb (Duration: 335.3ms | GC: 10.1ms)
+Completed 200 OK in 339ms (Views: 293.5ms | ActiveRecord: 43.3ms (2 queries, 0 cached) | GC: 10.1ms)
+
+
+Started GET "/" for ::1 at 2026-06-03 13:34:50 +0300
+Processing by HomeController#index as HTML
+  Rendering layout layouts/home.html.erb
+  Rendering home/index.html.erb within layouts/home
+  Rendered home/index.html.erb within layouts/home (Duration: 0.2ms | GC: 0.0ms)
+  [1m[36mUser Load (0.5ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/home.html.erb:65
+  [1m[36mEmployee Load (0.8ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/home.html.erb:82
+  Rendered layout layouts/home.html.erb (Duration: 9.6ms | GC: 1.4ms)
+Completed 200 OK in 10ms (Views: 8.7ms | ActiveRecord: 1.3ms (2 queries, 0 cached) | GC: 1.4ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-03 13:34:51 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.8ms | GC: 0.0ms)
+Completed 200 OK in 5ms (Views: 4.7ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.9ms)
+
+
+Started GET "/" for ::1 at 2026-06-03 13:35:20 +0300
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :role, {:staff=>0, :supplier=>1, :admin=>2}
+ (called from <class:User> at /home/david/kabacombra-web/app/models/user.rb:2)
+Processing by HomeController#index as HTML
+  Rendering layout layouts/home.html.erb
+  Rendering home/index.html.erb within layouts/home
+  Rendered home/index.html.erb within layouts/home (Duration: 0.6ms | GC: 0.0ms)
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/home.html.erb:65
+  [1m[36mEmployee Load (1.0ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/home.html.erb:82
+  Rendered layout layouts/home.html.erb (Duration: 51.0ms | GC: 9.1ms)
+Completed 200 OK in 54ms (Views: 34.0ms | ActiveRecord: 18.1ms (2 queries, 0 cached) | GC: 9.1ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-03 13:35:21 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.6ms | GC: 0.0ms)
+Completed 200 OK in 8ms (Views: 7.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 4.6ms)
+
+
