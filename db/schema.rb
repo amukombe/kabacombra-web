@@ -208,20 +208,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "icon"
-    t.text "app_icon"
+    t.string "icon"
+    t.string "app_icon"
     t.string "app_url"
   end
 
   create_table "dispatch_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "nile_product_id", null: false
     t.decimal "quantity_dispatched", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "beer_dispatch_id", null: false
     t.decimal "quantity_ordered", precision: 10
-    t.bigint "order_item_id", null: false
     t.index ["beer_dispatch_id"], name: "index_dispatch_items_on_beer_dispatch_id"
-    t.index ["order_item_id"], name: "index_dispatch_items_on_order_item_id"
+    t.index ["nile_product_id"], name: "index_dispatch_items_on_nile_product_id"
   end
 
   create_table "drivers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -337,6 +337,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
   end
 
   create_table "inventories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "order_id", null: false
     t.decimal "total", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -347,6 +348,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
     t.bigint "warehouse_id"
     t.bigint "status_id"
     t.index ["beer_dispatch_id"], name: "index_inventories_on_beer_dispatch_id"
+    t.index ["order_id"], name: "index_inventories_on_order_id"
     t.index ["status_id"], name: "index_inventories_on_status_id"
     t.index ["territory_id"], name: "index_inventories_on_territory_id"
     t.index ["user_id"], name: "index_inventories_on_user_id"
@@ -457,9 +459,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
     t.datetime "updated_at", null: false
     t.string "buying_price"
     t.string "selling_price"
-    t.bigint "empty_type_id"
+    t.string "empty_type"
+    t.decimal "empty_price", precision: 10
     t.integer "product_number"
-    t.index ["empty_type_id"], name: "index_nile_products_on_empty_type_id"
     t.index ["nile_category_id"], name: "index_nile_products_on_nile_category_id"
   end
 
@@ -470,20 +472,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
     t.datetime "updated_at", null: false
     t.index ["driver_id"], name: "index_order_drivers_on_driver_id"
     t.index ["order_id"], name: "index_order_drivers_on_order_id"
-  end
-
-  create_table "order_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "order_id", null: false
-    t.bigint "nile_product_id", null: false
-    t.decimal "quantity", precision: 10
-    t.decimal "unit_price", precision: 10
-    t.decimal "total", precision: 10
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "unit_of_measurement_id", null: false
-    t.index ["nile_product_id"], name: "index_order_items_on_nile_product_id"
-    t.index ["order_id"], name: "index_order_items_on_order_id"
-    t.index ["unit_of_measurement_id"], name: "index_order_items_on_unit_of_measurement_id"
   end
 
   create_table "order_routes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -509,13 +497,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
     t.index ["status_id"], name: "index_orders_on_status_id"
     t.index ["territory_id"], name: "index_orders_on_territory_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
-  end
-
-  create_table "payment_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "payments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -632,6 +613,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
     t.string "direction"
     t.string "movement_type"
     t.string "notes"
+    t.integer "source_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["nile_product_id"], name: "index_stock_adjustments_on_nile_product_id"
@@ -901,7 +883,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
   add_foreign_key "customers", "territories"
   add_foreign_key "department_modules", "departments"
   add_foreign_key "dispatch_items", "beer_dispatches"
-  add_foreign_key "dispatch_items", "order_items"
+  add_foreign_key "dispatch_items", "nile_products"
   add_foreign_key "drivers", "employees"
   add_foreign_key "employee_departments", "departments"
   add_foreign_key "employee_departments", "employees"
@@ -916,6 +898,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
   add_foreign_key "financial_transactions", "territories"
   add_foreign_key "financial_transactions", "users"
   add_foreign_key "inventories", "beer_dispatches"
+  add_foreign_key "inventories", "orders"
   add_foreign_key "inventories", "statuses"
   add_foreign_key "inventories", "territories"
   add_foreign_key "inventories", "users"
@@ -933,13 +916,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_28_114719) do
   add_foreign_key "loading_orders", "stores"
   add_foreign_key "loading_orders", "territories"
   add_foreign_key "loading_orders", "users"
-  add_foreign_key "nile_products", "empty_types"
   add_foreign_key "nile_products", "nile_categories"
   add_foreign_key "order_drivers", "drivers"
   add_foreign_key "order_drivers", "orders"
-  add_foreign_key "order_items", "nile_products"
-  add_foreign_key "order_items", "orders"
-  add_foreign_key "order_items", "unit_of_measurements"
   add_foreign_key "order_routes", "orders"
   add_foreign_key "order_routes", "routes"
   add_foreign_key "orders", "statuses"

@@ -14,7 +14,7 @@ development:
   #database: storage/development.sqlite3
   adapter: mysql2
   encoding: utf8mb4
-  database: kabacoerp
+  database: kabacombra
   username: root
   password: "mukabuba24.BLUSS"
   host: localhost
@@ -28,7 +28,7 @@ test:
   #database: storage/test.sqlite3
   adapter: mysql2
   encoding: utf8mb4
-  database: kabacoerp
+  database: kabacombra
   username: root
   password: "mukabuba24.BLUSS"
   host: localhost
@@ -45,7 +45,7 @@ production:
   # database: path/to/persistent/storage/production.sqlite3
   adapter: mysql2
   encoding: utf8mb4
-  database: kabacoerp
+  database: kabacombra
   username: root
   password: "mukabuba24.BLUSS"
   host: localhost

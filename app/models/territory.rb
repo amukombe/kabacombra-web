@@ -3,11 +3,11 @@ class Territory < ApplicationRecord
   belongs_to :department
   has_many :employee_territories
   has_many :employees, through: :employee_territories
-  has_many :stores
-  has_many :warehouses
-  has_many :customers
-  has_many :inventories
-  has_many :inventory_transactions
+  has_many :stores, dependent: :destroy
+  has_many :warehouses, dependent: :destroy
+  has_many :customers, dependent: :destroy
+  has_many :inventories, dependent: :destroy
+  has_many :inventory_transactions, dependent: :destroy
   has_many :vendor_payments, dependent: :destroy
   has_many :vendor_adjustiments, dependent: :destroy
   has_many :payments, dependent: :destroy
@@ -19,6 +19,7 @@ class Territory < ApplicationRecord
   has_many :financial_transactions, dependent: :destroy
   has_many :sales, dependent: :destroy
   has_many :sale_empties, through: :sales, dependent: :destroy
+  has_many :user_modules, dependent: :destroy
   def self.search(params)
     params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
   end
