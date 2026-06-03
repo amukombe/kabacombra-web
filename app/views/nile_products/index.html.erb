@@ -3,10 +3,10 @@
 
 <div class="grid w-full grid-cols-2 gap-4 mb-3">
   <div class="col-span-1">
-    <h1 class="text-gray-800 text-md dark:text-gray-100">Nile products</h1>
+    <h1 class="text-gray-800 text-md dark:text-gray-100">Products</h1>
   </div>
   <div class="col-span-1 text-right">
-    <%= link_to new_nile_product_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> New nile_product<%end%>
+    <%= link_to new_nile_product_path, class:"bg-slate-700 text-slate-100 p-1 px-3 text-sm rounded-full dark:text-slate-100 dark:bg-slate-700" do %> <i class="fas fa-plus"></i> New product<%end%>
   </div>  
 </div>
 
@@ -63,13 +63,11 @@
                   <span class="text-xs"><%=nile_product.bottle_size%>, <%=nile_product.pcode%></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  Category: <span class="font-semibold"><%=nile_product.nile_category.name%></span><br/>
-                  Empty Type: <span class="font-semibold"><%=nile_product.empty_type.name if nile_product.empty_type.present?%></span>
+                  Category: <span class="font-semibold"><%=nile_product.nile_category.name%></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   BP: <span class="font-normal"><%=nile_product.buying_price%></span><br/>
-                  SP: <span class="font-normal"><%=nile_product.selling_price%></span><br/>
-                  EP: <span class="font-normal"><%=nile_product.empty_type.price if nile_product.empty_type.present?%></span>
+                  SP: <span class="font-normal"><%=nile_product.selling_price%></span>
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="nile_product-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=nile_product.id%>" data-dropdown-placement="bottom">

@@ -170,7 +170,7 @@ class NileProductsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def nile_product_params
-      params.require(:nile_product).permit(:name, :crate_size, :bottle_size, :pcode, :nile_category_id, :buying_price, :selling_price, :empty_type_id, :product_number)
+      params.require(:nile_product).permit(:name, :pcode, :nile_category_id, :buying_price, :selling_price, :product_number)
     end
     def breakage_params
       params.require(:inventory_item).permit(:nile_product_id, :breakages)
