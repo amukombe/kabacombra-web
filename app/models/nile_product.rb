@@ -10,6 +10,7 @@ class NileProduct < ApplicationRecord
   has_many :stock_transfer_items, dependent: :destroy
   has_many :store_transactions, dependent: :destroy
   has_many :beer_return_items, dependent: :destroy
+  has_many :destination_items, dependent: :destroy
   validates :name, uniqueness: true, presence: true
   def self.search(params)
       params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
