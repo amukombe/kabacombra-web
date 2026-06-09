@@ -175,12 +175,9 @@
                     </th>
 
                     <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                      Beer Value
+                      Product Value
                     </th>
 
-                    <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                      Empty Value
-                    </th>
 
                     <th class="p-4 text-[10px] font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                       Closing Stock Value
@@ -277,17 +274,6 @@
 
                       </td>
 
-                      <!-- Empty Value -->
-                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-
-                        <span class="font-normal">
-                          <%= number_with_delimiter(
-                            closing_stock * item.empty_type.price.to_i,
-                            delimiter: ','
-                          ) %>
-                        </span>
-
-                      </td>
 
                       <!-- Closing Stock Value -->
                       <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">

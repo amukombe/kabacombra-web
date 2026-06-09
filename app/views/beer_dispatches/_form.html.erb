@@ -23,13 +23,12 @@
     </div>
   <% end %>
   <div class="grid grid-cols-3 gap-4 p-4">
-    <div>
-      <%= form.hidden_field :order_id, value: @order.id%>
-      <%= form.hidden_field :user_id, value: current_user.id%>
-      <%= form.hidden_field :territory_id, value: current_territory.id %>
-    </div>
+    
 
     <div>
+    <%= form.hidden_field :order_id, value: @order.id%>
+      <%= form.hidden_field :user_id, value: current_user.id%>
+      <%= form.hidden_field :territory_id, value: current_territory.id %>
       <%= form.label :driver_name, class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
       <%= form.text_field :driver_name, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
     </div>
