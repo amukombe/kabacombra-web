@@ -66,6 +66,6 @@ class DestinationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def destination_params
-      params.require(:destination).permit(:name)
+      params.require(:destination).permit(:name, :code)
     end
 end
