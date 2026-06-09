@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_05_164923) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_09_065635) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -214,12 +214,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_05_164923) do
   end
 
   create_table "destinations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "nile_product_id", null: false
-    t.decimal "selling_price", precision: 10
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["nile_product_id"], name: "index_destinations_on_nile_product_id"
   end
 
   create_table "dispatch_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -468,6 +465,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_05_164923) do
     t.string "selling_price"
     t.bigint "empty_type_id"
     t.integer "product_number"
+    t.bigint "destination_id"
+    t.index ["destination_id"], name: "index_nile_products_on_destination_id"
     t.index ["empty_type_id"], name: "index_nile_products_on_empty_type_id"
     t.index ["nile_category_id"], name: "index_nile_products_on_nile_category_id"
   end
@@ -909,7 +908,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_05_164923) do
   add_foreign_key "comments", "users"
   add_foreign_key "customers", "territories"
   add_foreign_key "department_modules", "departments"
-  add_foreign_key "destinations", "nile_products"
   add_foreign_key "dispatch_items", "beer_dispatches"
   add_foreign_key "dispatch_items", "order_items"
   add_foreign_key "drivers", "employees"
@@ -943,6 +941,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_05_164923) do
   add_foreign_key "loading_orders", "stores"
   add_foreign_key "loading_orders", "territories"
   add_foreign_key "loading_orders", "users"
+  add_foreign_key "nile_products", "destinations"
   add_foreign_key "nile_products", "empty_types"
   add_foreign_key "nile_products", "nile_categories"
   add_foreign_key "order_drivers", "drivers"

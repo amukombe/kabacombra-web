@@ -15,12 +15,14 @@ class NileProductsController < ApplicationController
     @nile_product = NileProduct.new
     @nile_categories = NileCategory.all
     @empty_types = EmptyType.all
+    @destinations = Destination.all
   end
 
   # GET /nile_products/1/edit
   def edit
     @nile_categories = NileCategory.all
     @empty_types = EmptyType.all
+    @destinations = Destination.all
   end
 
   # POST /nile_products or /nile_products.json
@@ -28,6 +30,7 @@ class NileProductsController < ApplicationController
     @nile_product = NileProduct.new(nile_product_params)
     @nile_categories = NileCategory.all
     @empty_types = EmptyType.all
+    @destinations = Destination.all
     respond_to do |format|
       if @nile_product.save
         format.html { redirect_to nile_products_path, notice: "Nile product was successfully created." }
@@ -43,6 +46,7 @@ class NileProductsController < ApplicationController
   def update
     @nile_categories = NileCategory.all
     @empty_types = EmptyType.all
+    @destinations = Destination.all
     respond_to do |format|
       if @nile_product.update(nile_product_params)
         format.html { redirect_to nile_products_path, notice: "Nile product was successfully updated." }
@@ -170,7 +174,7 @@ class NileProductsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def nile_product_params
-      params.require(:nile_product).permit(:name, :pcode, :nile_category_id, :buying_price, :selling_price, :product_number)
+      params.require(:nile_product).permit(:name, :pcode, :nile_category_id, :buying_price, :selling_price, :product_number, :destination_id)
     end
     def breakage_params
       params.require(:inventory_item).permit(:nile_product_id, :breakages)
