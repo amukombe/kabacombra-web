@@ -147,6 +147,8 @@ Rails.application.routes.draw do
       patch :update_driver
       delete :remove_driver
       get "dispatch_pdf"
+
+      patch :cancel
     end
     collection do
       get "vendor_statement"

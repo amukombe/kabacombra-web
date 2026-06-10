@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_09_075245) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_10_113506) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -517,6 +517,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_09_075245) do
     t.date "departure_date"
     t.string "description"
     t.bigint "territory_id", null: false
+    t.text "cancel_reason"
     t.index ["status_id"], name: "index_orders_on_status_id"
     t.index ["territory_id"], name: "index_orders_on_territory_id"
     t.index ["user_id"], name: "index_orders_on_user_id"

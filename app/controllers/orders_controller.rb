@@ -69,6 +69,20 @@ class OrdersController < ApplicationController
     @active_link = "canceled"
     @orders = Order.search_canceled(params, current_territory.id).page(params[:page]).per(20)
   end
+
+  def cancel
+    @order = Order.find(params[:id])
+
+    if @order.update(
+        status_id: 5
+      )
+
+      redirect_to orders_path,
+                  notice: "Order canceled successfully."
+    else
+      render :index, status: :unprocessable_entity, alert: "Failed to cancel order."
+    end
+  end
   # GET /orders/1 or /orders/1.json
   def show
   end
