@@ -30461,3 +30461,755 @@ Processing by Rails::PwaController#manifest as JSON
 Completed 200 OK in 1ms (Views: 0.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
 
 
+Started GET "/orders" for ::1 at 2026-06-10 14:45:51 +0300
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :role, {:staff=>0, :supplier=>1, :admin=>2}
+ (called from <class:User> at /home/david/kabacombra-web/app/models/user.rb:2)
+Processing by OrdersController#index as HTML
+  [1m[36mTerritory Load (0.5ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (0.4ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (0.4ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (1.0ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (0.4ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (0.5ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (0.3ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (0.9ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (0.5ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (0.5ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (0.8ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :payment_method, {:cash=>0, :cheque=>1, :mobile_money=>2, :bank_transfer=>3}
+ (called from <class:Payment> at /home/david/kabacombra-web/app/models/payment.rb:6)
+  [1m[36mPayment Load (0.5ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (0.6ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (0.3ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (0.3ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (0.6ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (0.5ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (0.3ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :mode_of_payment, {:cash=>"cash", :credit=>"credit", :momopay=>"momopay", :airtelpay=>"airtelpay", :bank=>"bank"}
+ (called from <class:Sale> at /home/david/kabacombra-web/app/models/sale.rb:2)
+  [1m[36mSale Load (0.5ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSaleEmpty Load (0.4ms)[0m  [1m[34mSELECT `sale_empties`.* FROM `sale_empties` WHERE `sale_empties`.`sale_id` IN (3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (0.7ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering orders/index.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  [1m[36mOrder Load (0.7ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`status_id` IN (1, 2) AND `orders`.`territory_id` = 1 LIMIT 20 OFFSET 0[0m
+  ↳ app/views/orders/index.html.erb:87:in `each_with_index'
+  Rendered orders/_pagination.html.erb (Duration: 0.6ms | GC: 0.0ms)
+  Rendered orders/index.html.erb within layouts/application (Duration: 5.6ms | GC: 0.5ms)
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:40
+  [1m[36mEmployee Load (0.6ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 0.9ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 32.1ms | GC: 2.2ms)
+Completed 200 OK in 498ms (Views: 29.4ms | ActiveRecord: 80.6ms (24 queries, 0 cached) | GC: 169.4ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-10 14:45:52 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.9ms | GC: 0.0ms)
+Completed 200 OK in 4ms (Views: 3.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/orders/canceled" for ::1 at 2026-06-10 14:45:56 +0300
+Processing by OrdersController#canceled as HTML
+  [1m[36mTerritory Load (1.2ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (1.3ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (1.1ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (1.1ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (0.8ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (0.7ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (0.7ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (1.4ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (1.1ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (1.5ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (0.7ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mPayment Load (0.5ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (0.6ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (0.5ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (0.4ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (0.8ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (0.6ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (0.5ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSale Load (0.6ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSaleEmpty Load (0.4ms)[0m  [1m[34mSELECT `sale_empties`.* FROM `sale_empties` WHERE `sale_empties`.`sale_id` IN (3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (0.5ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering orders/canceled.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  [1m[36mOrder Load (0.8ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`status_id` = 5 AND `orders`.`territory_id` = 1 LIMIT 20 OFFSET 0[0m
+  ↳ app/views/orders/canceled.html.erb:87:in `each_with_index'
+  [1m[36mStatus Load (0.9ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 5 LIMIT 1[0m
+  ↳ app/views/orders/_order_status.html.erb:1
+  Rendered orders/_order_status.html.erb (Duration: 11.7ms | GC: 0.0ms)
+  [1m[36mOrderItem Load (0.5ms)[0m  [1m[34mSELECT `order_items`.* FROM `order_items` WHERE `order_items`.`order_id` = 33[0m
+  ↳ app/views/orders/canceled.html.erb:109:in `each_with_index'
+  [1m[36mNileProduct Load (0.5ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/orders/canceled.html.erb:112
+  Rendered orders/_confirm_delete_modal.html.erb (Duration: 1.3ms | GC: 0.0ms)
+  Rendered orders/_pagination.html.erb (Duration: 4.8ms | GC: 1.0ms)
+  Rendered orders/canceled.html.erb within layouts/application (Duration: 70.6ms | GC: 14.1ms)
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:40
+  [1m[36mEmployee Load (0.5ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 80.1ms | GC: 14.7ms)
+Completed 200 OK in 160ms (Views: 68.3ms | ActiveRecord: 29.1ms (27 queries, 0 cached) | GC: 17.7ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-10 14:45:57 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.3ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/orders/canceled" for ::1 at 2026-06-10 14:52:52 +0300
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :role, {:staff=>0, :supplier=>1, :admin=>2}
+ (called from <class:User> at /home/david/kabacombra-web/app/models/user.rb:2)
+Processing by OrdersController#canceled as HTML
+  [1m[36mTerritory Load (3.0ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (1.1ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (1.0ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (0.7ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (0.7ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (0.7ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (0.7ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (1.1ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (0.9ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (0.9ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (0.8ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :payment_method, {:cash=>0, :cheque=>1, :mobile_money=>2, :bank_transfer=>3}
+ (called from <class:Payment> at /home/david/kabacombra-web/app/models/payment.rb:6)
+  [1m[36mPayment Load (0.7ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (0.8ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (1.0ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (1.6ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (1.1ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (1.5ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (0.9ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :mode_of_payment, {:cash=>"cash", :credit=>"credit", :momopay=>"momopay", :airtelpay=>"airtelpay", :bank=>"bank"}
+ (called from <class:Sale> at /home/david/kabacombra-web/app/models/sale.rb:2)
+  [1m[36mSale Load (1.7ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSaleEmpty Load (1.8ms)[0m  [1m[34mSELECT `sale_empties`.* FROM `sale_empties` WHERE `sale_empties`.`sale_id` IN (3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (1.2ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering orders/canceled.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  [1m[36mOrder Load (1.0ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`status_id` = 5 AND `orders`.`territory_id` = 1 LIMIT 20 OFFSET 0[0m
+  ↳ app/views/orders/canceled.html.erb:86:in `each_with_index'
+  [1m[36mStatus Load (1.0ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 5 LIMIT 1[0m
+  ↳ app/views/orders/_order_status.html.erb:1
+  Rendered orders/_order_status.html.erb (Duration: 9.0ms | GC: 1.0ms)
+  [1m[36mOrderItem Load (1.0ms)[0m  [1m[34mSELECT `order_items`.* FROM `order_items` WHERE `order_items`.`order_id` = 33[0m
+  ↳ app/views/orders/canceled.html.erb:108:in `each_with_index'
+  [1m[36mNileProduct Load (0.8ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/orders/canceled.html.erb:111
+  Rendered orders/_confirm_delete_modal.html.erb (Duration: 1.1ms | GC: 0.0ms)
+  Rendered orders/_confirm_reverse_modal.html.erb (Duration: 1.4ms | GC: 0.0ms)
+  Rendered orders/_pagination.html.erb (Duration: 3.9ms | GC: 0.0ms)
+  Rendered orders/canceled.html.erb within layouts/application (Duration: 49.0ms | GC: 1.2ms)
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:40
+  [1m[36mEmployee Load (0.9ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 1.3ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 81.3ms | GC: 13.9ms)
+Completed 200 OK in 448ms (Views: 77.7ms | ActiveRecord: 29.3ms (27 queries, 0 cached) | GC: 145.5ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-10 14:52:53 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.8ms | GC: 0.0ms)
+Completed 200 OK in 4ms (Views: 3.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started PATCH "/orders/33/reverse" for ::1 at 2026-06-10 14:53:01 +0300
+Processing by OrdersController#reverse as HTML
+  Parameters: {"authenticity_token"=>"[FILTERED]", "id"=>"33"}
+  [1m[36mOrder Load (1.0ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 33 LIMIT 1[0m
+  ↳ app/controllers/orders_controller.rb:87:in `reverse'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/orders_controller.rb:89:in `reverse'
+  [1m[36mStatus Load (2.6ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 2 LIMIT 1[0m
+  ↳ app/controllers/orders_controller.rb:89:in `reverse'
+  [1m[36mOrder Update (8.2ms)[0m  [1m[33mUPDATE `orders` SET `orders`.`status_id` = 2, `orders`.`updated_at` = '2026-06-10 11:53:01.295810' WHERE `orders`.`id` = 33[0m
+  ↳ app/controllers/orders_controller.rb:89:in `reverse'
+  [1m[36mTRANSACTION (6.6ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/orders_controller.rb:89:in `reverse'
+Redirected to http://localhost:3000/orders
+Completed 302 Found in 33ms (ActiveRecord: 18.6ms (3 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/orders" for ::1 at 2026-06-10 14:53:01 +0300
+Processing by OrdersController#index as HTML
+  [1m[36mTerritory Load (0.7ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (1.0ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (1.1ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (0.9ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (0.6ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (0.7ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (0.7ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (1.0ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (0.6ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (0.6ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (0.6ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mPayment Load (0.9ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (0.6ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (0.6ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (0.6ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (0.9ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (1.0ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (0.8ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSale Load (0.9ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSaleEmpty Load (0.7ms)[0m  [1m[34mSELECT `sale_empties`.* FROM `sale_empties` WHERE `sale_empties`.`sale_id` IN (3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (0.8ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering orders/index.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  [1m[36mOrder Load (0.9ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`status_id` IN (1, 2) AND `orders`.`territory_id` = 1 LIMIT 20 OFFSET 0[0m
+  ↳ app/views/orders/index.html.erb:87:in `each_with_index'
+  [1m[36mStatus Load (0.7ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 2 LIMIT 1[0m
+  ↳ app/views/orders/_order_status.html.erb:1
+  Rendered orders/_order_status.html.erb (Duration: 2.4ms | GC: 0.0ms)
+  [1m[36mOrderItem Load (0.6ms)[0m  [1m[34mSELECT `order_items`.* FROM `order_items` WHERE `order_items`.`order_id` = 33[0m
+  ↳ app/views/orders/index.html.erb:109:in `each_with_index'
+  [1m[36mNileProduct Load (0.7ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/orders/index.html.erb:112
+  Rendered orders/_confirm_delete_modal.html.erb (Duration: 0.7ms | GC: 0.0ms)
+  Rendered orders/_confirm_cancel_modal.html.erb (Duration: 1.1ms | GC: 0.0ms)
+  Rendered orders/_pagination.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered orders/index.html.erb within layouts/application (Duration: 18.9ms | GC: 0.0ms)
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:40
+  [1m[36mEmployee Load (0.8ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 28.6ms | GC: 0.0ms)
+Completed 200 OK in 103ms (Views: 25.4ms | ActiveRecord: 19.8ms (27 queries, 0 cached) | GC: 2.8ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-10 14:53:01 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.6ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/orders" for ::1 at 2026-06-10 14:53:46 +0300
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :role, {:staff=>0, :supplier=>1, :admin=>2}
+ (called from <class:User> at /home/david/kabacombra-web/app/models/user.rb:2)
+Processing by OrdersController#index as HTML
+  [1m[36mTerritory Load (0.4ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (0.3ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (0.3ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (0.6ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (0.7ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (0.3ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (0.5ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (0.6ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (0.6ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (0.6ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (0.5ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :payment_method, {:cash=>0, :cheque=>1, :mobile_money=>2, :bank_transfer=>3}
+ (called from <class:Payment> at /home/david/kabacombra-web/app/models/payment.rb:6)
+  [1m[36mPayment Load (0.6ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (0.3ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (0.5ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (0.7ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (0.8ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (0.4ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (0.3ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :mode_of_payment, {:cash=>"cash", :credit=>"credit", :momopay=>"momopay", :airtelpay=>"airtelpay", :bank=>"bank"}
+ (called from <class:Sale> at /home/david/kabacombra-web/app/models/sale.rb:2)
+  [1m[36mSale Load (0.4ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSaleEmpty Load (0.5ms)[0m  [1m[34mSELECT `sale_empties`.* FROM `sale_empties` WHERE `sale_empties`.`sale_id` IN (3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (0.3ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering orders/index.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  [1m[36mOrder Load (0.7ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`status_id` IN (1, 2) AND `orders`.`territory_id` = 1 LIMIT 20 OFFSET 0[0m
+  ↳ app/views/orders/index.html.erb:87:in `each_with_index'
+  [1m[36mStatus Load (0.4ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 2 LIMIT 1[0m
+  ↳ app/views/orders/_order_status.html.erb:1
+  Rendered orders/_order_status.html.erb (Duration: 10.1ms | GC: 0.3ms)
+  [1m[36mOrderItem Load (0.8ms)[0m  [1m[34mSELECT `order_items`.* FROM `order_items` WHERE `order_items`.`order_id` = 33[0m
+  ↳ app/views/orders/index.html.erb:109:in `each_with_index'
+  [1m[36mNileProduct Load (0.9ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/orders/index.html.erb:112
+  Rendered orders/_confirm_delete_modal.html.erb (Duration: 2.7ms | GC: 0.0ms)
+  Rendered orders/_confirm_cancel_modal.html.erb (Duration: 1.2ms | GC: 0.0ms)
+  Rendered orders/_pagination.html.erb (Duration: 4.5ms | GC: 0.1ms)
+  Rendered orders/index.html.erb within layouts/application (Duration: 65.0ms | GC: 3.0ms)
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:40
+  [1m[36mEmployee Load (0.7ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 1.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 95.0ms | GC: 4.3ms)
+Completed 200 OK in 516ms (Views: 78.2ms | ActiveRecord: 90.2ms (27 queries, 0 cached) | GC: 148.3ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-10 14:53:47 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.8ms | GC: 0.0ms)
+Completed 200 OK in 4ms (Views: 3.5ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started PATCH "/orders/33/cancel" for ::1 at 2026-06-10 14:53:53 +0300
+Processing by OrdersController#cancel as HTML
+  Parameters: {"authenticity_token"=>"[FILTERED]", "id"=>"33"}
+  [1m[36mOrder Load (0.7ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 33 LIMIT 1[0m
+  ↳ app/controllers/orders_controller.rb:74:in `cancel'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/orders_controller.rb:76:in `cancel'
+  [1m[36mStatus Load (1.8ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 5 LIMIT 1[0m
+  ↳ app/controllers/orders_controller.rb:76:in `cancel'
+  [1m[36mOrder Update (0.9ms)[0m  [1m[33mUPDATE `orders` SET `orders`.`status_id` = 5, `orders`.`updated_at` = '2026-06-10 11:53:53.691060' WHERE `orders`.`id` = 33[0m
+  ↳ app/controllers/orders_controller.rb:76:in `cancel'
+  [1m[36mTRANSACTION (7.0ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/orders_controller.rb:76:in `cancel'
+Redirected to http://localhost:3000/orders
+Completed 302 Found in 23ms (ActiveRecord: 10.6ms (3 queries, 0 cached) | GC: 1.3ms)
+
+
+Started GET "/orders" for ::1 at 2026-06-10 14:53:53 +0300
+Processing by OrdersController#index as HTML
+  [1m[36mTerritory Load (0.7ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (0.6ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (0.8ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (0.8ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (0.7ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (0.8ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (0.5ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (0.6ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (0.6ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (0.7ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (0.8ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mPayment Load (1.1ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (0.7ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (0.8ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (0.8ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (1.1ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (0.7ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (1.0ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSale Load (0.8ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSaleEmpty Load (1.0ms)[0m  [1m[34mSELECT `sale_empties`.* FROM `sale_empties` WHERE `sale_empties`.`sale_id` IN (3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (1.0ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering orders/index.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  [1m[36mOrder Load (0.7ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`status_id` IN (1, 2) AND `orders`.`territory_id` = 1 LIMIT 20 OFFSET 0[0m
+  ↳ app/views/orders/index.html.erb:87:in `each_with_index'
+  Rendered orders/_pagination.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  Rendered orders/index.html.erb within layouts/application (Duration: 3.9ms | GC: 0.4ms)
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:40
+  [1m[36mEmployee Load (1.2ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 21.0ms | GC: 0.7ms)
+Completed 200 OK in 97ms (Views: 19.1ms | ActiveRecord: 18.8ms (24 queries, 0 cached) | GC: 3.1ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-10 14:53:54 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.8ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/orders/canceled" for ::1 at 2026-06-10 14:53:57 +0300
+Processing by OrdersController#canceled as HTML
+  [1m[36mTerritory Load (1.0ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (0.8ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (1.3ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (1.0ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (0.7ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (0.6ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (0.8ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (0.7ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (1.0ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (1.1ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (0.7ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mPayment Load (0.9ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (0.9ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (0.7ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (1.3ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (1.1ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (0.9ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (0.6ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSale Load (0.6ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSaleEmpty Load (0.7ms)[0m  [1m[34mSELECT `sale_empties`.* FROM `sale_empties` WHERE `sale_empties`.`sale_id` IN (3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (0.6ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering orders/canceled.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  [1m[36mOrder Load (0.7ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`status_id` = 5 AND `orders`.`territory_id` = 1 LIMIT 20 OFFSET 0[0m
+  ↳ app/views/orders/canceled.html.erb:86:in `each_with_index'
+  [1m[36mStatus Load (0.8ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 5 LIMIT 1[0m
+  ↳ app/views/orders/_order_status.html.erb:1
+  Rendered orders/_order_status.html.erb (Duration: 3.0ms | GC: 0.0ms)
+  [1m[36mOrderItem Load (0.7ms)[0m  [1m[34mSELECT `order_items`.* FROM `order_items` WHERE `order_items`.`order_id` = 33[0m
+  ↳ app/views/orders/canceled.html.erb:108:in `each_with_index'
+  [1m[36mNileProduct Load (0.8ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/orders/canceled.html.erb:111
+  Rendered orders/_confirm_delete_modal.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered orders/_confirm_reverse_modal.html.erb (Duration: 2.1ms | GC: 0.0ms)
+  Rendered orders/_pagination.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered orders/canceled.html.erb within layouts/application (Duration: 20.4ms | GC: 0.0ms)
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:40
+  [1m[36mEmployee Load (0.6ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 42.3ms | GC: 10.6ms)
+Completed 200 OK in 118ms (Views: 38.7ms | ActiveRecord: 21.6ms (27 queries, 0 cached) | GC: 10.6ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-10 14:53:57 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started PATCH "/orders/33/reverse" for ::1 at 2026-06-10 14:54:02 +0300
+Processing by OrdersController#reverse as HTML
+  Parameters: {"authenticity_token"=>"[FILTERED]", "id"=>"33"}
+  [1m[36mOrder Load (1.0ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 33 LIMIT 1[0m
+  ↳ app/controllers/orders_controller.rb:87:in `reverse'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/orders_controller.rb:89:in `reverse'
+  [1m[36mStatus Load (2.7ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 2 LIMIT 1[0m
+  ↳ app/controllers/orders_controller.rb:89:in `reverse'
+  [1m[36mOrder Update (1.7ms)[0m  [1m[33mUPDATE `orders` SET `orders`.`status_id` = 2, `orders`.`updated_at` = '2026-06-10 11:54:02.562980' WHERE `orders`.`id` = 33[0m
+  ↳ app/controllers/orders_controller.rb:89:in `reverse'
+  [1m[36mTRANSACTION (8.4ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/orders_controller.rb:89:in `reverse'
+Redirected to http://localhost:3000/orders/canceled
+Completed 302 Found in 29ms (ActiveRecord: 14.1ms (3 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/orders/canceled" for ::1 at 2026-06-10 14:54:02 +0300
+Processing by OrdersController#canceled as HTML
+  [1m[36mTerritory Load (1.1ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (0.8ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (1.2ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (1.1ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (1.5ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (1.0ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (0.9ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (0.7ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (0.6ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (0.9ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (0.8ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mPayment Load (0.8ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (0.6ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (0.5ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (0.9ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (0.8ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (0.6ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (0.6ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSale Load (0.7ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSaleEmpty Load (0.9ms)[0m  [1m[34mSELECT `sale_empties`.* FROM `sale_empties` WHERE `sale_empties`.`sale_id` IN (3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (0.9ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering orders/canceled.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 0.0ms | GC: 0.0ms)
+  [1m[36mOrder Load (0.7ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`status_id` = 5 AND `orders`.`territory_id` = 1 LIMIT 20 OFFSET 0[0m
+  ↳ app/views/orders/canceled.html.erb:86:in `each_with_index'
+  Rendered orders/_pagination.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered orders/canceled.html.erb within layouts/application (Duration: 6.8ms | GC: 2.1ms)
+  [1m[36mUser Load (1.0ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:40
+  [1m[36mEmployee Load (0.8ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 19.6ms | GC: 2.1ms)
+Completed 200 OK in 95ms (Views: 18.0ms | ActiveRecord: 19.7ms (24 queries, 0 cached) | GC: 5.0ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-10 14:54:02 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.2ms | GC: 0.0ms)
+Completed 200 OK in 1ms (Views: 0.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
+Started GET "/orders" for ::1 at 2026-06-10 14:54:06 +0300
+Processing by OrdersController#index as HTML
+  [1m[36mTerritory Load (1.0ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (0.9ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (0.8ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (1.1ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (0.9ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (0.5ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (0.7ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (0.7ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (2.3ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (1.4ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (1.5ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mPayment Load (1.3ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (1.8ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (1.8ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (1.3ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (2.3ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (1.8ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (1.7ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSale Load (1.6ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSaleEmpty Load (2.3ms)[0m  [1m[34mSELECT `sale_empties`.* FROM `sale_empties` WHERE `sale_empties`.`sale_id` IN (3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (1.1ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering orders/index.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  [1m[36mOrder Load (2.0ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`status_id` IN (1, 2) AND `orders`.`territory_id` = 1 LIMIT 20 OFFSET 0[0m
+  ↳ app/views/orders/index.html.erb:87:in `each_with_index'
+  [1m[36mStatus Load (1.1ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 2 LIMIT 1[0m
+  ↳ app/views/orders/_order_status.html.erb:1
+  Rendered orders/_order_status.html.erb (Duration: 4.6ms | GC: 0.0ms)
+  [1m[36mOrderItem Load (1.2ms)[0m  [1m[34mSELECT `order_items`.* FROM `order_items` WHERE `order_items`.`order_id` = 33[0m
+  ↳ app/views/orders/index.html.erb:109:in `each_with_index'
+  [1m[36mNileProduct Load (1.2ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/orders/index.html.erb:112
+  Rendered orders/_confirm_delete_modal.html.erb (Duration: 1.0ms | GC: 0.0ms)
+  Rendered orders/_confirm_cancel_modal.html.erb (Duration: 0.9ms | GC: 0.0ms)
+  Rendered orders/_pagination.html.erb (Duration: 1.0ms | GC: 0.0ms)
+  Rendered orders/index.html.erb within layouts/application (Duration: 28.3ms | GC: 0.9ms)
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:40
+  [1m[36mEmployee Load (1.0ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 47.4ms | GC: 3.1ms)
+Completed 200 OK in 185ms (Views: 40.9ms | ActiveRecord: 35.4ms (27 queries, 0 cached) | GC: 25.6ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-06-10 14:54:06 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.3ms | GC: 0.0ms)
+Completed 200 OK in 2ms (Views: 1.1ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+

@@ -83,6 +83,19 @@ class OrdersController < ApplicationController
       render :index, status: :unprocessable_entity, alert: "Failed to cancel order."
     end
   end
+  def reverse
+    @order = Order.find(params[:id])
+
+    if @order.update(
+        status_id: 2
+      )
+
+      redirect_to canceled_orders_path,
+                  notice: "Order reversed successfully."
+    else
+      render :canceled, status: :unprocessable_entity, alert: "Failed to reverse order."
+    end
+  end
   # GET /orders/1 or /orders/1.json
   def show
   end
