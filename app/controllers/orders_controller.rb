@@ -3,6 +3,7 @@ class OrdersController < ApplicationController
 
   # GET /orders or /orders.json
   def index
+    @active_link = "orders"
     @orders = Order.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
@@ -64,6 +65,10 @@ class OrdersController < ApplicationController
     )
   end
 
+  def canceled
+    @active_link = "canceled"
+    @orders = Order.search_canceled(params, current_territory.id).page(params[:page]).per(20)
+  end
   # GET /orders/1 or /orders/1.json
   def show
   end

@@ -3,6 +3,7 @@ class BeerDispatchesController < ApplicationController
   before_action :authenticate_user!
   # GET /beer_dispatches or /beer_dispatches.json
   def index
+    @active_link = "dispatched"
     #@oder = Order.find(params[:id])
     @dispatches = BeerDispatch.search(params, current_territory.id).page(params[:page]).per(20)
   end

@@ -4,6 +4,7 @@ class InventoriesController < ApplicationController
 
   # GET /inventories or /inventories.json
   def index
+    @active_link = "received"
     @inventories = Inventory.search(params, current_territory.id).page(params[:page]).per(20)
   end
 

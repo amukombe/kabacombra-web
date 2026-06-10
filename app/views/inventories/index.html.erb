@@ -1,4 +1,4 @@
-<%= render "nav"%>
+<%= render "shared/order_nav"%>
 <div class="px-4 pt-4 bg-white dark:bg-gray-900">
 <div class="grid w-full grid-cols-2 gap-4 mb-3">
   <div class="col-span-1">
@@ -85,8 +85,6 @@
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   <div class="flex flex-col space-y-1">
                     <span class="text-sm font-medium"><%= inventory.delivery_time&.strftime("%d %b, %Y") %> (<%= inventory.beer_dispatch.order.order_number %>)</span>
-                    <span class="text-xs">Invoice #: <span class="font-normal"><%= inventory.beer_dispatch.invoice_no %></span></span>
-                    <span class="text-xs">FDN: <span class="font-normal"><%= inventory.beer_dispatch.fdn_number %></span></span>
                     <span class="text-xs">Truck No: <span class="font-normal"><%= inventory.beer_dispatch.truck_numberplate %> <%if inventory.beer_dispatch.driver_name? %>(<%= inventory.beer_dispatch.driver_name %>)<% end %></span></span>
                     <span class="text-xs">Warehouse: <span class="font-normal"><%= inventory.warehouse&.name %></span></span>
                     
@@ -102,8 +100,6 @@
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Complaints</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Total Qty</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Rate</th>
-                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Beer Value</th>
-                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Case Value</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Purchase Value</th>
                       </tr>
                     </thead>
@@ -116,12 +112,10 @@
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.complaints) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_quantity) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.purchase_price, precision: 2) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total, precision: 2) %></td>
-                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_case, precision: 2) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.total_Purchase, precision: 2) %></td>
                         </tr>
                       <% end %>
-                      <tr><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="text-xs font-bold"><%= number_with_delimiter(inventory.total_price, precision: 2) %></span></td><td><span class="text-xs font-bold"><%= number_with_delimiter(inventory.total_case, precision: 2) %></span></td><td><span class="text-xs font-bold"><%= number_with_delimiter(inventory.total_Purchase, precision: 2) %></span></td></tr>
+                      <tr><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="text-xs font-bold"><%= number_with_delimiter(inventory.total_Purchase, precision: 2) %></span></td></tr>
                     </tbody>
                   </table>
                 </td>

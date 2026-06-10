@@ -151,6 +151,7 @@ Rails.application.routes.draw do
     collection do
       get "vendor_statement"
       get :export
+      get :canceled
     end
   end
   resources :statuses
