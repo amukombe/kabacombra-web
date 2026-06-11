@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_10_113506) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_11_084053) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -192,6 +192,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_10_113506) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "territory_id", null: false
+    t.string "brn"
+    t.string "tin"
     t.index ["territory_id"], name: "index_customers_on_territory_id"
   end
 

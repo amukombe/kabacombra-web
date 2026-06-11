@@ -7,7 +7,7 @@ class LoadingOrder < ApplicationRecord
   # belongs_to :sales_person, class_name: "Employee", foreign_key: "sales_man"
   has_one :beer_return, dependent: :destroy
   accepts_nested_attributes_for :loading_order_items, allow_destroy: true, reject_if: :all_blank
-  validates :loading_date, :order_number, :sales_man, :authorized_by, presence: true
+  validates :loading_date, :order_number, :authorized_by, presence: true
   before_validation :generate_order_number, on: :create
   after_create :create_inventory_transactions
   

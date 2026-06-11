@@ -101,27 +101,6 @@
           <tr><td>Grand total</td><td><span id="grand_total"></span></td></tr>
         </table>
       </div>
-      <div  data-controller= 'nested-form', data-nested-form-wrapper-selector_value= '.nested-form-wrapper' data-nested-form-target="sale_empties_wrapper">
-        <div class="flex text-gray-600 dark:text-gray-400">Empties</div>
-          <template data-nested-form-target="template" data-association="sale_empties">
-            <%= form.fields_for :sale_empties, SaleEmpty.new, child_index: 'NEW_RECORD' do |empty_fields| %>
-              <div class="nested-form-wrapper">
-              <%= render "empty_form", f: empty_fields %>
-              </div>
-            <% end %>
-          </template>
-          <%= form.fields_for :sale_empties do |empty_fields| %>
-            <div class="nested-form-wrapper">
-            <%= render "empty_form", f: empty_fields %>
-            </div>
-          <% end %>
-          <!-- Inserted elements will be injected before that target. -->
-          <div data-nested-form-target="target" data-association="sale_empties"></div>
-        <div>
-        <div class="flex justify-end mx-4 text-end">
-          <button type="button" class="px-2 py-1 text-xs text-green-200 bg-green-700 rounded dark:text-green-700 dark:bg-green-200" data-action="nested-form#add"  data-association="sale_empties">Add Record</button>
-        </div>
-      </div>
   </div>
   <%# nested form ends here %>
   <div class="flex justify-end gap-4 p-4 mx-auto">

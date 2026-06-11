@@ -13,24 +13,25 @@ class SalesController < ApplicationController
 
   # GET /sales/new
   def new
-    @active_link = "new"
+    @active_link = "pending"
+
+    @order = LoadingOrder.find_by(id: params[:id])
     @sale = Sale.new(sale_date: DateTime.now)
-    @products = LoadingOrderItem
-      .joins(:loading_order, :nile_product)
-      .where(loading_orders: { sales_man: current_user.employee.id })
-      .group('nile_products.id', 'nile_products.name')
-      .select('nile_product_id, nile_products.id, nile_products.name, SUM(loading_order_items.quantity_loaded) AS total_quantity')
+    # building items
+    @order.loading_order_items.each do |loading_item|
+      @sale.sale_items.build(
+        id: loading_item.id,
+        quantity_sold: loading_item.quantity_loaded,
+        amount: loading_item.nile_product.buying_price,
+        total: loading_item.quantity_loaded.to_i * loading_item.nile_product.buying_price.to_i
+      )
+    end
 
     @customers = current_territory.customers
     @employees = current_territory.employees
-    @sale.sale_items.build
+    @sale_items = @order.loading_order_items
     @purchase_types = PurchaseType.all
 
-    @sale.sale_empties.build
-    @empties = EmptyType.all
-    # @empties.each do |empty_type|
-      #@sale.sale_empties.build(empty_type: empty_type) # Build SaleEmpty for each EmptyType
-    # end
   end
 
   # GET /sales/1/edit

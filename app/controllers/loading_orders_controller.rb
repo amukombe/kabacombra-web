@@ -57,6 +57,60 @@ class LoadingOrdersController < ApplicationController
     )
   end
 
+  def pending
+    @active_link = "pending"
+    @loading_orders = LoadingOrder.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
+  end
+
+  def pending_export
+    @loading_orders = LoadingOrder
+                        .search(params, current_territory.id)
+                        .order(created_at: :desc)
+                        .includes(
+                          :store,
+                          loading_order_items: :nile_product
+                        )
+
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Loading Orders") do |sheet|
+      sheet.add_row [
+        "Loading Date",
+        "Order Number",
+        "Sales Person",
+        "Driver",
+        "Vehicle",
+        "Store",
+        "Product",
+        "Qty Loaded"
+      ]
+
+      @loading_orders.each do |order|
+        store = order.store
+
+        order.loading_order_items.each do |item|
+          sheet.add_row [
+            order.loading_date&.strftime("%d-%b-%Y"),
+            order.order_number,
+            order.sales_person,
+            order.driver_name,
+            order.vehicle_numperplate,
+            store&.name,
+            item.nile_product&.name,
+            item.quantity_loaded
+          ]
+        end
+      end
+    end
+
+    send_data(
+      package.to_stream.read,
+      filename: "loading_orders_#{Date.today}.xlsx",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+  end
+
   def loading_summary
     @active_link = "purchases"
     @active_sub_link = "loading_orders"
@@ -214,6 +268,7 @@ class LoadingOrdersController < ApplicationController
   # GET /loading_orders/new
   def new
     @active_link = "loading_orders"
+    @active_sub_link = "loading_orders"
     @loading_order = LoadingOrder.new
     @products = NileProduct.all
     @units = UnitOfMeasurement.all

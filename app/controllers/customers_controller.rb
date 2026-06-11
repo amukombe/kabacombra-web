@@ -3,7 +3,7 @@ class CustomersController < ApplicationController
 
   # GET /customers or /customers.json
   def index
-    @customers = Customer.all
+    @customers = Customer.search(params).page(params[:page]).per(10)
   end
 
   # GET /customers/1 or /customers/1.json
@@ -22,10 +22,10 @@ class CustomersController < ApplicationController
   # POST /customers or /customers.json
   def create
     @customer = Customer.new(customer_params)
-
+    @customer.territory = current_territory
     respond_to do |format|
       if @customer.save
-        format.html { redirect_to @customer, notice: "Customer was successfully created." }
+        format.html { redirect_to customers_path, notice: "Customer was successfully created." }
         format.json { render :show, status: :created, location: @customer }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class CustomersController < ApplicationController
   def update
     respond_to do |format|
       if @customer.update(customer_params)
-        format.html { redirect_to @customer, notice: "Customer was successfully updated." }
+        format.html { redirect_to customers_path, notice: "Customer was successfully updated." }
         format.json { render :show, status: :ok, location: @customer }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -65,6 +65,6 @@ class CustomersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def customer_params
-      params.require(:customer).permit(:name, :email, :mobile, :location)
+      params.require(:customer).permit(:name, :email, :mobile, :location, :brn)
     end
 end

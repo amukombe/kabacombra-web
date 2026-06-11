@@ -1,11 +1,5 @@
 <% content_for :title, "New beer return" %>
-
-<h1>New beer return</h1>
+<%= render "/shared/beer_movement_nav"%>
+<h1  class="text-lg text-gray-600 dark:text-gray-400">New Return</h1> <i class="text-xs text-red-600 dark:text-red-400">(All fields marked with * are mandetory)</i>
 
 <%= render "form", beer_return: @beer_return %>
-
-<br>
-
-<div>
-  <%= link_to "Back to beer returns", beer_returns_path %>
-</div>
