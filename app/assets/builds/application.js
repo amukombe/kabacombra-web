@@ -16012,6 +16012,40 @@ var alert_controller_default = class extends Controller {
   }
 };
 
+// app/javascript/controllers/customer_autocomplete_controller.js
+var customer_autocomplete_controller_default = class extends Controller {
+  static targets = [
+    "name",
+    "mobile",
+    "tin",
+    "customerId",
+    "results"
+  ];
+  search() {
+    const query = this.nameTarget.value;
+    if (query.length < 2) {
+      this.resultsTarget.innerHTML = "";
+      return;
+    }
+    fetch(`/customers/autocomplete?q=${query}`).then((response) => response.json()).then((customers) => {
+      this.resultsTarget.innerHTML = "";
+      customers.forEach((customer) => {
+        const item = document.createElement("div");
+        item.className = "p-2 border-b cursor-pointer hover:bg-gray-100";
+        item.innerText = customer.name;
+        item.addEventListener("click", () => {
+          this.nameTarget.value = customer.name;
+          this.mobileTarget.value = customer.mobile || "";
+          this.tinTarget.value = customer.brn || "";
+          this.customerIdTarget.value = customer.id;
+          this.resultsTarget.innerHTML = "";
+        });
+        this.resultsTarget.appendChild(item);
+      });
+    });
+  }
+};
+
 // app/javascript/controllers/hello_controller.js
 var hello_controller_default = class extends Controller {
   connect() {
@@ -16467,6 +16501,7 @@ var theme_controller_default = class extends Controller {
 
 // app/javascript/controllers/index.js
 application.register("alert", alert_controller_default);
+application.register("customer-autocomplete", customer_autocomplete_controller_default);
 application.register("hello", hello_controller_default);
 application.register("inventory", inventory_controller_default);
 application.register("nested-form", nested_form_controller_default);

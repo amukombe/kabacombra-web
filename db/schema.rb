@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_11_084053) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_11_132930) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -595,6 +595,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_11_084053) do
     t.bigint "sale_id", null: false
     t.bigint "purchase_type_id"
     t.bigint "nile_product_id", null: false
+    t.bigint "loading_order_item_id", null: false
+    t.index ["loading_order_item_id"], name: "index_sale_items_on_loading_order_item_id"
     t.index ["nile_product_id"], name: "index_sale_items_on_nile_product_id"
     t.index ["purchase_type_id"], name: "index_sale_items_on_purchase_type_id"
     t.index ["sale_id"], name: "index_sale_items_on_sale_id"
@@ -623,7 +625,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_11_084053) do
     t.string "customer_mobile"
     t.text "notes"
     t.decimal "vat", precision: 10
-    t.bigint "store_id", null: false
+    t.bigint "customer_id"
+    t.bigint "store_id"
+    t.index ["customer_id"], name: "index_sales_on_customer_id"
     t.index ["status_id"], name: "index_sales_on_status_id"
     t.index ["store_id"], name: "index_sales_on_store_id"
     t.index ["territory_id"], name: "index_sales_on_territory_id"
@@ -965,9 +969,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_11_084053) do
   add_foreign_key "payments", "users"
   add_foreign_key "sale_empties", "empty_types"
   add_foreign_key "sale_empties", "sales"
+  add_foreign_key "sale_items", "loading_order_items"
   add_foreign_key "sale_items", "nile_products"
   add_foreign_key "sale_items", "purchase_types"
   add_foreign_key "sale_items", "sales"
+  add_foreign_key "sales", "customers"
   add_foreign_key "sales", "statuses"
   add_foreign_key "sales", "stores"
   add_foreign_key "sales", "territories"

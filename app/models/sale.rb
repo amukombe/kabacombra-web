@@ -3,6 +3,7 @@ class Sale < ApplicationRecord
 
   belongs_to :user
   belongs_to :territory
+  belongs_to :customer
   belongs_to :status
   has_many :sale_items, dependent: :destroy
   accepts_nested_attributes_for :sale_items, allow_destroy: true, reject_if: :all_blank
@@ -14,7 +15,7 @@ class Sale < ApplicationRecord
   validate :sufficient_stock
   before_destroy :restore_quantity
   before_validation :generate_receipt_number, on: :create
-
+  before_create :create_customer_if_missing
   def self.search(params)
     params[:query].blank? ? all : where("receipt_no LIKE?", "%#{sanitize_sql_like(params[:query])}%")
   end
@@ -24,6 +25,21 @@ class Sale < ApplicationRecord
   end
 
   private
+  def create_customer_if_missing
+    customer = Customer.find_by(
+      name: customer_name,
+      territory_id: territory_id
+    )
+
+    return if customer.present?
+
+    Customer.create!(
+      name: customer_name,
+      mobile: customer_mobile,
+      brn: tin,
+      territory_id: territory_id
+    )
+  end
   def sufficient_stock
     sale_items.each do |sale_item|
       available_stock = StoreTransaction.available_stock_for(sale_item.nile_product_id)

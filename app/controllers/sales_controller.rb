@@ -20,7 +20,8 @@ class SalesController < ApplicationController
     # building items
     @order.loading_order_items.each do |loading_item|
       @sale.sale_items.build(
-        id: loading_item.id,
+        loading_order_item_id: loading_item.id,
+        nile_product_id: loading_item.nile_product_id,
         quantity_sold: loading_item.quantity_loaded,
         amount: loading_item.nile_product.buying_price,
         total: loading_item.quantity_loaded.to_i * loading_item.nile_product.buying_price.to_i
@@ -51,6 +52,7 @@ class SalesController < ApplicationController
 
   # POST /sales or /sales.json
   def create
+    create_customer_if_needed
     @sale = Sale.new(sale_params)
     @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
     @customers = current_territory.customers
@@ -112,6 +114,18 @@ class SalesController < ApplicationController
   end
 
   private
+    def create_customer_if_needed
+      return if params[:sale][:customer_id].present?
+
+      customer = Customer.create!(
+        name: params[:sale][:customer_name],
+        mobile: params[:sale][:customer_mobile],
+        brn: params[:sale][:tin],
+        territory_id: current_territory.id
+      )
+
+      params[:sale][:customer_id] = customer.id
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_sale
       @sale = Sale.find(params[:id])
@@ -119,8 +133,8 @@ class SalesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def sale_params
-      params.require(:sale).permit(:customer_name, :user_id, :mode_of_payment,:sale_date, :tin,:territory_id, :receipt_no,:status_id, :customer_mobile, :sales_route, :store_id, :notes,:payment_ref,
-      sale_items_attributes: [:id,:sale_id, :nile_product_id, :purchase_type_id, :quantity_sold, :amount, :total, :_destroy],
+      params.require(:sale).permit(:customer_id, :customer_name, :user_id, :mode_of_payment,:sale_date, :tin,:territory_id, :receipt_no,:status_id, :customer_mobile, :sales_route, :store_id, :notes,:payment_ref,
+      sale_items_attributes: [:id,:sale_id, :loading_order_item_id, :nile_product_id, :purchase_type_id, :quantity_sold, :amount, :total, :_destroy],
       sale_empties_attributes: [:id, :sale_id, :empty_type_id, :expected, :received, :variance, :_destroy])
     end
 

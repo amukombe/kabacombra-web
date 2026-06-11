@@ -57,6 +57,21 @@ class CustomersController < ApplicationController
     end
   end
 
+  def autocomplete
+    customers = Customer
+                  .where("name LIKE ?", "%#{params[:q]}%")
+                  .limit(10)
+
+    render json: customers.map { |c|
+      {
+        id: c.id,
+        name: c.name,
+        mobile: c.mobile,
+        brn: c.brn
+      }
+    }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_customer

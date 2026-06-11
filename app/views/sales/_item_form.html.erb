@@ -1,11 +1,14 @@
 <div id="sale-item-row" class="flex items-center justify-between gap-1 px-5 order-item-row nested-form-wrapper" data-new-record="<%= f.object.new_record? %>"  data-controller="sale">
     <div>
-        <%= f.label :nile_product_id, 'Product', class:"text-xs text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.collection_select :id, @sale_items, :id, :name, {prompt: "Choose a product"}, {class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500", data:{controller:"sale", action: "change->sale#fetchProductDetails"}} %>
+        <%= f.hidden_field :loading_order_item_id %>
+        <%= f.hidden_field :nile_product_id %>
+        <%= f.label :nile_product_id, 'Product', class:"text-xs text-gray-600 dark:text-gray-400" %>
+        <%= f.hidden_field :loading_order_item_id %>
+        <%= f.text_field :product_name, value: f.object.loading_order_item&.nile_product&.name, readonly: true, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" %>
     </div>
     <div>
       <%= f.label :purchase_type_id, "Sale type", class:"text-sm text-gray-600 dark:text-gray-400" %> <i class="text-sm text-red-600 dark:text-red-400">*</i>
-        <%= f.collection_select :purchase_type_id, @purchase_types, :id, :name, {prompt: "--- sale type ---"}, {class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"} %>
+        <%= f.collection_select :purchase_type_id, @purchase_types, :id, :name,{}, {class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"} %>
     </div>
     <div>
         <%= f.label :quantity_sold , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400"><span id="quantity_display_<%= f.index %>" class="text-xs text-gray-600 dark:text-gray-400" data-sale-target="quantityDisplay" data-index="<%= f.index %>"></span>*</i>

@@ -55,7 +55,11 @@ Rails.application.routes.draw do
   resources :bank_accounts
   resources :banks
   resources :sale_items
-  resources :customers
+  resources :customers do
+    collection do
+      get :autocomplete
+    end
+  end
   resources :sales do
     collection do
       get "approvals"

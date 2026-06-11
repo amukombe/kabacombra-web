@@ -7,6 +7,9 @@ import { application } from "./application"
 import AlertController from "./alert_controller"
 application.register("alert", AlertController)
 
+import CustomerAutocompleteController from "./customer_autocomplete_controller"
+application.register("customer-autocomplete", CustomerAutocompleteController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 

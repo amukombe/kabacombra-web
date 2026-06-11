@@ -1,5 +1,6 @@
 class SaleItem < ApplicationRecord
   belongs_to :nile_product
+  belongs_to :loading_order_item
   before_save :calculate_total
   belongs_to :sale
   belongs_to :purchase_type
