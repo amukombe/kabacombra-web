@@ -108,10 +108,28 @@
     </div>
     <div class="col-span-2">
       <div class="flex justify-end mr-4 text-sm text-gray-600 text-end dark:text-gray-400"> 
+        
         <table>
-          <tr><td>Sub total</td><td><span id="sub_total">0</span></td></tr>
-          <tr><td>VAT(18%)</td><td><span id="tax">0</span></td></tr>
-          <tr><td>Grand total</td><td><span id="grand_total"></span></td></tr>
+          <%
+            subtotal = @sale.sale_items.sum { |item| item.total.to_f }
+            vat = subtotal * 0.18
+            grand_total = subtotal + vat
+          %>
+
+          <tr>
+            <td>Sub total</td>
+            <td><span id="sub_total"><%= number_with_delimiter(subtotal) %></span></td>
+          </tr>
+
+          <tr>
+            <td>VAT (18%)</td>
+            <td><span id="tax"><%= number_with_delimiter(vat) %></span></td>
+          </tr>
+
+          <tr>
+            <td>Grand total</td>
+            <td><span id="grand_total"><%= number_with_delimiter(grand_total) %></span></td>
+          </tr>
         </table>
       </div>
   </div>

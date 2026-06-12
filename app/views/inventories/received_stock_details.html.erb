@@ -125,6 +125,7 @@
                     <thead>
                       <tr class="bg-gray-100 dark:bg-gray-800">
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Product</th>
+                        <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">FDN</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Qty Received</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Shortages</th>
                         <th class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700">Complaints</th>
@@ -135,6 +136,7 @@
                       <% inventory.inventory_items.each_with_index do |item, index| %>
                         <tr>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.nile_product.name %></td>
+                          <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= item.dispatch_item.fdn %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.quantity_received) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.breakages) %></td>
                           <td class="px-2 py-1 text-xs font-normal border border-gray-300 dark:border-gray-700"><%= number_with_delimiter(item.complaints) %></td>

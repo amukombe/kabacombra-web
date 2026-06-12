@@ -24,7 +24,7 @@ class SalesController < ApplicationController
         nile_product_id: loading_item.nile_product_id,
         quantity_sold: loading_item.quantity_loaded,
         amount: loading_item.nile_product.buying_price,
-        total: loading_item.quantity_loaded.to_i * loading_item.nile_product.buying_price.to_i
+        total: loading_item.quantity_loaded.to_i * loading_item.nile_product.selling_price.to_i
       )
     end
 
