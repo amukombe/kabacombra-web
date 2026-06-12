@@ -119,6 +119,7 @@ Rails.application.routes.draw do
   resources :inventories do
     member do
       patch :receive
+      patch :reject
     end
     collection do
       get :existing_stock

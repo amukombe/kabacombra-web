@@ -11,7 +11,7 @@ class InventoryItem < ApplicationRecord
 
   before_save :initialize_quantity_sold
   before_validation :generate_stock_number, on: :create
-  after_create :create_transactions
+  #after_create :create_transactions
   before_destroy :remove_transactions
 
   def self.search(params, territory_id)
@@ -34,30 +34,22 @@ class InventoryItem < ApplicationRecord
   end
 
   def self.product_summary(params, territory_id)
+    start_date = params[:start_date].presence || Date.current
+    end_date   = params[:end_date].presence || Date.current
 
-    date_condition = []
-
-    if params[:start_date].present?
-      date_condition << ActiveRecord::Base.send(
-        :sanitize_sql_array,
-        ["DATE(inventories.delivery_time) >= ?", params[:start_date]]
-      )
-    end
-
-    if params[:end_date].present?
-      date_condition << ActiveRecord::Base.send(
-        :sanitize_sql_array,
-        ["DATE(inventories.delivery_time) <= ?", params[:end_date]]
-      )
-    end
-
-    date_sql = date_condition.present? ? "AND #{date_condition.join(' AND ')}" : ""
+    date_sql = ActiveRecord::Base.send(
+      :sanitize_sql_array,
+      [
+        "AND DATE(inventories.delivery_time) >= ? AND DATE(inventories.delivery_time) <= ?",
+        start_date,
+        end_date
+      ]
+    )
 
     query = NileProduct
       .left_joins(inventory_items: :inventory)
       .where("inventories.territory_id = ? OR inventories.id IS NULL", territory_id)
 
-    # Search filter
     if params[:query].present?
       query = query.where(
         "nile_products.name LIKE ?",
@@ -134,6 +126,14 @@ class InventoryItem < ApplicationRecord
     total
   end
 
+  def create_transactions
+    return unless inventory.persisted?
+
+    transaction_definitions.each do |attributes|
+      InventoryTransaction.create!(attributes)
+    end
+  end
+
   private
 
   def generate_stock_number
@@ -153,14 +153,6 @@ class InventoryItem < ApplicationRecord
 
   def initialize_quantity_sold
     self.quantity_sold ||= 0
-  end
-
-  def create_transactions
-    return unless inventory.persisted?
-
-    transaction_definitions.each do |attributes|
-      InventoryTransaction.create!(attributes)
-    end
   end
 
   def remove_transactions

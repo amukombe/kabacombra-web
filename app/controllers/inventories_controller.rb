@@ -206,18 +206,7 @@ class InventoriesController < ApplicationController
   # GET /inventories/1/edit
   def edit
     @dispatch = BeerDispatch.find(@inventory.beer_dispatch_id)
-    @inventory = Inventory.new(delivery_time: Time.now)
     @warehouses = current_territory.warehouses
-    # Build dispatch items based on existing order items
-    @dispatch.dispatch_items.each do |item|
-      @inventory.inventory_items.build(
-        dispatch_item_id: item.id, 
-        quantity_dispatched: item.quantity_dispatched,
-        quantity_received: item.quantity_dispatched,
-        purchase_price: item.order_item.unit_price,
-        selling_price: item.order_item.nile_product.selling_price
-      )
-    end
     @dispatch_items = @dispatch.dispatch_items
   end
 
@@ -241,18 +230,32 @@ class InventoriesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /inventories/1 or /inventories/1.json
   def update
-    dispatch_id = inventory_params[:beer_dispatch_id]
-    @dispatch = BeerDispatch.find(dispatch_id)
+    @dispatch = BeerDispatch.find(@inventory.beer_dispatch_id)
+    @order = @dispatch.order
+
     @warehouses = current_territory.warehouses
-    @inventory = Inventory.new(inventory_params)
     @dispatch_items = @dispatch.dispatch_items
+
     respond_to do |format|
-      if @inventory.update(inventory_params)
-        format.html { redirect_to inventories_path, notice: "Inventory was successfully updated." }
+      begin
+        ActiveRecord::Base.transaction do
+          @inventory.update!(
+            inventory_params.merge(status_id: 13)
+          )
+
+          @dispatch.update!(status_id: 13)
+          @order.update!(status_id: 13)
+        end
+
+        format.html do
+          redirect_to received_stock_details_inventories_path,
+                      notice: "Inventory received successfully."
+        end
+
         format.json { render :show, status: :ok, location: @inventory }
-      else
+
+      rescue ActiveRecord::RecordInvalid
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @inventory.errors, status: :unprocessable_entity }
       end
@@ -293,6 +296,25 @@ class InventoriesController < ApplicationController
       format.html { redirect_to inventories_path, status: :see_other, notice: "Inventory was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def reject
+    @inventory = Inventory.find(params[:id])
+    @dispatch = @inventory.beer_dispatch
+    @order = @dispatch.order
+
+    ActiveRecord::Base.transaction do
+      @inventory.update!(status_id: 14)
+      @dispatch.update!(status_id: 14)
+      @order.update!(status_id: 14)
+    end
+
+    redirect_to inventories_path,
+                notice: "Inventory rejected successfully."
+
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to inventories_path,
+                alert: e.message
   end
 
   private

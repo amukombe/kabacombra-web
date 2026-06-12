@@ -4,7 +4,7 @@ class Inventory < ApplicationRecord
   belongs_to :user
   belongs_to :warehouse
   accepts_nested_attributes_for :inventory_items, allow_destroy: true, reject_if: :all_blank
-  
+  after_update :create_inventory_transactions_on_approval
   def self.search(params, territory_id)
 
     query = joins(:beer_dispatch)
@@ -82,7 +82,7 @@ class Inventory < ApplicationRecord
       )
     end
 
-    query
+    query.order("beer_dispatches.loading_time DESC")
   end
 
   def total_price
@@ -91,4 +91,14 @@ class Inventory < ApplicationRecord
   def total_Purchase
     total_price
   end
+
+  private
+    def create_inventory_transactions_on_approval
+      return unless saved_change_to_status_id?
+      return unless status_id == 13
+
+      inventory_items.find_each do |item|
+        item.create_transactions
+      end
+    end
 end
