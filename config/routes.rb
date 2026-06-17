@@ -63,6 +63,7 @@ Rails.application.routes.draw do
   resources :sales do
     collection do
       get "approvals"
+      get :sales_summary
     end
     member do
       get "sale_pdf"

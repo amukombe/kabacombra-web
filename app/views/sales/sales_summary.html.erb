@@ -1,0 +1,155 @@
+<%= render "/shared/sales_nav"%>
+<div class="overflow-x-auto">
+    <div class="flex flex-row w-full grid-cols-2 gap-4 mb-3">
+        <div class="w-1/3">
+            <h1 class="text-gray-800 text-md dark:text-gray-100">Sales Summary</h1>
+        </div>
+        <div class="w-2/3">
+            <div class="flex flex-row justify-end gap-1">
+            <%= link_to "Export Excel",
+    sales_summary_sales_path(
+      query: params[:query],
+      start_date: params[:start_date],
+      end_date: params[:end_date]
+    ),
+    class: "px-4 py-2 text-sm text-white bg-green-600 rounded-lg hover:bg-green-700",
+    data: { turbo: false } %>
+                <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="sub-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-menu" data-dropdown-placement="bottom">
+                    <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
+                    <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+            
+                <!-- Dropdown menu -->
+                <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-menu">
+                    
+                    <ul class="py-2" aria-labelledby="sub-menu-button">
+                        <li>
+                            <%= link_to sales_path, data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>View Details<%end%>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div> 
+    </div>
+    <div class="flex w-full mb-3">
+    <%= form_tag sales_summary_sales_path, class:"flex items-start  space-x-2", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do %>
+    <label for="simple-search" class="sr-only">Search</label>
+    <div class="flex w-full">
+      <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
+        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+        </svg>
+        <span class="sr-only">Search</span>
+      </div>
+      <%= form_tag sales_summary_sales_path,
+        class:"flex items-end gap-2 flex-wrap",
+        method: :get,
+        data:{
+          turbo_frame:"search_results",
+          turbo_action:"advance",
+          controller:"search",
+          action:"input->search#submit"
+        } do %>
+
+      <!-- Search -->
+      <div class="flex items-center justify-end w-full gap-2 md:w-auto">
+        <div class="relative">
+          <%= label_tag :search, "Search", class:"block mb-1 text-xs" %>
+          <%= text_field_tag "query",
+              params[:query],
+              class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5",
+              placeholder:"Search product ..." %>
+        </div>
+
+        <!-- Start Date -->
+        <div>
+          <%= label_tag :start_date, "From", class:"block mb-1 text-xs" %>
+          <%= date_field_tag :start_date,
+              params[:start_date],
+              class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+        </div>
+
+        <!-- End Date -->
+        <div>
+          <%= label_tag :end_date, "To", class:"block mb-1 text-xs" %>
+          <%= date_field_tag :end_date,
+              params[:end_date],
+              class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+        </div>
+      </div>
+    <% end %> 
+    </div>
+
+  <% end %>
+
+</div>
+  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+
+    <!-- HEADER -->
+    <thead class="bg-gray-50 dark:bg-gray-700">
+      <tr>
+
+        <!-- PRODUCT -->
+        <th class="p-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+          Product
+        </th>
+
+        <!-- STORES -->
+        <% @stores.each do |store| %>
+          <th class="p-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-white whitespace-nowrap">
+            <%= store.name %>
+          </th>
+        <% end %>
+
+        <!-- TOTAL -->
+        <th class="p-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-white">
+          Total
+        </th>
+
+      </tr>
+    </thead>
+
+
+    <!-- BODY -->
+    <tbody class="bg-white dark:bg-gray-800">
+
+      <% @products.each do |product| %>
+
+        <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+
+          <!-- PRODUCT NAME -->
+          <td class="p-3 text-sm font-semibold whitespace-nowrap dark:text-white">
+            <%= product.name %>
+          </td>
+
+          <% row_total = 0 %>
+
+          <!-- STORE VALUES -->
+          <% @stores.each do |store| %>
+
+            <% quantity = @report_data.dig(product.id, store.id).to_f %>
+
+            <% row_total += quantity %>
+
+            <td class="p-3 text-sm text-right dark:text-white">
+              <%= number_with_delimiter(quantity.to_i, delimiter: ',') %>
+            </td>
+
+          <% end %>
+
+          <!-- ROW TOTAL -->
+          <td class="p-3 text-sm font-bold text-right dark:text-white">
+            <%= number_with_delimiter(row_total.to_i, delimiter: ',' ) %>
+          </td>
+
+        </tr>
+
+      <% end %>
+
+    </tbody>
+
+  </table>
+    <%= render "summary_pagination" %>
+</div>

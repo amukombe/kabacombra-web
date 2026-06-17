@@ -7,6 +7,68 @@ class SalesController < ApplicationController
     @active_link = "sales"
   end
 
+  def sales_summary
+    @active_link = "sales"
+
+    @stores = current_territory.stores.order(:name)
+
+    @products = NileProduct
+      .order(:product_number)
+      .page(params[:page])
+      .per(20)
+
+    if params[:query].present?
+      @products = @products.where(
+        "name LIKE ?",
+        "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+      )
+    end
+
+    query = SaleItem
+      .joins(:sale)
+      .where(
+        sales: {
+          territory_id: current_territory.id
+        }
+      )
+
+    # Default to today if no dates selected
+    if params[:start_date].blank? && params[:end_date].blank?
+      query = query.where(
+        "DATE(sales.sale_date) = ?",
+        Date.current
+      )
+    else
+      if params[:start_date].present?
+        query = query.where(
+          "DATE(sales.sale_date) >= ?",
+          params[:start_date]
+        )
+      end
+
+      if params[:end_date].present?
+        query = query.where(
+          "DATE(sales.sale_date) <= ?",
+          params[:end_date]
+        )
+      end
+    end
+
+    raw_data = query
+      .group(
+        :nile_product_id,
+        "sales.store_id"
+      )
+      .sum(:quantity_sold)
+
+    @report_data = {}
+
+    raw_data.each do |(product_id, store_id), quantity|
+      @report_data[product_id] ||= {}
+      @report_data[product_id][store_id] = quantity
+    end
+  end
+
   # GET /sales/1 or /sales/1.json
   def show
   end
