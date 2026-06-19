@@ -1,12 +1,22 @@
 class LoadingOrderItem < ApplicationRecord
   belongs_to :loading_order
   belongs_to :nile_product
+
   has_many :sale_items
-  # has_many :store_transactions, dependent: :destroy
+
   after_create :create_transaction
+  before_create :set_remaining_quantity
+
+  validates :remaining_quantity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   def name
-    return "#{nile_product.name}"
+    nile_product.name
+  end
+
+  private
+
+  def set_remaining_quantity
+    self.remaining_quantity = quantity_loaded
   end
 
   def create_transaction

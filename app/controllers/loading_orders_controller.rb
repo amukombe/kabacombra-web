@@ -59,7 +59,7 @@ class LoadingOrdersController < ApplicationController
 
   def pending
     @active_link = "pending"
-    @loading_orders = LoadingOrder.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
+    @loading_orders = LoadingOrder.search_pending(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 
   def pending_export
@@ -259,6 +259,11 @@ class LoadingOrdersController < ApplicationController
       filename: "loading_summary_#{Date.today}.xlsx",
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+  end
+
+  def pending_loading_summary
+    @active_link = "pending"
+    @products = LoadingOrder.pending_loading_summary(params,current_territory.id).page(params[:page]).per(20)
   end
 
   # GET /loading_orders/1 or /loading_orders/1.json

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_11_132930) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_18_133930) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -627,6 +627,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_11_132930) do
     t.decimal "vat", precision: 10
     t.bigint "customer_id"
     t.bigint "store_id"
+    t.string "fdn"
+    t.string "invoice_no"
     t.index ["customer_id"], name: "index_sales_on_customer_id"
     t.index ["status_id"], name: "index_sales_on_status_id"
     t.index ["store_id"], name: "index_sales_on_store_id"

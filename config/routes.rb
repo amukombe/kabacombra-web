@@ -102,6 +102,7 @@ Rails.application.routes.draw do
       get :export
       get :pending
       get :pending_export
+      get :pending_loading_summary
     end
   end
   resources :inventory_items do

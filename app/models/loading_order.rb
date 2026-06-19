@@ -47,6 +47,83 @@ class LoadingOrder < ApplicationRecord
     query
   end
 
+  def self.search_pending(params, territory_id)
+
+    query = where(
+      status_id: [6],
+      territory_id: territory_id
+    )
+
+    # Search filter
+    if params[:query].present?
+      search = "%#{sanitize_sql_like(params[:query])}%"
+
+      query = query.where(
+        "order_number LIKE :search",
+        search: search
+      )
+    end
+
+    # Start date filter
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(loading_date) >= ?",
+        params[:start_date]
+      )
+    end
+
+    # End date filter
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(loading_date) <= ?",
+        params[:end_date]
+      )
+    end
+
+    query
+  end
+
+  def self.pending_loading_summary(params, territory_id)
+    query = LoadingOrderItem
+      .joins(:loading_order, :nile_product)
+      .where(
+        loading_orders: {
+          territory_id: territory_id,
+          status_id: 6
+        }
+      )
+
+    if params[:query].present?
+      query = query.where(
+        "nile_products.name LIKE ?",
+        "%#{sanitize_sql_like(params[:query])}%"
+      )
+    end
+
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(loading_orders.loading_date) >= ?",
+        params[:start_date]
+      )
+    end
+
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(loading_orders.loading_date) <= ?",
+        params[:end_date]
+      )
+    end
+
+    query
+      .group("nile_products.id", "nile_products.name")
+      .select(
+        "nile_products.id AS nile_product_id",
+        "nile_products.name AS product_name",
+        "SUM(loading_order_items.remaining_quantity) AS total_quantity"
+      )
+      .order("nile_products.product_number ASC")
+  end
+
   def self.my_approvals(params, territory_id, user_id, status_id)
     query = where("status_id IN (?) AND territory_id = ? AND authorized_by = ?", [6], territory_id, user_id)
   

@@ -77,16 +77,24 @@ class SalesController < ApplicationController
   def new
     @active_link = "pending"
 
-    @order = LoadingOrder.find_by(id: params[:id])
-    @sale = Sale.new(sale_date: DateTime.now)
-    # building items
+    @order = LoadingOrder.find(params[:id])
+
+    @sale = Sale.new(
+      sale_date: DateTime.current,
+      store_id: @order.store_id
+    )
+
     @order.loading_order_items.each do |loading_item|
+      quantity = loading_item.remaining_quantity || loading_item.quantity_loaded
+
+      next if quantity <= 0
+
       @sale.sale_items.build(
         loading_order_item_id: loading_item.id,
         nile_product_id: loading_item.nile_product_id,
-        quantity_sold: loading_item.quantity_loaded,
+        quantity_sold: quantity,
         amount: loading_item.nile_product.buying_price,
-        total: loading_item.quantity_loaded.to_i * loading_item.nile_product.selling_price.to_i
+        total: quantity * loading_item.nile_product.selling_price.to_i
       )
     end
 
@@ -94,7 +102,6 @@ class SalesController < ApplicationController
     @employees = current_territory.employees
     @sale_items = @order.loading_order_items
     @purchase_types = PurchaseType.all
-
   end
 
   # GET /sales/1/edit
@@ -103,49 +110,100 @@ class SalesController < ApplicationController
       .joins(:loading_order, :nile_product)
       .where(loading_orders: { sales_man: current_user.employee.id })
       .group('nile_products.id', 'nile_products.name')
-      .select('nile_product_id, nile_products.id, nile_products.name, SUM(loading_order_items.quantity_loaded) AS total_quantity')
+      .select(
+        'nile_product_id,
+        nile_products.id,
+        nile_products.name,
+        SUM(loading_order_items.remaining_quantity) AS total_quantity'
+      )
 
     @customers = current_territory.customers
     @employees = current_territory.employees
     @empties = EmptyType.all
     @purchase_types = PurchaseType.all
-    
   end
 
-  # POST /sales or /sales.json
+  # POST /sales
   def create
     create_customer_if_needed
+
     @sale = Sale.new(sale_params)
-    @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
+
+    @products = LoadingOrderItem
+      .joins(:loading_order)
+      .where(loading_orders: { sales_man: current_user.employee.id })
+
     @customers = current_territory.customers
     @employees = current_territory.employees
     @empties = EmptyType.all
     @purchase_types = PurchaseType.all
+
     respond_to do |format|
       if @sale.save
-        format.html { redirect_to sales_path, notice: "Sale was successfully created." }
-        format.json { render :show, status: :created, location: @sale }
+        format.html do
+          redirect_to sales_path,
+                      notice: "Sale was successfully created."
+        end
+
+        format.json do
+          render :show,
+                status: :created,
+                location: @sale
+        end
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @sale.errors, status: :unprocessable_entity }
+        first_item = @sale.sale_items.first
+
+        if first_item&.loading_order_item.present?
+          @order = first_item.loading_order_item.loading_order
+          @sale_items = @order.loading_order_items
+        end
+
+        format.html do
+          render :new,
+                status: :unprocessable_entity
+        end
+
+        format.json do
+          render json: @sale.errors,
+                status: :unprocessable_entity
+        end
       end
     end
   end
 
-  # PATCH/PUT /sales/1 or /sales/1.json
+  # PATCH/PUT /sales/1
   def update
-    @products = LoadingOrderItem.joins(:loading_order).where(loading_orders:{sales_man: current_user.employee.id})
+    @products = LoadingOrderItem
+      .joins(:loading_order)
+      .where(loading_orders: { sales_man: current_user.employee.id })
+
     @customers = current_territory.customers
     @employees = current_territory.employees
     @empties = EmptyType.all
     @purchase_types = PurchaseType.all
+
     respond_to do |format|
       if @sale.update(sale_params)
-        format.html { redirect_to sales_path, notice: "Sale was successfully updated." }
-        format.json { render :show, status: :ok, location: @sale }
+        format.html do
+          redirect_to sales_path,
+                      notice: "Sale was successfully updated."
+        end
+
+        format.json do
+          render :show,
+                status: :ok,
+                location: @sale
+        end
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @sale.errors, status: :unprocessable_entity }
+        format.html do
+          render :edit,
+                status: :unprocessable_entity
+        end
+
+        format.json do
+          render json: @sale.errors,
+                status: :unprocessable_entity
+        end
       end
     end
   end
@@ -195,7 +253,7 @@ class SalesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def sale_params
-      params.require(:sale).permit(:customer_id, :customer_name, :user_id, :mode_of_payment,:sale_date, :tin,:territory_id, :receipt_no,:status_id, :customer_mobile, :sales_route, :store_id, :notes,:payment_ref,
+      params.require(:sale).permit(:customer_id, :customer_name, :user_id, :mode_of_payment,:sale_date, :tin,:territory_id, :receipt_no,:status_id, :customer_mobile, :sales_route, :store_id, :notes,:payment_ref, :fdn, :invoice_no,
       sale_items_attributes: [:id,:sale_id, :loading_order_item_id, :nile_product_id, :purchase_type_id, :quantity_sold, :amount, :total, :_destroy],
       sale_empties_attributes: [:id, :sale_id, :empty_type_id, :expected, :received, :variance, :_destroy])
     end
