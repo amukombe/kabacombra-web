@@ -84,70 +84,42 @@ export default class extends Controller {
   }
 
   updateTotals() {
-    let subTotal = 0;
+    let grandTotal = 0;
 
-    const rows = document.querySelectorAll("#sale-item-row");
-    console.log("Rows found:", rows.length); // Logs how many rows are found
-    // Loop through each row and calculate the subtotal
     document.querySelectorAll("#sale-item-row").forEach((row) => {
       const itemtotalField = row.querySelector('[data-sale-target="itemtotal"]');
-      const quantityField = row.querySelector('[data-sale-target="quantity"]');
-      const amountField = row.querySelector('[data-sale-target="amount"]');
-      
-      // Check if all necessary fields are present
-      if (itemtotalField && quantityField && amountField) {
-        const quantity = parseFloat(quantityField.value) || 0;
-        const amount = parseFloat(amountField.value) || 0;
-        // Only calculate item total if both quantity and amount are valid numbers
-        const itemTotal = quantity * amount;
-        // Ensure the itemTotal is calculated before updating the fields
-        if (itemTotal > 0) {
-          // Update the itemtotal field
-          itemtotalField.value = itemTotal.toFixed(2);  // Update the readonly field
-          itemtotalField.textContent = itemTotal.toFixed(2); // Update the text content if applicable
-          // Add the item total to the subtotal
-          subTotal += itemTotal;
-          console.log("Item total:"+itemTotal);
-        }
-        else{
-          console.log("Item total=0");
-        }
-      }
-      else{
-        console.log("Failed to fetch values");
+
+      if (itemtotalField) {
+        const itemTotal = parseFloat(itemtotalField.value) || 0;
+        grandTotal += itemTotal;
       }
     });
-  
-    // Log subTotal for debugging
+
+    console.log("Grand Total:", grandTotal);
+
+    // VAT Inclusive Calculations
+    const subTotal = grandTotal / 1.18;
+    const tax = grandTotal - subTotal;
+
     console.log("Sub Total:", subTotal);
-  
-    // Update the sub_total field
+    console.log("VAT:", tax);
+
+    // Update subtotal
     const subTotalField = document.querySelector("#sub_total");
     if (subTotalField) {
-      subTotalField.textContent = subTotal.toFixed(2); // Format to 2 decimal places
+      subTotalField.textContent = Math.round(subTotal).toLocaleString();
     }
-  
-    // Calculate tax (18% of subTotal)
-    const tax = subTotal * 0.18;
-  
-    // Log tax for debugging
-    console.log("Tax (18%):", tax);
-    // Update the tax field
+
+    // Update VAT
     const taxField = document.querySelector("#tax");
     if (taxField) {
-      taxField.textContent = tax.toFixed(2); // Format to 2 decimal places
+      taxField.textContent = Math.round(tax).toLocaleString();
     }
-  
-    // Calculate grand total (subTotal + tax)
-    const grandTotal = subTotal + tax;
-  
-    // Log grand total for debugging
-    console.log("Grand Total:", grandTotal);
-  
-    // Update the grand total field
+
+    // Update grand total
     const grandTotalField = document.querySelector("#grand_total");
     if (grandTotalField) {
-      grandTotalField.textContent = grandTotal.toFixed(2); // Format to 2 decimal places
+      grandTotalField.textContent = Math.round(grandTotal).toLocaleString();
     }
   }
     

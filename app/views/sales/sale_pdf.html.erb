@@ -46,13 +46,36 @@
                 <% end %>
             </tbody>
             <tfoot>
+                <% 
+                sub_total = (@sale.total_price / 1.18).round
+                vat = (@sale.total_price - sub_total).round
+                %>
+
                 <tr class="table-light">
-                    <th colspan="4" class="text-sm text-gray-600 text-end dark:text-gray-400">VAT (18%)</th>
-                    <th class="text-sm text-gray-900 dark:text-white"><%= @sale.total_price * 0.18 %></th>
+                    <th colspan="4" class="text-sm text-gray-600 text-end dark:text-gray-400">
+                        Sub Total
+                    </th>
+                    <th class="text-sm text-gray-900 dark:text-white">
+                        <%= number_with_delimiter(sub_total) %>
+                    </th>
                 </tr>
+
                 <tr class="table-light">
-                    <th colspan="4" class="text-sm text-gray-600 text-end dark:text-gray-400">Grand Total</th>
-                    <th class="text-sm text-gray-900 dark:text-white"><%= @sale.total_price + (@sale.total_price * 0.18) %></th>
+                    <th colspan="4" class="text-sm text-gray-600 text-end dark:text-gray-400">
+                        VAT (18%)
+                    </th>
+                    <th class="text-sm text-gray-900 dark:text-white">
+                        <%= number_with_delimiter(vat) %>
+                    </th>
+                </tr>
+
+                <tr class="table-light">
+                    <th colspan="4" class="text-sm text-gray-600 text-end dark:text-gray-400">
+                        Grand Total
+                    </th>
+                    <th class="text-sm text-gray-900 dark:text-white">
+                        <%= number_with_delimiter(@sale.total_price.round) %>
+                    </th>
                 </tr>
             </tfoot>
         </table>

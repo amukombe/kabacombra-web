@@ -3,6 +3,8 @@ class SalesController < ApplicationController
 
   # GET /sales or /sales.json
   def index
+    params[:start_date] ||= Date.current.to_s
+    params[:end_date] ||= Date.current.to_s
     @sales = Sale.search(params).page(params[:page]).per(20)
     @active_link = "sales"
   end
@@ -93,7 +95,7 @@ class SalesController < ApplicationController
         loading_order_item_id: loading_item.id,
         nile_product_id: loading_item.nile_product_id,
         quantity_sold: quantity,
-        amount: loading_item.nile_product.buying_price,
+        amount: loading_item.nile_product.selling_price,
         total: quantity * loading_item.nile_product.selling_price.to_i
       )
     end

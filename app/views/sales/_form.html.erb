@@ -114,9 +114,10 @@
         
         <table>
           <%
-            subtotal = @sale.sale_items.sum { |item| item.total.to_f }
-            vat = subtotal * 0.18
-            grand_total = subtotal + vat
+            grand_total = @sale.sale_items.sum { |item| item.total.to_f }
+
+            subtotal = (grand_total / 1.18).round
+            vat = (grand_total - subtotal).round
           %>
 
           <tr>

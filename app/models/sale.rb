@@ -22,19 +22,55 @@ class Sale < ApplicationRecord
 
   validate :sufficient_stock
 
-  before_validation :generate_document_number, on: :create
+  before_validation :generate_document_numbers, on: :create
   before_create :create_customer_if_missing
 
   after_create :update_loading_order_status
   after_update :update_loading_order_status
-  after_destroy :update_loading_order_status
+  # after_destroy :update_loading_order_status
+  before_destroy :store_loading_order_ids
+  after_destroy :update_loading_order_status_after_destroy
+
+  after_save :recalculate_loading_order_quantities
+  after_destroy :recalculate_loading_order_quantities
+
   after_save :update_remaining_quantities
   before_destroy :restore_quantity
 
   def self.search(params)
-    params[:query].blank? ?
-      all :
-      where("receipt_no LIKE ?", "%#{sanitize_sql_like(params[:query])}%")
+    query = all
+
+    # Search
+    if params[:query].present?
+      search = "%#{sanitize_sql_like(params[:query])}%"
+
+      query = query.where(
+        "receipt_no LIKE :search
+        OR invoice_no LIKE :search
+        OR customer_name LIKE :search
+        OR customer_mobile LIKE :search
+        OR mode_of_payment LIKE :search",
+        search: search
+      )
+    end
+
+    # From Date
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(sale_date) >= ?",
+        params[:start_date]
+      )
+    end
+
+    # To Date
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(sale_date) <= ?",
+        params[:end_date]
+      )
+    end
+
+    query
   end
 
   def total_price
@@ -134,10 +170,10 @@ class Sale < ApplicationRecord
     end
   end
 
-  def generate_document_number
-    if credit?
-      generate_invoice_number
-    else
+  def generate_document_numbers
+    generate_invoice_number
+
+    unless credit?
       generate_receipt_number
     end
   end
@@ -186,5 +222,60 @@ class Sale < ApplicationRecord
       end
 
     self.invoice_no = "#{prefix}#{next_number.to_s.rjust(5, '0')}"
+  end
+
+  def store_loading_order_ids
+    @loading_order_ids = sale_items
+      .joins(:loading_order_item)
+      .pluck("loading_order_items.loading_order_id")
+      .uniq
+  end
+
+  def update_remaining_quantities_after_destroy
+    return unless @loading_order_ids.present?
+
+    LoadingOrder.where(id: @loading_order_ids).each do |loading_order|
+      loading_order.loading_order_items.each do |item|
+        sold_quantity = item.sale_items.sum(:quantity_sold)
+
+        item.update_column(
+          :remaining_quantity,
+          item.quantity_loaded - sold_quantity
+        )
+      end
+    end
+  end
+
+  def update_loading_order_status_after_destroy
+    return unless @loading_order_ids.present?
+
+    LoadingOrder.where(id: @loading_order_ids).each do |loading_order|
+      all_sold = loading_order.loading_order_items.all? do |item|
+        item.sale_items.sum(:quantity_sold) >= item.quantity_loaded
+      end
+
+      loading_order.update_column(
+        :status_id,
+        all_sold ? 7 : 6
+      )
+    end
+  end
+
+  def recalculate_loading_order_quantities
+    loading_order_ids = sale_items
+      .joins(:loading_order_item)
+      .pluck("loading_order_items.loading_order_id")
+      .uniq
+
+    LoadingOrder.where(id: loading_order_ids).each do |loading_order|
+      loading_order.loading_order_items.each do |item|
+        sold_quantity = item.sale_items.sum(:quantity_sold)
+
+        item.update_column(
+          :remaining_quantity,
+          item.quantity_loaded - sold_quantity
+        )
+      end
+    end
   end
 end

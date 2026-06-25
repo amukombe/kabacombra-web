@@ -16347,45 +16347,30 @@ var sale_controller_default = class extends Controller {
     this.updateTotals();
   }
   updateTotals() {
-    let subTotal = 0;
-    const rows = document.querySelectorAll("#sale-item-row");
-    console.log("Rows found:", rows.length);
+    let grandTotal = 0;
     document.querySelectorAll("#sale-item-row").forEach((row) => {
       const itemtotalField = row.querySelector('[data-sale-target="itemtotal"]');
-      const quantityField = row.querySelector('[data-sale-target="quantity"]');
-      const amountField = row.querySelector('[data-sale-target="amount"]');
-      if (itemtotalField && quantityField && amountField) {
-        const quantity = parseFloat(quantityField.value) || 0;
-        const amount = parseFloat(amountField.value) || 0;
-        const itemTotal = quantity * amount;
-        if (itemTotal > 0) {
-          itemtotalField.value = itemTotal.toFixed(2);
-          itemtotalField.textContent = itemTotal.toFixed(2);
-          subTotal += itemTotal;
-          console.log("Item total:" + itemTotal);
-        } else {
-          console.log("Item total=0");
-        }
-      } else {
-        console.log("Failed to fetch values");
+      if (itemtotalField) {
+        const itemTotal = parseFloat(itemtotalField.value) || 0;
+        grandTotal += itemTotal;
       }
     });
+    console.log("Grand Total:", grandTotal);
+    const subTotal = grandTotal / 1.18;
+    const tax = grandTotal - subTotal;
     console.log("Sub Total:", subTotal);
+    console.log("VAT:", tax);
     const subTotalField = document.querySelector("#sub_total");
     if (subTotalField) {
-      subTotalField.textContent = subTotal.toFixed(2);
+      subTotalField.textContent = Math.round(subTotal).toLocaleString();
     }
-    const tax = subTotal * 0.18;
-    console.log("Tax (18%):", tax);
     const taxField = document.querySelector("#tax");
     if (taxField) {
-      taxField.textContent = tax.toFixed(2);
+      taxField.textContent = Math.round(tax).toLocaleString();
     }
-    const grandTotal = subTotal + tax;
-    console.log("Grand Total:", grandTotal);
     const grandTotalField = document.querySelector("#grand_total");
     if (grandTotalField) {
-      grandTotalField.textContent = grandTotal.toFixed(2);
+      grandTotalField.textContent = Math.round(grandTotal).toLocaleString();
     }
   }
   showEmpty(event) {
