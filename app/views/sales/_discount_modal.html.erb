@@ -1,0 +1,149 @@
+<div id="discountModal"
+     class="fixed inset-0 z-50 hidden overflow-y-auto bg-black bg-opacity-50"
+     data-sale-target="discountModal">
+
+  <div class="relative w-full max-w-2xl p-6 mx-auto mt-10 bg-white rounded-lg shadow-xl dark:bg-gray-800">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between pb-3 border-b dark:border-gray-600">
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+        Apply Discounts
+      </h3>
+
+      <button type="button"
+              class="text-gray-500 hover:text-red-600"
+              data-action="click->sale#closeDiscountModal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Product Details -->
+    <div class="grid grid-cols-2 gap-4 mt-5">
+
+      <div>
+        <label class="text-sm font-semibold text-gray-600 dark:text-gray-300">
+          Product
+        </label>
+
+        <div class="p-2 mt-1 bg-gray-100 rounded dark:bg-gray-700">
+          <span data-sale-target="modalProductName"></span>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-sm font-semibold text-gray-600 dark:text-gray-300">
+          Gross Amount
+        </label>
+
+        <div class="p-2 mt-1 bg-gray-100 rounded dark:bg-gray-700">
+          UGX <span data-sale-target="modalGrossAmount">0</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Discounts -->
+    <div class="mt-6">
+
+      <h4 class="mb-3 font-semibold text-gray-700 dark:text-gray-200">
+        Available Discounts
+      </h4>
+
+      <div class="space-y-3 overflow-y-auto max-h-80">
+
+        <% @discounts.each do |discount| %>
+
+          <label class="flex items-center justify-between p-3 transition border rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+
+            <div class="flex items-center">
+
+              <input
+                type="checkbox"
+                class="rounded discount-checkbox"
+                data-discount-id="<%= discount.id %>"
+                data-discount-name="<%= discount.name %>"
+                data-discount-type="<%= discount.discount_type %>"
+                data-discount-value="<%= discount.discount_value %>"
+                data-action="change->sale#calculateModalDiscount">
+
+              <div class="ml-3">
+
+                <div class="font-medium text-gray-900 dark:text-white">
+                  <%= discount.name %>
+                </div>
+
+                <div class="text-xs text-gray-500">
+                  <%= discount.discount_type.humanize %>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="font-semibold text-blue-700">
+
+              <% if discount.fixed? %>
+                UGX <%= number_with_delimiter(discount.discount_value) %>
+              <% else %>
+                <%= discount.discount_value %>%
+              <% end %>
+
+            </div>
+
+          </label>
+
+        <% end %>
+
+      </div>
+
+    </div>
+
+    <!-- Totals -->
+    <div class="pt-5 mt-6 border-t dark:border-gray-600">
+
+      <div class="flex justify-between mb-2">
+
+        <span class="font-medium text-gray-700 dark:text-gray-300">
+          Total Discount
+        </span>
+
+        <span class="font-bold text-red-600">
+          UGX <span data-sale-target="modalDiscountTotal">0</span>
+        </span>
+
+      </div>
+
+      <div class="flex justify-between">
+
+        <span class="font-medium text-gray-700 dark:text-gray-300">
+          Net Amount
+        </span>
+
+        <span class="font-bold text-green-700">
+          UGX <span data-sale-target="modalNetTotal">0</span>
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end gap-3 pt-5 mt-6 border-t dark:border-gray-600">
+
+      <button type="button"
+              class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+              data-action="click->sale#closeDiscountModal">
+        Cancel
+      </button>
+
+      <button type="button"
+              class="px-5 py-2 text-white bg-blue-700 rounded-lg hover:bg-blue-800"
+              data-action="click->sale#saveDiscounts">
+        Apply Discounts
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

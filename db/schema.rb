@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_18_133930) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_04_074907) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -220,6 +220,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_133930) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "code"
+  end
+
+  create_table "discounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.string "discount_type"
+    t.decimal "discount_value", precision: 10
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "dispatch_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -584,6 +593,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_133930) do
     t.index ["sale_id"], name: "index_sale_empties_on_sale_id"
   end
 
+  create_table "sale_item_discounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "sale_item_id"
+    t.bigint "discount_id"
+    t.string "discount_name"
+    t.string "discount_type"
+    t.decimal "discount_value", precision: 10
+    t.decimal "discount_amount", precision: 10
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discount_id"], name: "index_sale_item_discounts_on_discount_id"
+    t.index ["sale_item_id"], name: "index_sale_item_discounts_on_sale_item_id"
+  end
+
   create_table "sale_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "quantity_sold", precision: 10
     t.decimal "amount", precision: 10
@@ -596,6 +618,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_133930) do
     t.bigint "purchase_type_id"
     t.bigint "nile_product_id", null: false
     t.bigint "loading_order_item_id", null: false
+    t.decimal "discount_total", precision: 10
     t.index ["loading_order_item_id"], name: "index_sale_items_on_loading_order_item_id"
     t.index ["nile_product_id"], name: "index_sale_items_on_nile_product_id"
     t.index ["purchase_type_id"], name: "index_sale_items_on_purchase_type_id"
@@ -971,6 +994,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_18_133930) do
   add_foreign_key "payments", "users"
   add_foreign_key "sale_empties", "empty_types"
   add_foreign_key "sale_empties", "sales"
+  add_foreign_key "sale_item_discounts", "discounts"
+  add_foreign_key "sale_item_discounts", "sale_items"
   add_foreign_key "sale_items", "loading_order_items"
   add_foreign_key "sale_items", "nile_products"
   add_foreign_key "sale_items", "purchase_types"

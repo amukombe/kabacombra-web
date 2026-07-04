@@ -14,9 +14,7 @@ class Sale < ApplicationRecord
   belongs_to :store, optional: true
 
   has_many :sale_items, dependent: :destroy
-  accepts_nested_attributes_for :sale_items,
-                                allow_destroy: true,
-                                reject_if: :all_blank
+  accepts_nested_attributes_for :sale_items, allow_destroy: true, reject_if: :all_blank
 
   validates :sale_date, :mode_of_payment, presence: true
 

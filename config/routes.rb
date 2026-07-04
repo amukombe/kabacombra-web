@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :discounts
   resources :destinations
   resources :beer_returns do
     collection do

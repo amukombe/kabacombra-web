@@ -78,7 +78,7 @@ class SalesController < ApplicationController
   # GET /sales/new
   def new
     @active_link = "pending"
-
+    @discounts = Discount.active
     @order = LoadingOrder.find(params[:id])
 
     @sale = Sale.new(
@@ -118,7 +118,7 @@ class SalesController < ApplicationController
         nile_products.name,
         SUM(loading_order_items.remaining_quantity) AS total_quantity'
       )
-
+    @discounts = Discount.active
     @customers = current_territory.customers
     @employees = current_territory.employees
     @empties = EmptyType.all
@@ -256,8 +256,27 @@ class SalesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def sale_params
       params.require(:sale).permit(:customer_id, :customer_name, :user_id, :mode_of_payment,:sale_date, :tin,:territory_id, :receipt_no,:status_id, :customer_mobile, :sales_route, :store_id, :notes,:payment_ref, :fdn, :invoice_no,
-      sale_items_attributes: [:id,:sale_id, :loading_order_item_id, :nile_product_id, :purchase_type_id, :quantity_sold, :amount, :total, :_destroy],
-      sale_empties_attributes: [:id, :sale_id, :empty_type_id, :expected, :received, :variance, :_destroy])
+      sale_items_attributes: [
+        :id,
+        :sale_id, 
+        :loading_order_item_id, 
+        :nile_product_id, 
+        :purchase_type_id, 
+        :quantity_sold, 
+        :amount, 
+        :total, 
+        :discount_total,
+        :_destroy,
+        sale_item_discounts_attributes: [
+          :id,
+          :discount_id,
+          :discount_name,
+          :discount_type,
+          :discount_value,
+          :discount_amount,
+          :_destroy
+        ]
+      ])
     end
 
     def deduct_quantity(sale_item)

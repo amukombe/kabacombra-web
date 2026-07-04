@@ -4,7 +4,8 @@ class SaleItem < ApplicationRecord
   before_save :calculate_total
   belongs_to :sale
   belongs_to :purchase_type
-
+  has_many :sale_item_discounts
+  accepts_nested_attributes_for :sale_item_discounts, allow_destroy: true
   after_create :create_stock_adjustment
   after_update :update_stock_adjustment
   def calculate_total
@@ -51,5 +52,7 @@ class SaleItem < ApplicationRecord
       end
     end
   end
-  
+  def discount_amount
+    sale_item_discounts.sum(:discount_value)
+  end
 end

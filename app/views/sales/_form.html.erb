@@ -1,6 +1,6 @@
 
 <div class="rounded-lg shadow-lg dark:bg-gray-800">
-<%= form_with(model: sale) do |form| %>
+<%= form_with(model: sale, data: { controller: "sale" }) do |form| %>
 
   <% if @sale.errors.any? %>
     <div class="grid-cols-1" data-controller="alert" data-alert-target="alertDialog">
@@ -146,6 +146,7 @@
       <%= link_to "Back to sales", sales_path, class:"bg-red-200 text-red-800 p-1 px-3 text-md rounded-full dark:text-red-200 dark:bg-red-900", data: { turbo: "false" } %>
     </div>
   </div>
+  <%= render "discount_modal" %>
 <% end %>
 </div>
 

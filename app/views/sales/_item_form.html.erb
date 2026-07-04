@@ -1,4 +1,4 @@
-<div id="sale-item-row" class="flex items-center justify-between gap-1 px-5 order-item-row nested-form-wrapper" data-new-record="<%= f.object.new_record? %>"  data-controller="sale">
+<div id="sale-item-row" class="flex items-center justify-between gap-1 px-5 order-item-row nested-form-wrapper" data-new-record="<%= f.object.new_record? %>">
     <div>
         <%= f.hidden_field :loading_order_item_id %>
         <%= f.hidden_field :nile_product_id %>
@@ -21,6 +21,25 @@
     <div>
         <%= f.label :total , class:"text-xs text-gray-600 dark:text-gray-400"%> <i class="text-sm text-red-600 dark:text-red-400">*</i>
         <%= f.text_field :total, step: 0.01 , class:"itemtotal-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",data: { sale_target: "itemtotal" }, readonly: true %>
+    </div>
+    <div>
+      <%= f.label :discount_total, 'Discount', class:"text-xs text-gray-600 dark:text-gray-400" %>
+
+      <div class="flex gap-1">
+        <%= f.text_field :discount_total,
+          value: f.object.discount_total || 0,
+          readonly: true,
+          class:"discount-total-field bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white",
+          data: { sale_target: "discountTotal" } %>
+
+        <button type="button"
+          class="px-2 py-1 text-xs text-white bg-blue-700 rounded-lg"
+          data-action="click->sale#openDiscountModal">
+          Discount
+        </button>
+      </div>
+
+      <div class="selected-discounts-wrapper" data-sale-target="selectedDiscounts"></div>
     </div>
     <div>
         <span class="px-2 py-1 text-xs text-red-200 bg-red-700 rounded dark:text-red-700 dark:bg-red-200">
