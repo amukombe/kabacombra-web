@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_04_074907) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_07_180439) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -229,6 +229,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_04_074907) do
     t.boolean "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "rule_type", default: "simple"
+    t.decimal "buy_quantity", precision: 10
+    t.decimal "discount_quantity", precision: 10
+    t.boolean "repeatable", default: false
+    t.boolean "apply_to_all"
   end
 
   create_table "dispatch_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

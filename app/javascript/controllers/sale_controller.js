@@ -1,6 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Connects to data-controller="sale"
 export default class extends Controller {
   static targets = [
     "quantity",
@@ -155,20 +154,55 @@ export default class extends Controller {
     let totalDiscount = 0
 
     document.querySelectorAll(".discount-checkbox:checked").forEach((checkbox) => {
-      const discountType = checkbox.dataset.discountType
-      const discountValue = parseFloat(checkbox.dataset.discountValue) || 0
-
-      if (discountType === "fixed") {
-        totalDiscount += discountValue * quantity
-      } else if (discountType === "percentage") {
-        totalDiscount += grossAmount * (discountValue / 100)
-      }
+      totalDiscount += this.calculateDiscountAmount(checkbox, quantity, amount, grossAmount)
     })
 
     totalDiscount = Math.min(totalDiscount, grossAmount)
     const netTotal = Math.max(grossAmount - totalDiscount, 0)
 
     return { grossAmount, totalDiscount, netTotal }
+  }
+
+  calculateDiscountAmount(checkbox, quantity, amount, grossAmount) {
+    const discountType = checkbox.dataset.discountType
+    const discountValue = parseFloat(checkbox.dataset.discountValue) || 0
+
+    const ruleType = checkbox.dataset.ruleType
+    const buyQuantity = parseFloat(checkbox.dataset.buyQuantity) || 0
+    const discountQuantity = parseFloat(checkbox.dataset.discountQuantity) || 0
+    const applyToAll = checkbox.dataset.applyToAll === "true"
+    const repeatable = checkbox.dataset.repeatable === "true"
+
+    let qualifyingQuantity = quantity
+
+    if (ruleType === "buy_x_discount_y") {
+      if (quantity < buyQuantity || buyQuantity <= 0) return 0
+
+      if (applyToAll) {
+        qualifyingQuantity = quantity
+      } else {
+        if (discountQuantity <= 0) return 0
+
+        if (repeatable) {
+          const groups = Math.floor(quantity / buyQuantity)
+          qualifyingQuantity = groups * discountQuantity
+        } else {
+          qualifyingQuantity = discountQuantity
+        }
+
+        qualifyingQuantity = Math.min(qualifyingQuantity, quantity)
+      }
+    }
+
+    if (discountType === "fixed") {
+      return qualifyingQuantity * discountValue
+    }
+
+    if (discountType === "percentage") {
+      return qualifyingQuantity * amount * (discountValue / 100)
+    }
+
+    return 0
   }
 
   saveDiscounts() {
@@ -201,13 +235,12 @@ export default class extends Controller {
       const discountType = checkbox.dataset.discountType
       const discountValue = parseFloat(checkbox.dataset.discountValue) || 0
 
-      let discountAmount = 0
-
-      if (discountType === "fixed") {
-        discountAmount = discountValue * quantity
-      } else if (discountType === "percentage") {
-        discountAmount = grossAmount * (discountValue / 100)
-      }
+      const discountAmount = this.calculateDiscountAmount(
+        checkbox,
+        quantity,
+        amount,
+        grossAmount
+      )
 
       totalDiscount += discountAmount
 
@@ -217,6 +250,11 @@ export default class extends Controller {
         <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][discount_type]" value="${discountType}">
         <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][discount_value]" value="${discountValue}">
         <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][discount_amount]" value="${discountAmount}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][rule_type]" value="${checkbox.dataset.ruleType}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][buy_quantity]" value="${checkbox.dataset.buyQuantity}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][discount_quantity]" value="${checkbox.dataset.discountQuantity}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][apply_to_all]" value="${checkbox.dataset.applyToAll}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][repeatable]" value="${checkbox.dataset.repeatable}">
       `
     })
 

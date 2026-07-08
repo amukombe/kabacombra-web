@@ -16046,6 +16046,33 @@ var customer_autocomplete_controller_default = class extends Controller {
   }
 };
 
+// app/javascript/controllers/discount_controller.js
+var discount_controller_default = class extends Controller {
+  static targets = [
+    "ruleType",
+    "buyQuantityField",
+    "applyToField",
+    "discountQuantityField",
+    "repeatableField"
+  ];
+  connect() {
+    this.toggleFields();
+  }
+  toggleFields() {
+    const ruleType = this.ruleTypeTarget.value;
+    const isBuyRule = ruleType === "buy_x_discount_y";
+    this.toggle(this.buyQuantityFieldTarget, isBuyRule);
+    this.toggle(this.applyToFieldTarget, isBuyRule);
+    this.toggle(this.repeatableFieldTarget, isBuyRule);
+    const applyToAllInput = this.element.querySelector("input[name='discount[apply_to_all]']:checked");
+    const applyToAll = applyToAllInput ? applyToAllInput.value === "true" : true;
+    this.toggle(this.discountQuantityFieldTarget, isBuyRule && !applyToAll);
+  }
+  toggle(element, show) {
+    element.classList.toggle("hidden", !show);
+  }
+};
+
 // app/javascript/controllers/hello_controller.js
 var hello_controller_default = class extends Controller {
   connect() {
@@ -16055,7 +16082,7 @@ var hello_controller_default = class extends Controller {
 
 // app/javascript/controllers/inventory_controller.js
 var inventory_controller_default = class extends Controller {
-  static targets = ["sellingPrice", "quantity", "breakages", "missing", "complaints"];
+  static targets = ["sellingPrice", "quantity", "breakages", "complaints"];
   connect() {
     console.log("order connected");
     console.log("unit price", this.priceTarget);
@@ -16091,9 +16118,8 @@ var inventory_controller_default = class extends Controller {
     }
     const breakagesField = row.querySelector('[data-inventory-target="breakages"]');
     const quantityField = row.querySelector('[data-inventory-target="quantity"]');
-    const missingField = row.querySelector('[data-inventory-target="missing"]');
     const complaintsField = row.querySelector('[data-inventory-target="complaints"]');
-    if (!breakagesField || !quantityField || !missingField || !complaintsField) {
+    if (!breakagesField || !quantityField || !complaintsField) {
       console.error("One or more required fields not found in this row");
       return;
     }
@@ -16103,9 +16129,8 @@ var inventory_controller_default = class extends Controller {
       quantityField.dataset.originalValue = originalQuantity;
     }
     const breakages = parseFloat(breakagesField.value) || 0;
-    const missing = parseFloat(missingField.value) || 0;
     const complaints = parseFloat(complaintsField.value) || 0;
-    const newQuantity = originalQuantity - (breakages + missing + complaints);
+    const newQuantity = originalQuantity - (breakages + complaints);
     quantityField.value = newQuantity.toFixed(2);
     console.log(`Updated Quantity: ${newQuantity}`);
   }
@@ -16403,17 +16428,43 @@ var sale_controller_default = class extends Controller {
     const grossAmount = quantity * amount;
     let totalDiscount = 0;
     document.querySelectorAll(".discount-checkbox:checked").forEach((checkbox) => {
-      const discountType = checkbox.dataset.discountType;
-      const discountValue = parseFloat(checkbox.dataset.discountValue) || 0;
-      if (discountType === "fixed") {
-        totalDiscount += discountValue * quantity;
-      } else if (discountType === "percentage") {
-        totalDiscount += grossAmount * (discountValue / 100);
-      }
+      totalDiscount += this.calculateDiscountAmount(checkbox, quantity, amount, grossAmount);
     });
     totalDiscount = Math.min(totalDiscount, grossAmount);
     const netTotal = Math.max(grossAmount - totalDiscount, 0);
     return { grossAmount, totalDiscount, netTotal };
+  }
+  calculateDiscountAmount(checkbox, quantity, amount, grossAmount) {
+    const discountType = checkbox.dataset.discountType;
+    const discountValue = parseFloat(checkbox.dataset.discountValue) || 0;
+    const ruleType = checkbox.dataset.ruleType;
+    const buyQuantity = parseFloat(checkbox.dataset.buyQuantity) || 0;
+    const discountQuantity = parseFloat(checkbox.dataset.discountQuantity) || 0;
+    const applyToAll = checkbox.dataset.applyToAll === "true";
+    const repeatable = checkbox.dataset.repeatable === "true";
+    let qualifyingQuantity = quantity;
+    if (ruleType === "buy_x_discount_y") {
+      if (quantity < buyQuantity || buyQuantity <= 0) return 0;
+      if (applyToAll) {
+        qualifyingQuantity = quantity;
+      } else {
+        if (discountQuantity <= 0) return 0;
+        if (repeatable) {
+          const groups = Math.floor(quantity / buyQuantity);
+          qualifyingQuantity = groups * discountQuantity;
+        } else {
+          qualifyingQuantity = discountQuantity;
+        }
+        qualifyingQuantity = Math.min(qualifyingQuantity, quantity);
+      }
+    }
+    if (discountType === "fixed") {
+      return qualifyingQuantity * discountValue;
+    }
+    if (discountType === "percentage") {
+      return qualifyingQuantity * amount * (discountValue / 100);
+    }
+    return 0;
   }
   saveDiscounts() {
     if (!this.currentDiscountRow) return;
@@ -16438,12 +16489,12 @@ var sale_controller_default = class extends Controller {
       const discountName = checkbox.dataset.discountName;
       const discountType = checkbox.dataset.discountType;
       const discountValue = parseFloat(checkbox.dataset.discountValue) || 0;
-      let discountAmount = 0;
-      if (discountType === "fixed") {
-        discountAmount = discountValue * quantity;
-      } else if (discountType === "percentage") {
-        discountAmount = grossAmount * (discountValue / 100);
-      }
+      const discountAmount = this.calculateDiscountAmount(
+        checkbox,
+        quantity,
+        amount,
+        grossAmount
+      );
       totalDiscount += discountAmount;
       hiddenFields += `
         <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][discount_id]" value="${discountId}">
@@ -16451,6 +16502,11 @@ var sale_controller_default = class extends Controller {
         <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][discount_type]" value="${discountType}">
         <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][discount_value]" value="${discountValue}">
         <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][discount_amount]" value="${discountAmount}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][rule_type]" value="${checkbox.dataset.ruleType}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][buy_quantity]" value="${checkbox.dataset.buyQuantity}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][discount_quantity]" value="${checkbox.dataset.discountQuantity}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][apply_to_all]" value="${checkbox.dataset.applyToAll}">
+        <input type="hidden" name="sale[sale_items_attributes][${rowIndex}][sale_item_discounts_attributes][${index}][repeatable]" value="${checkbox.dataset.repeatable}">
       `;
     });
     totalDiscount = Math.min(totalDiscount, grossAmount);
@@ -16573,6 +16629,7 @@ var theme_controller_default = class extends Controller {
 // app/javascript/controllers/index.js
 application.register("alert", alert_controller_default);
 application.register("customer-autocomplete", customer_autocomplete_controller_default);
+application.register("discount", discount_controller_default);
 application.register("hello", hello_controller_default);
 application.register("inventory", inventory_controller_default);
 application.register("nested-form", nested_form_controller_default);

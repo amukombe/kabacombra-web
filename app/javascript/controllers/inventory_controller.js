@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="inventory"
 export default class extends Controller {
-  static targets = ["sellingPrice", "quantity", "breakages", "missing", "complaints"];
+  static targets = ["sellingPrice", "quantity", "breakages", "complaints"];
   connect() {
     console.log("order connected");
     console.log("unit price", this.priceTarget);
@@ -50,9 +50,8 @@ export default class extends Controller {
     // Find the necessary fields
     const breakagesField = row.querySelector('[data-inventory-target="breakages"]');
     const quantityField = row.querySelector('[data-inventory-target="quantity"]');
-    const missingField = row.querySelector('[data-inventory-target="missing"]');
     const complaintsField = row.querySelector('[data-inventory-target="complaints"]');
-    if (!breakagesField || !quantityField || !missingField || !complaintsField) {
+    if (!breakagesField || !quantityField || !complaintsField) {
         console.error("One or more required fields not found in this row");
         return;
     }
@@ -67,10 +66,9 @@ export default class extends Controller {
 
     // Parse the values from the fields
     const breakages = parseFloat(breakagesField.value) || 0;
-    const missing = parseFloat(missingField.value) || 0;
     const complaints = parseFloat(complaintsField.value) || 0;
     // Calculate the new quantity
-    const newQuantity = originalQuantity - (breakages + missing + complaints);
+    const newQuantity = originalQuantity - (breakages + complaints);
 
     // Update the `quantityField` value
     quantityField.value = newQuantity.toFixed(2); // Format to 2 decimal places

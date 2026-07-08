@@ -117,18 +117,20 @@ class LoadingOrdersController < ApplicationController
 
     @stores = current_territory.stores.order(:name)
 
-    @products = NileProduct
-      .order(:product_number)
-      .page(params[:page])
-      .per(20)
-    
+    @start_date = params[:start_date].presence || Date.current
+    @end_date   = params[:end_date].presence || Date.current
+
+    @products = NileProduct.order(:product_number)
+
     if params[:query].present?
       @products = @products.where(
         "name LIKE ?",
         "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
       )
     end
-    # Base query
+
+    @products = @products.page(params[:page]).per(20)
+
     query = LoadingOrderItem
       .joins(:loading_order)
       .where(
@@ -137,23 +139,12 @@ class LoadingOrdersController < ApplicationController
         }
       )
 
-    # Date filters
-    if params[:start_date].present?
-      query = query.where(
-        "DATE(loading_orders.loading_date) >= ?",
-        params[:start_date]
-      )
-    end
+    query = query.where(
+      "DATE(loading_orders.loading_date) BETWEEN ? AND ?",
+      @start_date,
+      @end_date
+    )
 
-    if params[:end_date].present?
-      query = query.where(
-        "DATE(loading_orders.loading_date) <= ?",
-        params[:end_date]
-      )
-    end
-    
-
-    # Single query for all totals
     raw_data = query
       .group(
         :nile_product_id,
@@ -161,7 +152,6 @@ class LoadingOrdersController < ApplicationController
       )
       .sum(:quantity_loaded)
 
-    # Transform into easy lookup hash
     @report_data = {}
 
     raw_data.each do |(product_id, store_id), quantity|
@@ -173,7 +163,9 @@ class LoadingOrdersController < ApplicationController
   def export_loading_summary
     @stores = current_territory.stores.order(:name)
 
-    # Same products query as page
+    @start_date = params[:start_date].presence || Date.current
+    @end_date   = params[:end_date].presence || Date.current
+
     @products = NileProduct.order(:product_number)
 
     if params[:query].present?
@@ -183,38 +175,26 @@ class LoadingOrdersController < ApplicationController
       )
     end
 
-    # Same loading query as page
     query = LoadingOrderItem
-              .joins(:loading_order)
-              .where(
-                loading_orders: {
-                  territory_id: current_territory.id
-                }
-              )
-
-    # Start date
-    if params[:start_date].present?
-      query = query.where(
-        "DATE(loading_orders.loading_date) >= ?",
-        params[:start_date]
+      .joins(:loading_order)
+      .where(
+        loading_orders: {
+          territory_id: current_territory.id
+        }
       )
-    end
 
-    # End date
-    if params[:end_date].present?
-      query = query.where(
-        "DATE(loading_orders.loading_date) <= ?",
-        params[:end_date]
-      )
-    end
+    query = query.where(
+      "DATE(loading_orders.loading_date) BETWEEN ? AND ?",
+      @start_date,
+      @end_date
+    )
 
-    # Same grouped totals
     raw_data = query
-                .group(
-                  :nile_product_id,
-                  "loading_orders.store_id"
-                )
-                .sum(:quantity_loaded)
+      .group(
+        :nile_product_id,
+        "loading_orders.store_id"
+      )
+      .sum(:quantity_loaded)
 
     @report_data = {}
 
@@ -227,23 +207,18 @@ class LoadingOrdersController < ApplicationController
     workbook = package.workbook
 
     workbook.add_worksheet(name: "Loading Summary") do |sheet|
-      # Header row
       headers = ["Product"]
       headers += @stores.map(&:name)
       headers << "Total"
 
       sheet.add_row headers
 
-      # Body rows
       @products.each do |product|
         row = [product.name]
         row_total = 0
 
         @stores.each do |store|
-          quantity =
-            @report_data
-              .dig(product.id, store.id)
-              .to_f
+          quantity = @report_data.dig(product.id, store.id).to_f
 
           row_total += quantity
           row << quantity.to_i
@@ -256,7 +231,7 @@ class LoadingOrdersController < ApplicationController
 
     send_data(
       package.to_stream.read,
-      filename: "loading_summary_#{Date.today}.xlsx",
+      filename: "loading_summary_#{@start_date}_to_#{@end_date}.xlsx",
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
   end

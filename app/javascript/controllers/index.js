@@ -10,6 +10,9 @@ application.register("alert", AlertController)
 import CustomerAutocompleteController from "./customer_autocomplete_controller"
 application.register("customer-autocomplete", CustomerAutocompleteController)
 
+import DiscountController from "./discount_controller"
+application.register("discount", DiscountController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 

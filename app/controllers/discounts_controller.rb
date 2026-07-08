@@ -65,6 +65,16 @@ class DiscountsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def discount_params
-      params.require(:discount).permit(:name, :discount_type, :discount_value, :active)
+      params.require(:discount).permit(
+        :name,
+        :discount_type,
+        :discount_value,
+        :rule_type,
+        :buy_quantity,
+        :discount_quantity,
+        :repeatable,
+        :active,
+        :apply_to_all
+      )
     end
 end
