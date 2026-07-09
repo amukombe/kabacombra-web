@@ -1,10 +1,7 @@
 class Sale < ApplicationRecord
   enum mode_of_payment: {
     cash: "cash",
-    credit: "credit",
-    momopay: "momopay",
-    airtelpay: "airtelpay",
-    bank: "bank"
+    credit: "credit"
   }
 
   belongs_to :user
@@ -15,6 +12,7 @@ class Sale < ApplicationRecord
 
   has_many :sale_items, dependent: :destroy
   accepts_nested_attributes_for :sale_items, allow_destroy: true, reject_if: :all_blank
+  has_many :sale_payments, dependent: :destroy
 
   validates :sale_date, :mode_of_payment, presence: true
 
@@ -73,6 +71,22 @@ class Sale < ApplicationRecord
 
   def total_price
     sale_items.sum(&:total)
+  end
+  # payment validations
+  def paid_amount
+    sale_payments.sum(&:amount)
+  end
+
+  def balance
+    total_price - paid_amount
+  end
+
+  def last_payment_reference
+    sale_payments.order(:created_at).last&.receipt_number || receipt_number
+  end
+
+  def fully_paid?
+    balance <= 0
   end
 
   private
@@ -171,9 +185,9 @@ class Sale < ApplicationRecord
   def generate_document_numbers
     generate_invoice_number
 
-    unless credit?
-      generate_receipt_number
-    end
+    # unless credit?
+      # generate_receipt_number
+    # end
   end
 
   def generate_receipt_number

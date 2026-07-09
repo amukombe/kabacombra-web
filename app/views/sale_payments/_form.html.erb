@@ -1,0 +1,128 @@
+<div class="rounded-lg shadow-lg dark:bg-gray-800">
+<div class="p-6 mb-6 bg-white border border-gray-200">
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+
+    <!-- Invoice Details -->
+    <div class="space-y-3">
+      <h3 class="pb-2 text-sm font-semibold tracking-wide text-gray-500 uppercase border-b">
+        Invoice Details
+      </h3>
+
+      <div class="flex justify-between">
+        <span class="text-gray-600">Invoice No</span>
+        <span class="font-semibold text-gray-900">
+          <%= @sale.invoice_no %>
+        </span>
+      </div>
+
+      <div class="flex justify-between">
+        <span class="text-gray-600">Invoice Amount</span>
+        <span class="font-semibold text-gray-900">
+          UGX <%= number_with_delimiter(@sale.total_price) %>
+        </span>
+      </div>
+    </div>
+
+    <!-- Payment Details -->
+    <div class="space-y-3">
+      <h3 class="pb-2 text-sm font-semibold tracking-wide text-gray-500 uppercase border-b">
+        Payment Details
+      </h3>
+
+      <div class="flex justify-between">
+        <span class="text-gray-600">Invoice Reference</span>
+        <span class="font-semibold text-indigo-600">
+          <%= @payment&.invoice_reference %>
+        </span>
+      </div>
+
+      <div class="flex justify-between">
+        <span class="text-gray-600">Receipt No</span>
+        <span class="font-semibold text-green-600">
+          <%= @payment&.receipt_number %>
+        </span>
+      </div>
+    </div>
+
+    <!-- Balance Summary -->
+    <div class="space-y-3">
+      <h3 class="pb-2 text-sm font-semibold tracking-wide text-gray-500 uppercase border-b">
+        Balance Summary
+      </h3>
+
+      <div class="flex justify-between">
+        <span class="text-gray-600">Amount Paid</span>
+        <span class="font-semibold text-green-600">
+          UGX <%= number_with_delimiter(@sale.paid_amount) %>
+        </span>
+      </div>
+
+      <div class="flex justify-between">
+        <span class="font-medium text-gray-700">Outstanding</span>
+        <span class="text-xl font-bold text-red-600">
+          UGX <%= number_with_delimiter(@sale.balance) %>
+        </span>
+      </div>
+    </div>
+
+  </div>
+</div>
+  <%= form_with(model: [@sale, @sale_payment], local: true) do |form| %>
+
+    <% if @sale_payment.errors.any? %>
+      <!-- keep your existing error block here -->
+    <% end %>
+    <%= form.hidden_field :sale_id, value: @sale.id %>
+    <div class="grid grid-cols-3 gap-4 p-4">
+
+      <div>
+        <%= form.label :invoice_reference, class:"text-sm text-gray-600 dark:text-gray-400" %>
+        <i class="text-red-600">*</i>
+        <%= form.text_field :invoice_reference, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white" %>
+      </div>
+
+      <div>
+        <%= form.label :receipt_number, class:"text-sm text-gray-600 dark:text-gray-400" %>
+        <i class="text-red-600">*</i>
+        <%= form.text_field :receipt_number, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white" %>
+      </div>
+
+      <div>
+        <%= form.label :amount, class:"text-sm text-gray-600 dark:text-gray-400" %>
+        <i class="text-red-600">*</i>
+        <%= form.number_field :amount, step: 0.01, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white" %>
+      </div>
+
+      <div>
+        <%= form.label :payment_date, class:"text-sm text-gray-600 dark:text-gray-400" %>
+        <i class="text-red-600">*</i>
+        <%= form.date_field :payment_date, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white" %>
+      </div>
+
+      <div>
+        <%= form.label :mode_of_payment, class:"text-sm text-gray-600 dark:text-gray-400" %>
+        <i class="text-red-600">*</i>
+        <%= form.select :mode_of_payment,
+          SalePayment.mode_of_payments.keys.map { |x| [x.humanize, x] },
+          {},
+          class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white" %>
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-4 p-4">
+        <div>
+          <%= form.label :notes, class:"text-sm text-gray-600 dark:text-gray-400" %>
+          <%= form.text_area :notes, rows: 4, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white" %>
+        </div>
+    </div>
+
+    <div class="flex justify-end gap-4 p-4">
+      <%= form.submit "Save sale_payment",
+        class:"bg-slate-700 text-white px-4 py-2 rounded-full hover:bg-slate-800" %>
+
+      <%= link_to "Return",
+        sale_payments_path,
+        class:"bg-red-200 text-red-800 px-4 py-2 rounded-full hover:bg-red-300" %>
+    </div>
+
+  <% end %>
+</div>

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :sale_payments
   resources :discounts
   resources :destinations
   resources :beer_returns do
@@ -61,7 +62,9 @@ Rails.application.routes.draw do
       get :autocomplete
     end
   end
+  resources :sale_payments, only: [:index]
   resources :sales do
+    resources :sale_payments, only: [:new, :create, :show, :edit, :update]
     collection do
       get "approvals"
       get :sales_summary

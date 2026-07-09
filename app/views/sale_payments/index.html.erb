@@ -1,0 +1,163 @@
+<%= render "/shared/sales_nav" %>
+
+<div class="px-4 pt-4 bg-white dark:bg-gray-900">
+
+  <div class="grid w-full grid-cols-2 gap-4 mb-3">
+    <div>
+      <h1 class="text-gray-800 text-md dark:text-gray-100">
+        Payments Summary
+      </h1>
+    </div>
+
+    <div class="text-right">
+      <div class="inline-block px-4 py-2 text-sm font-semibold text-green-700 bg-green-100 rounded-lg">
+        Total Paid: UGX <%= number_with_delimiter(@total_paid) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex w-full mb-3">
+    <%= form_tag sale_payments_path,
+      class: "flex items-end gap-2 flex-wrap",
+      method: :get,
+      data: {
+        turbo_frame: "search_results",
+        turbo_action: "advance",
+        controller: "search",
+        action: "input->search#submit"
+      } do %>
+
+      <div class="relative">
+        <%= label_tag :query, "Search", class: "block mb-1 text-xs text-gray-600" %>
+        <%= text_field_tag :query,
+            params[:query],
+            class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5",
+            placeholder: "Search receipt, invoice, customer..." %>
+      </div>
+
+      <div>
+        <%= label_tag :start_date, "From", class: "block mb-1 text-xs text-gray-600" %>
+        <%= date_field_tag :start_date,
+            params[:start_date],
+            class: "bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+      </div>
+
+      <div>
+        <%= label_tag :end_date, "To", class: "block mb-1 text-xs text-gray-600" %>
+        <%= date_field_tag :end_date,
+            params[:end_date],
+            class: "bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+      </div>
+
+    <% end %>
+  </div>
+
+  <%= turbo_frame_tag "search_results" do %>
+    <div class="overflow-x-auto rounded-lg shadow">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-white">Payment Details</th>
+            <th class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-white">Customer</th>
+            <th class="p-4 text-xs font-medium text-right text-gray-500 uppercase dark:text-white">Balance Before</th>
+            <th class="p-4 text-xs font-medium text-right text-gray-500 uppercase dark:text-white">Amount Paid</th>
+            <th class="p-4 text-xs font-medium text-right text-gray-500 uppercase dark:text-white">Balance After</th>
+            <th class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-white">Action</th>
+          </tr>
+        </thead>
+
+        <tbody class="bg-white dark:bg-gray-800">
+          <% @sale_payments.each do |payment| %>
+            <tr class="border-b dark:border-gray-700">
+              
+              <td class="p-4 text-sm text-gray-900 dark:text-white">
+                <div class="flex flex-col space-y-1">
+                  <span class="font-semibold">
+                    <%= payment.receipt_number %>
+                  </span>
+
+                  <span class="text-xs text-gray-500">
+                    Invoice Ref: <%= payment.invoice_reference %>
+                  </span>
+
+                  <span class="text-xs text-gray-500">
+                    Date: <%= payment.payment_date&.strftime("%d %b, %Y") %>
+                  </span>
+
+                  <span class="text-xs text-gray-500">
+                    Mode: <%= payment.mode_of_payment&.titleize %>
+                  </span>
+                </div>
+              </td>
+
+              <td class="p-4 text-sm text-gray-900 dark:text-white">
+                <div class="flex flex-col space-y-1">
+                  <span>
+                    <%= payment.sale.customer&.name || payment.sale.customer_name %>
+                  </span>
+
+                  <span class="text-xs text-gray-500">
+                    Mobile: <%= payment.sale.customer_mobile %>
+                  </span>
+
+                  <span class="text-xs text-gray-500">
+                    Sale Invoice: <%= payment.sale.invoice_no %>
+                  </span>
+                </div>
+              </td>
+
+              <td class="p-4 text-sm text-right text-gray-900 dark:text-white">
+                UGX <%= number_with_delimiter(payment.balance_before) %>
+              </td>
+
+              <td class="p-4 text-sm font-semibold text-right text-green-600">
+                UGX <%= number_with_delimiter(payment.amount) %>
+              </td>
+
+              <td class="p-4 text-sm font-semibold text-right text-red-600">
+                UGX <%= number_with_delimiter(payment.balance_after) %>
+              </td>
+
+              <td class="p-4 text-sm">
+                <div class="flex items-center gap-2 mt-2">  
+                      <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=payment.id%>" data-dropdown-placement="bottom">
+                          <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
+                          <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
+                          </svg>
+                      </button>
+                  
+                      <!-- Dropdown menu -->
+                      <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=payment.id%>">
+                          
+                          <ul class="py-2" aria-labelledby="order-menu-button">
+                              <li>
+                                <%= link_to sale_sale_payment_path(payment.sale, payment), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>View Receipt<%end%>
+                              </li>
+                              <li>
+                                <%= link_to sale_pdf_sale_path(payment.sale, format: :pdf), class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Print Recipt<%end%>
+                              </li>
+                              <li>
+                                <%= link_to edit_sale_sale_payment_path(payment.sale, payment), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                              </li>
+                              
+                              <li>
+                                <button data-modal-target="popup-modal-<%=payment.id%>" data-modal-toggle="popup-modal-<%=payment.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
+                              </li>
+                          </ul>
+                      </div>
+                    </div>
+              </td>
+
+            </tr>
+          <% end %>
+        </tbody>
+
+      </table>
+    </div>
+
+    <%= render "pagination" %>
+  <% end %>
+
+</div>

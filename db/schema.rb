@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_07_180439) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_09_120457) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -630,6 +630,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_07_180439) do
     t.index ["sale_id"], name: "index_sale_items_on_sale_id"
   end
 
+  create_table "sale_payments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "sale_id", null: false
+    t.string "invoice_reference"
+    t.string "receipt_number"
+    t.decimal "amount", precision: 10
+    t.date "payment_date"
+    t.integer "mode_of_payment"
+    t.decimal "balance_before", precision: 10
+    t.decimal "balance_after", precision: 10
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receipt_number"], name: "index_sale_payments_on_receipt_number", unique: true
+    t.index ["sale_id"], name: "index_sale_payments_on_sale_id"
+  end
+
   create_table "sale_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -1005,6 +1021,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_07_180439) do
   add_foreign_key "sale_items", "nile_products"
   add_foreign_key "sale_items", "purchase_types"
   add_foreign_key "sale_items", "sales"
+  add_foreign_key "sale_payments", "sales"
   add_foreign_key "sales", "customers"
   add_foreign_key "sales", "statuses"
   add_foreign_key "sales", "stores"
