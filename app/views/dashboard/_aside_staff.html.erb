@@ -5,7 +5,7 @@
             <% @um = current_user.user_modules.where(territory_id: current_territory.id) %>
             <% if @um.present?%>
                 <% @um.each do |user_m| %>
-                    <% if user_m.territory.department.name == "Beer"%>
+                    <% if user_m.territory.department.name == "Cement"%>
 
                         <ul class="">
                             <li>
