@@ -63,6 +63,16 @@ class PaymentsController < ApplicationController
     end
   end
 
+  def receipt_pdf
+    @payment = Payment.find(params[:id]) 
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "file_name", template: "payments/receipt_pdf", formats: [:html], disposition: :inline, layout: 'pdf'   # Excluding ".pdf" extension.
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_payment

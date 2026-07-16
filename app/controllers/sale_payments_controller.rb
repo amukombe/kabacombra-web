@@ -13,8 +13,20 @@ class SalePaymentsController < ApplicationController
                       .order(payment_date: :desc, id: :desc)
                       .page(params[:page])
                       .per(20)
-
+    filtered_payments = SalePayment
+                        .includes(sale: :sale_items)
+                        .search(params)
     @total_paid = SalePayment.search(params).sum(:amount)
+    sales = Sale.search(params)
+    sale_ids = filtered_payments
+               .reorder(nil)
+               .distinct
+               .pluck(:sale_id)
+
+    @total_invoiced = SaleItem
+                        .where(sale_id: sale_ids)
+                        .sum(:total)
+    @total_balance = @total_invoiced - @total_paid
 
     @active_link = "sale_payments"
   end
@@ -79,6 +91,16 @@ class SalePaymentsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to sale_payments_path, status: :see_other, notice: "Sale payment was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def receipt_pdf
+    @payment = SalePayment.find(params[:id]) 
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "file_name", template: "sale_payments/receipt_pdf", formats: [:html], disposition: :inline, layout: 'pdf'   # Excluding ".pdf" extension.
+      end
     end
   end
 

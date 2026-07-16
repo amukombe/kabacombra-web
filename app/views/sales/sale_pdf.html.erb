@@ -51,20 +51,7 @@
                 <p><span class="font-semibold">Address:</span> <%= @sale.customer.location %></p>
                 <p><span class="font-semibold">Mobile:</span> <%= @sale.customer.mobile %></p>
                 <p><span class="font-semibold">Payment Details:</span> <%= @sale.payment_ref %></p>
-                <div class="flex items-center gap-6">
-                    <span class="font-semibold">Payment Method:</span>
-
-                    <% Sale.mode_of_payments.keys.each do |payment_method| %>
-                        <label class="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            class="w-4 h-4 pointer-events-none"
-                            <%= "checked" if @sale.mode_of_payment == payment_method %>>
-
-                        <span><%= payment_method.humanize %></span>
-                        </label>
-                    <% end %>
-                </div>
+                
             </div>
         </div>
     </div>
@@ -85,10 +72,10 @@
                     <tr>
                         <td class="text-sm text-gray-900 dark:text-white"><%= index + 1 %></td>
                         <td class="text-sm text-gray-900 dark:text-white"><%= item.nile_product.name %></td>
-                        <td class="text-sm text-gray-900 dark:text-white"><%= item.quantity_sold %> Bags</td>
-                        <td class="text-sm text-gray-900 dark:text-white"><%= item.amount %></td>
-                        <td class="text-sm text-gray-900 dark:text-white"><%= item.discount_amount %></td>
-                        <td class="text-sm text-gray-900 dark:text-white"><%= item.total %></td>
+                        <td class="text-sm text-gray-900 dark:text-white"><%= number_with_delimiter(item.quantity_sold) %> Bags</td>
+                        <td class="text-sm text-gray-900 dark:text-white"><%= number_with_delimiter(item.amount) %></td>
+                        <td class="text-sm text-gray-900 dark:text-white"><%= number_with_delimiter(item.discount_total) %></td>
+                        <td class="text-sm text-gray-900 dark:text-white"><%= number_with_delimiter(item.total) %></td>
                     </tr>
                 <% end %>
             </tbody>
@@ -143,7 +130,6 @@
                 <p><span class="font-semibold">Store:</span> <%= @sale.store.name %></p>
                 <p><span class="font-semibold">Territory:</span> <%= @sale.territory.name %></p>
                 <p><span class="font-semibold">Served By:</span> <%= @sale.user.employee.fullname %></p>
-                <p><span class="font-semibold">Status:</span> <%= @sale.status.name %></p>
             </div>
         </div>
     </div>

@@ -1,0 +1,112 @@
+<div class="rounded-lg shadow-lg dark:bg-gray-800">
+    <div class="p-4 pb-4 mb-4 d-flex justify-content-between align-items-start border-bottom">
+
+    <!-- Company Logo -->
+    <div>
+        <%= wicked_pdf_image_tag 'logo.png', style: "height:200px;" %>
+    </div>
+
+    <!-- Invoice Details -->
+    <div class="text-end" style="width:70%;">
+
+        <h1 class="mb-3 display-5 fw-bold title-color">
+            RECEIPT
+        </h1>
+
+        <table class="table w-auto table-borderless table-sm ms-auto">
+
+            <tr>
+                <th class="text-end pe-3">Receipt No:</th>
+                <td>
+                    <%= @payment.receipt_number %>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="text-end pe-3">Reference No:</th>
+                <td><%= @payment.invoice_reference  %></td>
+            </tr>
+
+            <tr>
+                <th class="text-end pe-3">Invoice Date:</th>
+                <td><%= @payment.payment_date.strftime("%d %b %Y") %></td>
+            </tr>
+
+            <tr>
+                <th class="text-end pe-3">Time:</th>
+                <td><%= @payment.payment_date.strftime("%I:%M %p") %></td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+    <div class="px-4">
+        <div class="d-flex justify-content-between">
+            <div class="text-sm text-gray-600 dark:text-gray-400">
+                <p><span class="font-semibold">Name:</span> <%= @payment.sale.customer.name %></p>
+                <p><span class="font-semibold">BRN/NIN:</span> <%= @payment.sale.customer.brn %></p>
+                <p><span class="font-semibold">Address:</span> <%= @payment.sale.customer.location %></p>
+                <p><span class="font-semibold">Mobile:</span> <%= @payment.sale.customer.mobile %></p>
+                <p><span class="font-semibold">Payment Details:</span> <%= @payment.notes %></p>
+                <div class="flex items-center gap-6">
+                    <span class="font-semibold">Payment Method:</span>
+
+                    <% SalePayment.mode_of_payments.keys.each do |payment_method| %>
+                        <label class="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            class="w-4 h-4 pointer-events-none"
+                            <%= "checked" if @payment.mode_of_payment == payment_method %>>
+
+                        <span><%= payment_method.humanize %></span>
+                        </label>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-4">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-sm text-gray-600 dark:text-gray-400">Description</th>
+                    <th class="text-sm text-gray-600 dark:text-gray-400">Amount (UGX)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-sm text-gray-900 dark:text-white">
+                        <% if @payment.sale.sale_payments.where("id < ?", @payment.id).exists? %>
+                        Balance B/F
+                        <% else %>
+                        Amount Invoiced
+                        <% end %>
+                    </td>
+                    <td class="text-sm text-gray-900 dark:text-white"><%= number_with_delimiter(@payment.balance_before) %> </td>
+                </tr>
+                <tr>
+                    <td class="text-sm text-gray-900 dark:text-white">Amount Received</td>
+                    <td class="text-sm text-gray-900 dark:text-white"><%= number_with_delimiter(@payment.amount) %> </td>
+                </tr>
+                <tr>
+                    <td class="text-sm text-gray-900 dark:text-white">Balance B/D</td>
+                    <td class="text-sm text-gray-900 dark:text-white"><%= number_with_delimiter(@payment.balance_after) %> </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="px-4">
+        <div class="d-flex justify-content-between">
+            
+            <div class="text-sm text-gray-600 dark:text-gray-400">
+                <p><span class="font-semibold">Store:</span> <%= @payment.sale.store.name %></p>
+                <p><span class="font-semibold">Territory:</span> <%= @payment.sale.territory.name %></p>
+                <p><span class="font-semibold">Served By:</span> <%= @payment.sale.user.employee.fullname %></p>
+            </div>
+        </div>
+    </div>
+</div>

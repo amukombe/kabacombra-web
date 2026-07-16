@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :sale_payments
+  resources :sale_payments do
+    member do
+      get :receipt_pdf
+    end
+  end
   resources :discounts
   resources :destinations
   resources :beer_returns do
