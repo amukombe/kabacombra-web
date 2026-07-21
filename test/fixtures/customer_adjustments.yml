@@ -1,0 +1,35 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sale: one
+  customer: one
+  adjustment_number: MyString
+  adjustment_type: MyString
+  adjustment_date: 2026-07-20
+  reason: MyText
+  status: MyString
+  subtotal: 9.99
+  discount_total: 9.99
+  tax_total: 9.99
+  total_amount: 9.99
+  applied_amount: 9.99
+  created_by_id: 
+  approved_by_id: 
+  approved_at: 2026-07-20 16:40:17
+
+two:
+  sale: two
+  customer: two
+  adjustment_number: MyString
+  adjustment_type: MyString
+  adjustment_date: 2026-07-20
+  reason: MyText
+  status: MyString
+  subtotal: 9.99
+  discount_total: 9.99
+  tax_total: 9.99
+  total_amount: 9.99
+  applied_amount: 9.99
+  created_by_id: 
+  approved_by_id: 
+  approved_at: 2026-07-20 16:40:17

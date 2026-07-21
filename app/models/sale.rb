@@ -13,6 +13,7 @@ class Sale < ApplicationRecord
   has_many :sale_items, dependent: :destroy
   accepts_nested_attributes_for :sale_items, allow_destroy: true, reject_if: :all_blank
   has_many :sale_payments, dependent: :destroy
+  has_many :customer_adjustments, dependent: :restrict_with_error
 
   validates :sale_date, :mode_of_payment, presence: true
 
@@ -70,16 +71,52 @@ class Sale < ApplicationRecord
   end
 
   def total_price
-    sale_items.sum(&:total)
+    sale_items.sum do |item|
+      item.total.to_d
+    end
   end
+
+  def approved_credit_notes
+    customer_adjustments.approved.credit_note
+  end
+
+  def approved_debit_notes
+    customer_adjustments.approved.debit_note
+  end
+
+  def credited_amount
+    approved_credit_notes.sum(:total_amount)
+  end
+
+  def debited_amount
+    approved_debit_notes.sum(:total_amount)
+  end
+
+  def adjusted_invoice_amount
+    total_price.to_d +
+      debited_amount.to_d -
+      credited_amount.to_d
+  end
+
+  def paid_amount
+    sale_payments.sum(:amount)
+  end
+
+  def balance
+    adjusted_invoice_amount.to_d - paid_amount.to_d
+  end
+
+  #def total_price
+    #sale_items.sum(&:total)
+  #end
   # payment validations
   def paid_amount
     sale_payments.sum(&:amount)
   end
 
-  def balance
-    total_price - paid_amount
-  end
+  #def balance
+    #total_price - paid_amount
+  #end
 
   def last_payment_reference
     sale_payments.order(:created_at).last&.receipt_number || receipt_number

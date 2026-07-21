@@ -1,0 +1,351 @@
+<%= render "/shared/sales_nav" %>
+
+<div class="min-h-screen px-4 pt-4 bg-white dark:bg-gray-900">
+
+  <!-- Page Heading -->
+  <div class="w-full mb-4">
+    <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+      Customer Adjustments
+    </h1>
+
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      Credit notes and debit notes created against customer sales.
+    </p>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="w-full mb-4">
+    <%= form_tag customer_adjustments_path,
+          method: :get,
+          class: "flex flex-wrap items-end gap-3",
+          data: {
+            turbo_frame: "search_results",
+            turbo_action: "advance",
+            controller: "search",
+            action: "input->search#submit change->search#submit"
+          } do %>
+
+      <!-- Search -->
+      <div class="w-full md:w-64">
+        <%= label_tag :query,
+              "Search",
+              class: "block mb-1 text-xs font-medium text-gray-600 dark:text-gray-300" %>
+
+        <%= text_field_tag :query,
+              params[:query],
+              placeholder: "Number, invoice, customer...",
+              class: "block w-full p-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+
+      <!-- Adjustment Type -->
+      <div>
+        <%= label_tag :adjustment_type,
+              "Type",
+              class: "block mb-1 text-xs font-medium text-gray-600 dark:text-gray-300" %>
+
+        <%= select_tag :adjustment_type,
+              options_for_select(
+                [
+                  ["All Types", ""],
+                  ["Credit Note", "credit_note"],
+                  ["Debit Note", "debit_note"]
+                ],
+                params[:adjustment_type]
+              ),
+              class: "block w-full p-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+
+      <!-- Status -->
+      <div>
+        <%= label_tag :status,
+              "Status",
+              class: "block mb-1 text-xs font-medium text-gray-600 dark:text-gray-300" %>
+
+        <%= select_tag :status,
+              options_for_select(
+                [
+                  ["All Statuses", ""],
+                  ["Draft", "draft"],
+                  ["Approved", "approved"],
+                  ["Cancelled", "cancelled"]
+                ],
+                params[:status]
+              ),
+              class: "block w-full p-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+
+      <!-- From Date -->
+      <div>
+        <%= label_tag :start_date,
+              "From",
+              class: "block mb-1 text-xs font-medium text-gray-600 dark:text-gray-300" %>
+
+        <%= date_field_tag :start_date,
+              params[:start_date],
+              class: "block w-full p-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+
+      <!-- To Date -->
+      <div>
+        <%= label_tag :end_date,
+              "To",
+              class: "block mb-1 text-xs font-medium text-gray-600 dark:text-gray-300" %>
+
+        <%= date_field_tag :end_date,
+              params[:end_date],
+              class: "block w-full p-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+      </div>
+
+      <!-- Reset -->
+      <div>
+        <%= link_to "Reset",
+              customer_adjustments_path,
+              data: {
+                turbo_frame: "search_results",
+                turbo_action: "advance"
+              },
+              class: "inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" %>
+      </div>
+
+    <% end %>
+  </div>
+
+  <%= turbo_frame_tag "search_results" do %>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 gap-3 mb-5 md:grid-cols-3">
+
+      <!-- Credit Notes -->
+      <div class="p-4 text-green-800 border border-green-200 rounded-lg bg-green-50 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300">
+        <p class="text-xs font-medium tracking-wide uppercase">
+          Approved Credit Notes
+        </p>
+
+        <p class="mt-1 text-xl font-bold whitespace-nowrap">
+          UGX <%= number_with_delimiter(@total_credit_notes || 0) %>
+        </p>
+
+        <p class="mt-1 text-xs">
+          Reduces customer balances
+        </p>
+      </div>
+
+      <!-- Debit Notes -->
+      <div class="p-4 text-red-800 border border-red-200 rounded-lg bg-red-50 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300">
+        <p class="text-xs font-medium tracking-wide uppercase">
+          Approved Debit Notes
+        </p>
+
+        <p class="mt-1 text-xl font-bold whitespace-nowrap">
+          UGX <%= number_with_delimiter(@total_debit_notes || 0) %>
+        </p>
+
+        <p class="mt-1 text-xs">
+          Increases customer balances
+        </p>
+      </div>
+
+      <!-- Net Adjustment -->
+      <div class="p-4 text-blue-800 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300">
+        <p class="text-xs font-medium tracking-wide uppercase">
+          Net Adjustment
+        </p>
+
+        <p class="mt-1 text-xl font-bold whitespace-nowrap">
+          UGX <%= number_with_delimiter(@net_adjustment || 0) %>
+        </p>
+
+        <p class="mt-1 text-xs">
+          Debit notes minus credit notes
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Adjustments Table -->
+    <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+
+          <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <th class="px-4 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                Adjustment
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                Customer
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                Invoice
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-gray-300">
+                Amount
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase dark:text-gray-300">
+                Status
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+                Created By
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-gray-300">
+                Action
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+
+            <% if @customer_adjustments.any? %>
+              <% @customer_adjustments.each do |adjustment| %>
+
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+
+                  <!-- Adjustment -->
+                  <td class="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                    <div class="flex flex-col gap-1">
+                      <span class="font-semibold">
+                        <%= adjustment.adjustment_number %>
+                      </span>
+
+                      <span class="text-xs <%= adjustment.credit_note? ? 'text-green-600' : 'text-red-600' %>">
+                        <%= adjustment.adjustment_type.humanize %>
+                      </span>
+
+                      <span class="text-xs text-gray-500 dark:text-gray-400">
+                        <%= adjustment.adjustment_date&.strftime("%d %b, %Y") %>
+                      </span>
+                    </div>
+                  </td>
+
+                  <!-- Customer -->
+                  <td class="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                    <div class="flex flex-col gap-1">
+                      <span class="font-medium">
+                        <%= adjustment.customer&.name || "No customer" %>
+                      </span>
+
+                      <% if adjustment.customer&.mobile.present? %>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                          <%= adjustment.customer.mobile %>
+                        </span>
+                      <% end %>
+                    </div>
+                  </td>
+
+                  <!-- Invoice -->
+                  <td class="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                    <div class="flex flex-col gap-1">
+                      <span class="font-medium">
+                        <%= adjustment.sale&.invoice_no %>
+                      </span>
+
+                      <span class="text-xs text-gray-500 dark:text-gray-400">
+                        Sale:
+                        <%= adjustment.sale&.sale_date&.strftime("%d %b, %Y") %>
+                      </span>
+                    </div>
+                  </td>
+
+                  <!-- Amount -->
+                  <td class="px-4 py-4 text-sm font-bold text-right whitespace-nowrap">
+                    <span class="<%= adjustment.credit_note? ? 'text-green-600' : 'text-red-600' %>">
+                      <%= adjustment.credit_note? ? "-" : "+" %>
+                      UGX <%= number_with_delimiter(adjustment.total_amount) %>
+                    </span>
+                  </td>
+
+                  <!-- Status -->
+                  <td class="px-4 py-4 text-center">
+                    <% status_classes =
+                      case adjustment.status
+                      when "approved"
+                        "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                      when "cancelled"
+                        "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                      else
+                        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
+                      end
+                    %>
+
+                    <span class="inline-flex px-2.5 py-1 text-xs font-semibold rounded-full <%= status_classes %>">
+                      <%= adjustment.status.humanize %>
+                    </span>
+                  </td>
+
+                  <!-- Created By -->
+                  <td class="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                    <% employee = adjustment.created_by&.employee %>
+
+                    <div class="flex flex-col gap-1">
+                      <span>
+                        <% if employee.present? %>
+                          <%= [employee.firstname, employee.lastname].compact_blank.join(" ") %>
+                        <% else %>
+                          <%= adjustment.created_by&.email || "Unknown" %>
+                        <% end %>
+                      </span>
+
+                      <% if adjustment.approved? %>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                          Approved:
+                          <%= adjustment.approved_at&.strftime("%d %b, %Y") %>
+                        </span>
+                      <% end %>
+                    </div>
+                  </td>
+
+                  <!-- Action -->
+                  <td class="px-4 py-4 text-sm text-right">
+                    <div class="inline-flex items-center gap-2">
+
+                      <%= link_to "View",
+                            customer_adjustment_path(adjustment),
+                            data: { turbo: false },
+                            class: "px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700" %>
+
+                      <% if adjustment.draft? %>
+                        <%= button_to "Approve",
+                              approve_customer_adjustment_path(adjustment),
+                              method: :patch,
+                              form: {
+                                class: "inline-block",
+                                data: {
+                                  turbo_confirm: "Approve #{adjustment.adjustment_number}?"
+                                }
+                              },
+                              class: "px-3 py-1.5 text-xs font-medium text-white bg-green-600 rounded-lg hover:bg-green-700" %>
+                      <% end %>
+
+                    </div>
+                  </td>
+
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="7"
+                    class="px-4 py-10 text-sm text-center text-gray-500 dark:text-gray-400">
+                  No customer adjustments found for the selected filters.
+                </td>
+              </tr>
+            <% end %>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <%= render "pagination" %>
+    </div>
+
+  <% end %>
+
+</div>

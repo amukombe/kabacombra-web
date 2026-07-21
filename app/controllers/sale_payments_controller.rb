@@ -7,26 +7,26 @@ class SalePaymentsController < ApplicationController
     params[:start_date] ||= Date.current.to_s
     params[:end_date] ||= Date.current.to_s
 
-    @sale_payments = SalePayment
-                      .includes(:sale)
-                      .search(params)
-                      .order(payment_date: :desc, id: :desc)
-                      .page(params[:page])
-                      .per(20)
-    filtered_payments = SalePayment
-                        .includes(sale: :sale_items)
-                        .search(params)
-    @total_paid = SalePayment.search(params).sum(:amount)
-    sales = Sale.search(params)
-    sale_ids = filtered_payments
+    filtered_payments = SalePayment.search(params)
+
+  @sale_payments = filtered_payments
+                     .includes(sale: :sale_items)
+                     .order(payment_date: :desc, id: :desc)
+                     .page(params[:page])
+                     .per(20)
+
+  @total_paid = filtered_payments.sum(:amount)
+
+  sale_ids = filtered_payments
                .reorder(nil)
                .distinct
                .pluck(:sale_id)
 
-    @total_invoiced = SaleItem
-                        .where(sale_id: sale_ids)
-                        .sum(:total)
-    @total_balance = @total_invoiced - @total_paid
+  @total_invoiced = SaleItem
+                      .where(sale_id: sale_ids)
+                      .sum(:total)
+
+  @total_balance = @total_invoiced - @total_paid
 
     @active_link = "sale_payments"
   end

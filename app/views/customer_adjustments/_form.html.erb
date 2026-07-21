@@ -1,0 +1,322 @@
+<%= form_with model: [@sale, @customer_adjustment],
+              local: true,
+              data: { turbo: false },
+              class: "space-y-6" do |form| %>
+
+  <% if @customer_adjustment.errors.any? %>
+    <div class="p-4 text-sm text-red-800 border border-red-200 rounded-lg bg-red-50 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300">
+      <div class="mb-2 font-semibold">
+        Please correct the following errors:
+      </div>
+
+      <ul class="pl-5 space-y-1 list-disc">
+        <% @customer_adjustment.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Hidden adjustment type -->
+  <%= form.hidden_field :adjustment_type %>
+
+  <!-- Sale Summary -->
+  <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+      <div>
+        <p class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+          Original Invoice
+        </p>
+
+        <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+          <%= @sale.invoice_no %>
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+          Customer
+        </p>
+
+        <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+          <%= @sale.customer&.name %>
+        </p>
+      </div>
+
+      <div>
+        <p class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+          Current Sale Balance
+        </p>
+
+        <p class="mt-1 text-sm font-bold text-red-600 dark:text-red-400">
+          UGX <%= number_with_delimiter(@sale.balance) %>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Adjustment Details -->
+  <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+    <div class="mb-5">
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+        <%= @customer_adjustment.credit_note? ? "Credit Note Details" : "Debit Note Details" %>
+      </h2>
+
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <%= @customer_adjustment.credit_note? ?
+              "Reduce the amount owed by the customer." :
+              "Increase the amount owed by the customer." %>
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+      <div>
+        <%= form.label :adjustment_type,
+                       "Document Type",
+                       class: "block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300" %>
+
+        <%= form.text_field :adjustment_type,
+              value: @customer_adjustment.adjustment_type&.humanize,
+              disabled: true,
+              class: "block w-full p-2.5 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" %>
+      </div>
+
+      <div>
+        <%= form.label :adjustment_date,
+                       "Adjustment Date",
+                       class: "block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300" %>
+
+        <%= form.date_field :adjustment_date,
+              class: "block w-full p-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
+              required: true %>
+      </div>
+
+      <div>
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+          Document Number
+        </label>
+
+        <input type="text"
+               value="<%= @customer_adjustment.adjustment_number.presence || 'Generated on save' %>"
+               disabled
+               class="block w-full p-2.5 text-sm text-gray-700 bg-gray-100 border border-gray-300 rounded-lg cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300">
+      </div>
+
+    </div>
+
+    <div class="mt-4">
+      <%= form.label :reason,
+                     "Reason",
+                     class: "block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300" %>
+
+      <%= form.text_area :reason,
+            rows: 3,
+            placeholder: @customer_adjustment.credit_note? ?
+              "Example: Customer was invoiced for 150 bags but received 100 bags." :
+              "Example: Customer received 150 bags but was invoiced for 100 bags.",
+            class: "block w-full p-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white",
+            required: true %>
+    </div>
+  </div>
+
+  <!-- Adjustment Items -->
+  <div class="bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+
+    <div class="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
+      <div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+          Adjustment Items
+        </h2>
+
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Enter only the quantity or value that must be corrected.
+        </p>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th class="px-4 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+              Product
+            </th>
+
+            <th class="px-4 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-gray-300">
+              Sold Qty
+            </th>
+
+            <th class="px-4 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-gray-300">
+              Adjustment Qty
+            </th>
+
+            <th class="px-4 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-gray-300">
+              Unit Price
+            </th>
+
+            <th class="px-4 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-gray-300">
+              Discount
+            </th>
+
+            <th class="px-4 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-gray-300">
+              Tax
+            </th>
+
+            <th class="px-4 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase dark:text-gray-300">
+              Total
+            </th>
+
+            <th class="px-4 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+              Stock
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          <%= form.fields_for :customer_adjustment_items do |item_form| %>
+            <% sale_item = item_form.object.sale_item %>
+
+            <tr data-controller="adjustment-item"
+                class="bg-white dark:bg-gray-800">
+
+              <%= item_form.hidden_field :sale_item_id %>
+              <%= item_form.hidden_field :nile_product_id %>
+
+              <td class="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                <div class="flex flex-col">
+                  <span class="font-medium">
+                    <%= sale_item&.nile_product&.name %>
+                  </span>
+
+                  <span class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Original total:
+                    UGX <%= number_with_delimiter(sale_item&.total.to_d) %>
+                  </span>
+                </div>
+              </td>
+
+              <td class="px-4 py-4 text-sm text-right text-gray-700 dark:text-gray-300">
+                <%= number_with_delimiter(sale_item&.quantity_sold.to_d) %>
+              </td>
+
+              <td class="px-4 py-4">
+                <%= item_form.number_field :quantity,
+                      min: 0,
+                      max: sale_item&.quantity_sold,
+                      step: 0.001,
+                      data: {
+                        adjustment_item_target: "quantity",
+                        action: "input->adjustment-item#calculate"
+                      },
+                      class: "block w-28 p-2 text-sm text-right text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+              </td>
+
+              <td class="px-4 py-4">
+                <%= item_form.number_field :unit_price,
+                      min: 0,
+                      step: 0.01,
+                      data: {
+                        adjustment_item_target: "unitPrice",
+                        action: "input->adjustment-item#calculate"
+                      },
+                      class: "block w-32 p-2 text-sm text-right text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+              </td>
+
+              <td class="px-4 py-4">
+                <%= item_form.number_field :discount_amount,
+                      min: 0,
+                      step: 0.01,
+                      value: item_form.object.discount_amount || 0,
+                      data: {
+                        adjustment_item_target: "discount",
+                        action: "input->adjustment-item#calculate"
+                      },
+                      class: "block w-28 p-2 text-sm text-right text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+              </td>
+
+              <td class="px-4 py-4">
+                <%= item_form.number_field :tax_amount,
+                      min: 0,
+                      step: 0.01,
+                      value: item_form.object.tax_amount || 0,
+                      data: {
+                        adjustment_item_target: "tax",
+                        action: "input->adjustment-item#calculate"
+                      },
+                      class: "block w-28 p-2 text-sm text-right text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" %>
+              </td>
+
+              <td class="px-4 py-4 text-sm font-semibold text-right text-gray-900 dark:text-white">
+                <span data-adjustment-item-target="total">
+                  UGX 0
+                </span>
+              </td>
+
+              <td class="px-4 py-4">
+                <label class="inline-flex items-center gap-2">
+                  <%= item_form.check_box :affects_stock,
+                        class: "w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600" %>
+
+                  <span class="text-xs text-gray-600 dark:text-gray-300">
+                    Affect stock
+                  </span>
+                </label>
+              </td>
+
+            </tr>
+          <% end %>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+  <!-- Stock Warning -->
+  <div class="p-4 text-sm text-yellow-800 border border-yellow-200 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-800 dark:text-yellow-300">
+    <p class="font-semibold">Stock handling</p>
+
+    <p class="mt-1">
+      Select “Affect stock” only when goods physically returned or when the
+      original sale incorrectly deducted excess stock. Financial price
+      corrections should not affect stock.
+    </p>
+  </div>
+
+  <!-- Expected Total -->
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div class="md:col-start-3">
+      <div class="p-5 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-300">
+            Adjustment Total
+          </span>
+
+          <span class="text-xl font-bold text-gray-900 dark:text-white">
+            Calculated on save
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="flex flex-wrap items-center justify-end gap-3">
+
+    <%= link_to "Cancel",
+          sales_path,
+          class: "px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" %>
+
+    <%= form.submit(
+          @customer_adjustment.credit_note? ? "Save Credit Note" : "Save Debit Note",
+          class: "px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700 focus:ring-4 focus:ring-blue-300"
+        ) %>
+
+  </div>
+
+<% end %>

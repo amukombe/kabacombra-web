@@ -69,12 +69,20 @@ Rails.application.routes.draw do
   resources :sale_payments, only: [:index]
   resources :sales do
     resources :sale_payments, only: [:new, :create, :show, :edit, :update]
+    resources :customer_adjustments, only: [:index, :new, :create, :show]
+
     collection do
       get "approvals"
       get :sales_summary
     end
     member do
       get "sale_pdf"
+    end
+  end
+  resources :customer_adjustments, only: [:index, :show] do
+    member do
+      patch :approve
+      patch :cancel
     end
   end
   get "approvals/loading_order"

@@ -1,0 +1,374 @@
+<%= render "/shared/sales_nav" %>
+
+<div class="min-h-screen px-4 py-6 bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-screen-xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+          <%= @customer_adjustment.credit_note? ? "Credit Note" : "Debit Note" %>
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <%= @customer_adjustment.adjustment_number %>
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <% if @customer_adjustment.draft? %>
+          <%= button_to "Approve",
+                approve_customer_adjustment_path(@adjustment),
+                method: :patch,
+                form: {
+                  data: {
+                    turbo_confirm: "Are you sure you want to approve this adjustment?"
+                  }
+                },
+                class: "px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700" %>
+
+          <%= button_to "Cancel",
+                cancel_customer_adjustment_path(@adjustment),
+                method: :patch,
+                form: {
+                  data: {
+                    turbo_confirm: "Are you sure you want to cancel this adjustment?"
+                  }
+                },
+                class: "px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700" %>
+        <% end %>
+
+        <%= link_to "Back",
+              customer_adjustments_path,
+              class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" %>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="mb-6">
+      <% status_classes =
+        case @customer_adjustment.status
+        when "approved"
+          "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+        when "cancelled"
+          "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+        else
+          "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
+        end
+      %>
+
+      <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full <%= status_classes %>">
+        <%= @customer_adjustment.status.humanize %>
+      </span>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <p class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+          Original Invoice
+        </p>
+
+        <p class="mt-2 text-base font-semibold text-gray-900 dark:text-white">
+          <%= @customer_adjustment.sale.invoice_no %>
+        </p>
+      </div>
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <p class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+          Customer
+        </p>
+
+        <p class="mt-2 text-base font-semibold text-gray-900 dark:text-white">
+          <%= @customer_adjustment.customer&.name %>
+        </p>
+      </div>
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <p class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+          Adjustment Total
+        </p>
+
+        <p class="mt-2 text-xl font-bold <%= @customer_adjustment.credit_note? ? 'text-green-600' : 'text-red-600' %>">
+          UGX <%= number_with_delimiter(@customer_adjustment.total_amount) %>
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Adjustment Details -->
+    <div class="p-5 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+      <h2 class="mb-4 text-base font-semibold text-gray-900 dark:text-white">
+        Adjustment Details
+      </h2>
+
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Document Number
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @customer_adjustment.adjustment_number %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Document Type
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @customer_adjustment.adjustment_type.humanize %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Adjustment Date
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @customer_adjustment.adjustment_date&.strftime("%d %b, %Y") %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Created By
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @customer_adjustment.created_by&.employee&.name || @customer_adjustment.created_by&.email %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Approved By
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @customer_adjustment.approved_by&.employee&.name ||
+                @customer_adjustment.approved_by&.email ||
+                "Not approved" %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Approved At
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @customer_adjustment.approved_at&.strftime("%d %b, %Y %I:%M %p") || "Not approved" %>
+          </p>
+        </div>
+
+      </div>
+
+      <div class="pt-4 mt-5 border-t border-gray-200 dark:border-gray-700">
+        <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+          Reason
+        </p>
+
+        <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+          <%= @customer_adjustment.reason %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <div class="mb-6 overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+
+      <div class="p-5 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+          Adjustment Items
+        </h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+
+          <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <th class="px-4 py-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-300">
+                Product
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-right text-gray-500 uppercase dark:text-gray-300">
+                Quantity
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-right text-gray-500 uppercase dark:text-gray-300">
+                Unit Price
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-right text-gray-500 uppercase dark:text-gray-300">
+                Discount
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-right text-gray-500 uppercase dark:text-gray-300">
+                Tax
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-300">
+                Stock
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-right text-gray-500 uppercase dark:text-gray-300">
+                Total
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <% @customer_adjustment.customer_adjustment_items.each do |item| %>
+              <tr class="bg-white dark:bg-gray-800">
+
+                <td class="px-4 py-4 text-sm text-gray-900 dark:text-white">
+                  <div class="flex flex-col">
+                    <span class="font-medium">
+                      <%= item.nile_product&.name || item.sale_item&.nile_product&.name %>
+                    </span>
+
+                    <% if item.reason.present? %>
+                      <span class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        <%= item.reason %>
+                      </span>
+                    <% end %>
+                  </div>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right text-gray-700 dark:text-gray-300">
+                  <%= number_with_delimiter(item.quantity) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right text-gray-700 dark:text-gray-300">
+                  UGX <%= number_with_delimiter(item.unit_price) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right text-gray-700 dark:text-gray-300">
+                  UGX <%= number_with_delimiter(item.discount_amount) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right text-gray-700 dark:text-gray-300">
+                  UGX <%= number_with_delimiter(item.tax_amount) %>
+                </td>
+
+                <td class="px-4 py-4 text-center">
+                  <% if item.affects_stock? %>
+                    <span class="inline-flex px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                      Yes
+                    </span>
+                  <% else %>
+                    <span class="inline-flex px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">
+                      No
+                    </span>
+                  <% end %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-semibold text-right text-gray-900 dark:text-white">
+                  UGX <%= number_with_delimiter(item.total_amount) %>
+                </td>
+
+              </tr>
+            <% end %>
+          </tbody>
+
+          <tfoot class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <td colspan="6"
+                  class="px-4 py-3 text-sm font-medium text-right text-gray-700 dark:text-gray-300">
+                Subtotal
+              </td>
+
+              <td class="px-4 py-3 text-sm font-semibold text-right text-gray-900 dark:text-white">
+                UGX <%= number_with_delimiter(@customer_adjustment.subtotal) %>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="6"
+                  class="px-4 py-3 text-sm font-medium text-right text-gray-700 dark:text-gray-300">
+                Discount
+              </td>
+
+              <td class="px-4 py-3 text-sm font-semibold text-right text-gray-900 dark:text-white">
+                UGX <%= number_with_delimiter(@customer_adjustment.discount_total) %>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="6"
+                  class="px-4 py-3 text-sm font-medium text-right text-gray-700 dark:text-gray-300">
+                Tax
+              </td>
+
+              <td class="px-4 py-3 text-sm font-semibold text-right text-gray-900 dark:text-white">
+                UGX <%= number_with_delimiter(@customer_adjustment.tax_total) %>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="6"
+                  class="px-4 py-4 text-base font-bold text-right text-gray-900 dark:text-white">
+                Adjustment Total
+              </td>
+
+              <td class="px-4 py-4 text-lg font-bold text-right <%= @customer_adjustment.credit_note? ? 'text-green-600' : 'text-red-600' %>">
+                UGX <%= number_with_delimiter(@customer_adjustment.total_amount) %>
+              </td>
+            </tr>
+          </tfoot>
+
+        </table>
+      </div>
+    </div>
+
+    <!-- Financial Effect -->
+    <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+      <h2 class="mb-4 text-base font-semibold text-gray-900 dark:text-white">
+        Financial Effect
+      </h2>
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+        <div class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+          <p class="text-xs font-medium text-blue-600 uppercase dark:text-blue-300">
+            Original Sale Amount
+          </p>
+
+          <p class="mt-2 text-lg font-bold text-blue-800 dark:text-blue-200">
+            UGX <%= number_with_delimiter(@customer_adjustment.sale.total_price) %>
+          </p>
+        </div>
+
+        <div class="p-4 rounded-lg <%= @customer_adjustment.credit_note? ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20' %>">
+          <p class="text-xs font-medium uppercase <%= @customer_adjustment.credit_note? ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300' %>">
+            <%= @customer_adjustment.credit_note? ? "Credit Applied" : "Debit Added" %>
+          </p>
+
+          <p class="mt-2 text-lg font-bold <%= @customer_adjustment.credit_note? ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200' %>">
+            <%= @customer_adjustment.credit_note? ? "-" : "+" %>
+            UGX <%= number_with_delimiter(@customer_adjustment.total_amount) %>
+          </p>
+        </div>
+
+        <div class="p-4 bg-gray-100 rounded-lg dark:bg-gray-700">
+          <p class="text-xs font-medium text-gray-600 uppercase dark:text-gray-300">
+            Current Sale Balance
+          </p>
+
+          <p class="mt-2 text-lg font-bold text-gray-900 dark:text-white">
+            UGX <%= number_with_delimiter(@customer_adjustment.sale.balance) %>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

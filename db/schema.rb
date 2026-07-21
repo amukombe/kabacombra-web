@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_09_120457) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_20_134445) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -182,6 +182,46 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_09_120457) do
     t.datetime "updated_at", null: false
     t.index ["status_id"], name: "index_comments_on_status_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "customer_adjustment_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "customer_adjustment_id", null: false
+    t.bigint "sale_item_id", null: false
+    t.bigint "nile_product_id", null: false
+    t.decimal "quantity", precision: 10
+    t.decimal "unit_price", precision: 10
+    t.decimal "discount_amount", precision: 10
+    t.decimal "tax_amount", precision: 10
+    t.decimal "total_amount", precision: 10
+    t.boolean "affects_stock"
+    t.text "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_adjustment_id"], name: "index_customer_adjustment_items_on_customer_adjustment_id"
+    t.index ["nile_product_id"], name: "index_customer_adjustment_items_on_nile_product_id"
+    t.index ["sale_item_id"], name: "index_customer_adjustment_items_on_sale_item_id"
+  end
+
+  create_table "customer_adjustments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "sale_id", null: false
+    t.bigint "customer_id", null: false
+    t.string "adjustment_number", null: false
+    t.string "adjustment_type", null: false
+    t.date "adjustment_date", null: false
+    t.text "reason"
+    t.string "status", default: "draft", null: false
+    t.decimal "subtotal", precision: 10
+    t.decimal "discount_total", precision: 10
+    t.decimal "tax_total", precision: 10
+    t.decimal "total_amount", precision: 10
+    t.decimal "applied_amount", precision: 10
+    t.bigint "created_by_id"
+    t.bigint "approved_by_id"
+    t.datetime "approved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_customer_adjustments_on_customer_id"
+    t.index ["sale_id"], name: "index_customer_adjustments_on_sale_id"
   end
 
   create_table "customers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -962,6 +1002,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_09_120457) do
   add_foreign_key "cheques", "users"
   add_foreign_key "comments", "statuses"
   add_foreign_key "comments", "users"
+  add_foreign_key "customer_adjustment_items", "customer_adjustments"
+  add_foreign_key "customer_adjustment_items", "nile_products"
+  add_foreign_key "customer_adjustment_items", "sale_items"
+  add_foreign_key "customer_adjustments", "customers"
+  add_foreign_key "customer_adjustments", "sales"
   add_foreign_key "customers", "territories"
   add_foreign_key "department_modules", "departments"
   add_foreign_key "dispatch_items", "beer_dispatches"
