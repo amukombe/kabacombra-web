@@ -15,6 +15,10 @@
       </div>
 
       <div class="flex flex-wrap gap-2">
+        <%= link_to "Give Credit Memo",
+            new_customer_customer_credit_memo_path(@customer),
+            data: { turbo: false },
+            class: "px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700" %>
         <%= link_to "All Statements",
               statements_summary_customers_path,
               class: "px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700" %>
@@ -108,11 +112,11 @@
 
       <div class="p-4 text-orange-800 bg-orange-100 rounded-lg">
         <p class="text-xs font-medium uppercase">
-          Debit Notes
+          Credit Memos
         </p>
 
         <p class="mt-1 text-lg font-bold">
-          UGX <%= number_with_delimiter(@total_debit_notes) %>
+          UGX <%= number_with_delimiter(@total_credit_memo_amount || 0) %>
         </p>
       </div>
 

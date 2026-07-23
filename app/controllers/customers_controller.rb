@@ -13,8 +13,13 @@ class CustomersController < ApplicationController
 
     @sales = filtered_customer_sales
     @payments = filtered_customer_payments
-    @adjustments =
-      filtered_customer_adjustments
+    @adjustments = filtered_customer_adjustments
+
+    @credit_memos = @customer
+                      .customer_credit_memos
+                      .includes(:credit_memo_allocations)
+                      .where(memo_date: statement_date_range)
+                      .order(:memo_date, :id)
 
     load_goods_summary
     load_financial_summary
@@ -317,18 +322,49 @@ class CustomersController < ApplicationController
       @net_account_balance =
         @outstanding_balance.to_d -
         @available_credit.to_d
+
+      @approved_credit_memos =
+        @customer
+          .customer_credit_memos
+          .approved
+          .includes(:credit_memo_allocations)
+
+      @total_credit_memo_amount =
+        @approved_credit_memos.sum(:amount)
+
+      @allocated_credit_memo_amount =
+        @approved_credit_memos.sum do |memo|
+          memo.allocated_amount.to_d
+        end
+
+      @available_credit_memo_amount =
+        @approved_credit_memos.sum do |memo|
+          memo.available_amount.to_d
+        end
+
+      @available_payment_credit =
+        @customer
+          .sale_payments
+          .includes(:payment_allocations)
+          .sum do |payment|
+            payment.available_amount.to_d
+          end
+
+      @available_credit =
+        @available_payment_credit.to_d +
+        @available_credit_memo_amount.to_d
     end
 
     def build_statement_transactions
       transactions = []
 
+      # Sales / invoices
       @sales.each do |sale|
         transactions << {
           date: sale.sale_date,
           sort_order: 1,
           record_id: sale.id,
-          document: sale.invoice_no.presence ||
-                    sale.receipt_no,
+          document: sale.invoice_no.presence || sale.receipt_no,
           description: "Sale invoice",
           debit: sale.total_price.to_d,
           credit: 0.to_d,
@@ -336,6 +372,7 @@ class CustomersController < ApplicationController
         }
       end
 
+      # Approved debit and credit notes
       @adjustments.each do |adjustment|
         next unless adjustment.approved?
 
@@ -348,12 +385,9 @@ class CustomersController < ApplicationController
             description: "Debit note",
             debit: adjustment.total_amount.to_d,
             credit: 0.to_d,
-            path:
-              customer_adjustment_path(adjustment)
+            path: customer_adjustment_path(adjustment)
           }
-        end
-
-        if adjustment.credit_note?
+        elsif adjustment.credit_note?
           transactions << {
             date: adjustment.adjustment_date,
             sort_order: 2,
@@ -362,28 +396,40 @@ class CustomersController < ApplicationController
             description: "Credit note",
             debit: 0.to_d,
             credit: adjustment.total_amount.to_d,
-            path:
-              customer_adjustment_path(adjustment)
+            path: customer_adjustment_path(adjustment)
           }
         end
       end
 
+      # Approved customer credit memos
+      @credit_memos.each do |memo|
+        next unless memo.approved?
+
+        transactions << {
+          date: memo.memo_date,
+          sort_order: 3,
+          record_id: memo.id,
+          document: memo.memo_number,
+          description: "Credit memo - #{memo.memo_type.humanize}",
+          debit: 0.to_d,
+          credit: memo.amount.to_d,
+          path: customer_credit_memo_path(memo)
+        }
+      end
+
+      # Customer payments
       @payments.each do |payment|
         transactions << {
           date: payment.payment_date,
-          sort_order: 3,
+          sort_order: 4,
           record_id: payment.id,
           document: payment.receipt_number,
           description: "Payment received",
           debit: 0.to_d,
           credit: payment.amount.to_d,
-          path:
-            payment.sale.present? ?
-              sale_sale_payment_path(
-                payment.sale,
-                payment
-              ) :
-              nil
+          path: payment.sale.present? ?
+                  sale_sale_payment_path(payment.sale, payment) :
+                  nil
         }
       end
 
@@ -397,17 +443,15 @@ class CustomersController < ApplicationController
 
       running_balance = 0.to_d
 
-      @statement_transactions =
-        transactions.map do |transaction|
+      @statement_transactions = transactions.map do |transaction|
+        running_balance +=
+          transaction[:debit].to_d -
+          transaction[:credit].to_d
 
-          running_balance +=
-            transaction[:debit].to_d -
-            transaction[:credit].to_d
-
-          transaction.merge(
-            running_balance: running_balance
-          )
-        end
+        transaction.merge(
+          running_balance: running_balance
+        )
+      end
     end
 
     def load_customer_statement_summary_rows
@@ -416,27 +460,30 @@ class CustomersController < ApplicationController
 
           customer_sales =
             customer.sales.select do |sale|
-              statement_date_range.cover?(
-                sale.sale_date
-              )
+              sale.sale_date.present? &&
+                statement_date_range.cover?(sale.sale_date)
             end
 
           customer_payments =
             customer.sale_payments.select do |payment|
-              statement_date_range.cover?(
-                payment.payment_date
-              )
+              payment.payment_date.present? &&
+                statement_date_range.cover?(payment.payment_date)
             end
 
           customer_adjustments =
-            customer.sales.flat_map(
-              &:customer_adjustments
-            ).uniq.select do |adjustment|
-
+            customer.customer_adjustments.select do |adjustment|
               adjustment.approved? &&
+                adjustment.adjustment_date.present? &&
                 statement_date_range.cover?(
                   adjustment.adjustment_date
                 )
+            end
+
+          credit_memos =
+            customer.customer_credit_memos.select do |memo|
+              memo.approved? &&
+                memo.memo_date.present? &&
+                statement_date_range.cover?(memo.memo_date)
             end
 
           invoiced =
@@ -463,15 +510,34 @@ class CustomersController < ApplicationController
               payment.amount.to_d
             end
 
-          outstanding =
-            customer.sales.sum do |sale|
-              [sale.balance.to_d, 0].max
+          credit_memo_total =
+            credit_memos.sum do |memo|
+              memo.amount.to_d
             end
 
-          available_credit =
+          credit_memo_allocated =
+            credit_memos.sum do |memo|
+              memo.allocated_amount.to_d
+            end
+
+          credit_memo_available =
+            credit_memos.sum do |memo|
+              memo.available_amount.to_d
+            end
+
+          outstanding =
+            customer.sales.sum do |sale|
+              [sale.balance.to_d, 0.to_d].max
+            end
+
+          available_payment_credit =
             customer.sale_payments.sum do |payment|
               payment.available_amount.to_d
             end
+
+          total_available_credit =
+            available_payment_credit.to_d +
+            credit_memo_available.to_d
 
           ordered =
             customer_sales.sum do |sale|
@@ -492,14 +558,24 @@ class CustomersController < ApplicationController
             invoiced: invoiced,
             debit_notes: debit_notes,
             credit_notes: credit_notes,
+
+            credit_memos: credit_memo_total,
+            credit_memos_allocated: credit_memo_allocated,
+            credit_memos_available: credit_memo_available,
+
             payments: payments,
             outstanding: outstanding,
-            available_credit: available_credit,
+
+            available_payment_credit: available_payment_credit,
+            available_credit: total_available_credit,
+
             net_balance:
               outstanding.to_d -
-              available_credit.to_d,
+              total_available_credit.to_d,
+
             ordered: ordered,
             delivered: delivered,
+
             quantity_balance:
               ordered.to_d -
               delivered.to_d
@@ -555,6 +631,21 @@ class CustomersController < ApplicationController
       @summary_quantity_balance =
         @summary_total_ordered.to_d -
         @summary_total_delivered.to_d
+
+      @summary_total_credit_memos =
+        @customer_statement_rows.sum do |row|
+          row[:credit_memos]
+        end
+
+      @summary_credit_memos_allocated =
+        @customer_statement_rows.sum do |row|
+          row[:credit_memos_allocated]
+        end
+
+      @summary_credit_memos_available =
+        @customer_statement_rows.sum do |row|
+          row[:credit_memos_available]
+        end
     end
     # Use callbacks to share common setup or constraints between actions.
     def set_customer

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "customer_credit_memos/index"
+  get "customer_credit_memos/show"
   resources :sale_payments do
     member do
       get :receipt_pdf
@@ -68,6 +70,14 @@ Rails.application.routes.draw do
     end
     member do
       get :statement
+    end
+    resources :customer_credit_memos, only: [:new, :create]
+  end
+  resources :customer_credit_memos,
+            only: [:index, :show] do
+    member do
+      patch :approve
+      patch :cancel
     end
   end
   resources :sale_payments, only: [:index]

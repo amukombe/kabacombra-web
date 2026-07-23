@@ -1,0 +1,476 @@
+<%= render "/shared/sales_nav" %>
+
+<div class="min-h-screen px-4 py-6 bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-screen-xl mx-auto">
+
+    <% if notice.present? %>
+      <div class="p-4 mb-5 text-sm text-green-800 border border-green-200 rounded-lg bg-green-50 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300">
+        <%= notice %>
+      </div>
+    <% end %>
+
+    <% if alert.present? %>
+      <div class="p-4 mb-5 text-sm text-red-800 border border-red-200 rounded-lg bg-red-50 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300">
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <!-- Header -->
+    <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+          Customer Credit Memo
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <%= @credit_memo.memo_number %>
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <% if @credit_memo.draft? %>
+          <%= button_to "Approve Credit Memo",
+                approve_customer_credit_memo_path(@credit_memo),
+                method: :patch,
+                form: {
+                  class: "inline-block",
+                  data: {
+                    turbo_confirm: "Approve #{@credit_memo.memo_number}? Once approved, it may be applied to the customer's invoices."
+                  }
+                },
+                class: "px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700" %>
+
+          <%= button_to "Cancel Credit Memo",
+                cancel_customer_credit_memo_path(@credit_memo),
+                method: :patch,
+                form: {
+                  class: "inline-block",
+                  data: {
+                    turbo_confirm: "Cancel #{@credit_memo.memo_number}?"
+                  }
+                },
+                class: "px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700" %>
+        <% end %>
+
+        <%= link_to "Customer Statement",
+              statement_customer_path(@credit_memo.customer),
+              data: { turbo: false },
+              class: "px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700" %>
+
+        <%= link_to "Back to Credit Memos",
+              customer_credit_memos_path,
+              class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" %>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="mb-6">
+      <% status_classes =
+        case @credit_memo.status
+        when "approved"
+          "text-green-800 bg-green-100 dark:bg-green-900/30 dark:text-green-300"
+        when "cancelled"
+          "text-red-800 bg-red-100 dark:bg-red-900/30 dark:text-red-300"
+        else
+          "text-yellow-800 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300"
+        end
+      %>
+
+      <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full <%= status_classes %>">
+        <%= @credit_memo.status.humanize %>
+      </span>
+    </div>
+
+    <!-- Summary -->
+    <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-4">
+
+      <div class="p-5 text-blue-800 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300">
+        <p class="text-xs font-medium tracking-wide uppercase">
+          Credit Memo Amount
+        </p>
+
+        <p class="mt-2 text-xl font-bold">
+          UGX <%= number_with_delimiter(@credit_memo.amount.to_d) %>
+        </p>
+      </div>
+
+      <div class="p-5 text-green-800 border border-green-200 rounded-lg bg-green-50 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300">
+        <p class="text-xs font-medium tracking-wide uppercase">
+          Amount Allocated
+        </p>
+
+        <p class="mt-2 text-xl font-bold">
+          UGX <%= number_with_delimiter(@credit_memo.allocated_amount.to_d) %>
+        </p>
+      </div>
+
+      <div class="p-5 text-purple-800 border border-purple-200 rounded-lg bg-purple-50 dark:bg-purple-900/20 dark:border-purple-800 dark:text-purple-300">
+        <p class="text-xs font-medium tracking-wide uppercase">
+          Available Credit
+        </p>
+
+        <p class="mt-2 text-xl font-bold">
+          UGX <%= number_with_delimiter(@credit_memo.available_amount.to_d) %>
+        </p>
+      </div>
+
+      <div class="p-5 text-orange-800 border border-orange-200 rounded-lg bg-orange-50 dark:bg-orange-900/20 dark:border-orange-800 dark:text-orange-300">
+        <p class="text-xs font-medium tracking-wide uppercase">
+          Allocation Status
+        </p>
+
+        <p class="mt-2 text-lg font-bold">
+          <% if @credit_memo.cancelled? %>
+            Cancelled
+          <% elsif @credit_memo.draft? %>
+            Awaiting Approval
+          <% elsif @credit_memo.fully_allocated? %>
+            Fully Applied
+          <% elsif @credit_memo.allocated_amount.to_d.positive? %>
+            Partially Applied
+          <% else %>
+            Not Yet Applied
+          <% end %>
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Memo Details -->
+    <div class="p-5 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+      <h2 class="pb-3 mb-5 text-base font-semibold text-gray-900 border-b border-gray-200 dark:text-white dark:border-gray-700">
+        Credit Memo Details
+      </h2>
+
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Memo Number
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @credit_memo.memo_number %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Memo Date
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @credit_memo.memo_date&.strftime("%d %b, %Y") %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Credit Type
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @credit_memo.memo_type.humanize %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Customer
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @credit_memo.customer&.name || "-" %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Customer Mobile
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @credit_memo.customer&.mobile.presence || "-" %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Customer BRN / NIN / TIN
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @credit_memo.customer&.brn.presence || "-" %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Created By
+          </p>
+
+          <% created_employee = @credit_memo.created_by&.employee %>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <% if created_employee.present? %>
+              <%= [
+                    created_employee.firstname,
+                    created_employee.lastname
+                  ].compact_blank.join(" ") %>
+            <% else %>
+              <%= @credit_memo.created_by&.email || "Unknown" %>
+            <% end %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Approved By
+          </p>
+
+          <% approved_employee = @credit_memo.approved_by&.employee %>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <% if approved_employee.present? %>
+              <%= [
+                    approved_employee.firstname,
+                    approved_employee.lastname
+                  ].compact_blank.join(" ") %>
+            <% elsif @credit_memo.approved_by.present? %>
+              <%= @credit_memo.approved_by.email %>
+            <% else %>
+              Not approved
+            <% end %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+            Approved At
+          </p>
+
+          <p class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+            <%= @credit_memo.approved_at&.strftime("%d %b, %Y %I:%M %p") || "Not approved" %>
+          </p>
+        </div>
+
+      </div>
+
+      <div class="pt-5 mt-5 border-t border-gray-200 dark:border-gray-700">
+        <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+          Reason
+        </p>
+
+        <p class="mt-2 text-sm leading-6 text-gray-700 dark:text-gray-300">
+          <%= @credit_memo.reason %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Financial Effect -->
+    <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+          Customer Outstanding
+        </p>
+
+        <p class="mt-2 text-xl font-bold text-red-600 dark:text-red-400">
+          UGX <%= number_with_delimiter(@credit_memo.customer.outstanding_balance.to_d) %>
+        </p>
+      </div>
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+          Total Available Credit
+        </p>
+
+        <p class="mt-2 text-xl font-bold text-purple-600 dark:text-purple-400">
+          UGX <%= number_with_delimiter(@credit_memo.customer.available_credit.to_d) %>
+        </p>
+      </div>
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <p class="text-xs font-medium text-gray-500 uppercase dark:text-gray-400">
+          Net Customer Position
+        </p>
+
+        <% net_position = @credit_memo.customer.net_account_balance.to_d %>
+
+        <% if net_position.positive? %>
+          <p class="mt-2 text-xl font-bold text-red-600 dark:text-red-400">
+            Owes UGX <%= number_with_delimiter(net_position) %>
+          </p>
+        <% elsif net_position.negative? %>
+          <p class="mt-2 text-xl font-bold text-green-600 dark:text-green-400">
+            Credit UGX <%= number_with_delimiter(net_position.abs) %>
+          </p>
+        <% else %>
+          <p class="mt-2 text-xl font-bold text-green-600 dark:text-green-400">
+            Account Settled
+          </p>
+        <% end %>
+      </div>
+
+    </div>
+
+    <!-- Allocation Table -->
+    <div class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+
+      <div class="flex flex-col gap-2 p-5 border-b border-gray-200 md:flex-row md:items-center md:justify-between dark:border-gray-700">
+        <div>
+          <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+            Invoice Allocations
+          </h2>
+
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Invoices against which this credit memo has been applied.
+          </p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+
+          <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <th class="px-4 py-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-300">
+                Invoice
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-300">
+                Sale Date
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-right text-gray-500 uppercase dark:text-gray-300">
+                Invoice Amount
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-right text-gray-500 uppercase dark:text-gray-300">
+                Credit Applied
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-right text-gray-500 uppercase dark:text-gray-300">
+                Current Balance
+              </th>
+
+              <th class="px-4 py-3 text-xs font-medium text-right text-gray-500 uppercase dark:text-gray-300">
+                Action
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <% if @credit_memo.credit_memo_allocations.any? %>
+              <% @credit_memo.credit_memo_allocations.each do |allocation| %>
+                <% sale = allocation.sale %>
+
+                <tr>
+                  <td class="px-4 py-4 text-sm font-semibold text-gray-900 dark:text-white">
+                    <%= sale.invoice_no.presence || sale.receipt_no %>
+                  </td>
+
+                  <td class="px-4 py-4 text-sm text-gray-700 dark:text-gray-300">
+                    <%= sale.sale_date&.strftime("%d %b, %Y") %>
+                  </td>
+
+                  <td class="px-4 py-4 text-sm text-right text-gray-700 dark:text-gray-300">
+                    UGX <%= number_with_delimiter(sale.adjusted_invoice_amount.to_d) %>
+                  </td>
+
+                  <td class="px-4 py-4 text-sm font-semibold text-right text-green-600 dark:text-green-400">
+                    UGX <%= number_with_delimiter(allocation.amount.to_d) %>
+                  </td>
+
+                  <td class="px-4 py-4 text-sm font-semibold text-right
+                    <%= sale.balance.to_d.positive? ?
+                          'text-red-600 dark:text-red-400' :
+                          'text-green-600 dark:text-green-400' %>">
+
+                    UGX <%= number_with_delimiter([sale.balance.to_d, 0].max) %>
+                  </td>
+
+                  <td class="px-4 py-4 text-sm text-right">
+                    <%= link_to "View Sale",
+                          sale_path(sale),
+                          data: { turbo: false },
+                          class: "text-xs font-medium text-blue-600 hover:underline dark:text-blue-400" %>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="6"
+                    class="px-4 py-10 text-sm text-center text-gray-500 dark:text-gray-400">
+                  <% if @credit_memo.draft? %>
+                    This credit memo has not been approved.
+                  <% elsif @credit_memo.cancelled? %>
+                    This credit memo was cancelled.
+                  <% else %>
+                    This credit memo has not yet been applied to an invoice.
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+
+          <tfoot class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <td colspan="3"
+                  class="px-4 py-4 text-sm font-bold text-right text-gray-900 dark:text-white">
+                Total Credit Memo
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right text-blue-600 dark:text-blue-400">
+                UGX <%= number_with_delimiter(@credit_memo.amount.to_d) %>
+              </td>
+
+              <td colspan="2"></td>
+            </tr>
+
+            <tr>
+              <td colspan="3"
+                  class="px-4 py-4 text-sm font-bold text-right text-gray-900 dark:text-white">
+                Total Applied
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right text-green-600 dark:text-green-400">
+                UGX <%= number_with_delimiter(@credit_memo.allocated_amount.to_d) %>
+              </td>
+
+              <td colspan="2"></td>
+            </tr>
+
+            <tr>
+              <td colspan="3"
+                  class="px-4 py-4 text-sm font-bold text-right text-gray-900 dark:text-white">
+                Remaining Credit
+              </td>
+
+              <td class="px-4 py-4 text-base font-bold text-right text-purple-600 dark:text-purple-400">
+                UGX <%= number_with_delimiter(@credit_memo.available_amount.to_d) %>
+              </td>
+
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+
+        </table>
+      </div>
+    </div>
+
+    <% if @credit_memo.approved? && @credit_memo.available_amount.to_d.positive? %>
+      <div class="p-5 mt-6 text-sm text-indigo-800 border border-indigo-200 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 dark:border-indigo-800 dark:text-indigo-300">
+        <p class="font-semibold">
+          Remaining customer credit
+        </p>
+
+        <p class="mt-1">
+          UGX <%= number_with_delimiter(@credit_memo.available_amount.to_d) %>
+          remains available and will be applied to another outstanding or future invoice.
+        </p>
+      </div>
+    <% end %>
+
+  </div>
+</div>

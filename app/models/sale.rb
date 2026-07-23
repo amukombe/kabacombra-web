@@ -21,6 +21,8 @@ class Sale < ApplicationRecord
   accepts_nested_attributes_for :sale_items, allow_destroy: true, reject_if: :all_blank
   has_many :sale_payments, dependent: :destroy
   has_many :customer_adjustments, dependent: :restrict_with_error
+  has_many :credit_memo_allocations, dependent: :restrict_with_error
+  has_many :customer_credit_memos, through: :credit_memo_allocations
 
   validates :sale_date, :mode_of_payment, presence: true
 
@@ -117,7 +119,8 @@ class Sale < ApplicationRecord
 
   def balance
     adjusted_invoice_amount.to_d -
-      paid_amount.to_d
+      paid_amount.to_d -
+      credit_memo_amount.to_d
   end
 
   #def total_price
@@ -138,6 +141,10 @@ class Sale < ApplicationRecord
 
   def fully_paid?
     balance <= 0
+  end
+
+  def credit_memo_amount
+    credit_memo_allocations.sum(:amount)
   end
 
   private

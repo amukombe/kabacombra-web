@@ -5,7 +5,7 @@ class Customer < ApplicationRecord
     has_many :credit_notes, -> { where(adjustment_type: "credit_note") }, class_name: "CustomerAdjustment"
     has_many :debit_notes, -> { where(adjustment_type: "debit_note") }, class_name: "CustomerAdjustment"
     has_many :sale_payments, dependent: :restrict_with_error
-
+    has_many :customer_credit_memos, dependent: :restrict_with_error
     has_many :customer_adjustments, dependent: :restrict_with_error
     def self.search(params)
         params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
@@ -46,12 +46,6 @@ class Customer < ApplicationRecord
       .sum(:amount)
   end
 
-  def available_credit
-    sale_payments.includes(:payment_allocations).sum do |payment|
-      payment.available_amount.to_d
-    end
-  end
-
   def outstanding_balance
     sales.includes(
       :sale_items,
@@ -65,4 +59,26 @@ class Customer < ApplicationRecord
   def net_account_balance
     outstanding_balance.to_d - available_credit.to_d
   end
+
+  def available_payment_credit
+    sale_payments
+        .includes(:payment_allocations)
+        .sum do |payment|
+        payment.available_amount.to_d
+        end
+    end
+
+    def available_credit_memos
+    customer_credit_memos
+        .approved
+        .includes(:credit_memo_allocations)
+        .sum do |memo|
+        memo.available_amount.to_d
+        end
+    end
+
+    def available_credit
+    available_payment_credit.to_d +
+        available_credit_memos.to_d
+    end
 end

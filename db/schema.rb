@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_23_105246) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_23_112509) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -184,6 +184,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_23_105246) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
+  create_table "credit_memo_allocations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "customer_credit_memo_id", null: false
+    t.bigint "sale_id", null: false
+    t.decimal "amount", precision: 15, scale: 2, default: "0.0", null: false
+    t.datetime "allocated_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_credit_memo_id", "sale_id"], name: "index_credit_memo_allocations_on_memo_and_sale"
+    t.index ["customer_credit_memo_id"], name: "index_credit_memo_allocations_on_customer_credit_memo_id"
+    t.index ["sale_id"], name: "index_credit_memo_allocations_on_sale_id"
+  end
+
   create_table "customer_adjustment_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "customer_adjustment_id", null: false
     t.bigint "sale_item_id", null: false
@@ -222,6 +234,26 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_23_105246) do
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_customer_adjustments_on_customer_id"
     t.index ["sale_id"], name: "index_customer_adjustments_on_sale_id"
+  end
+
+  create_table "customer_credit_memos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.string "memo_number", null: false
+    t.date "memo_date", null: false
+    t.decimal "amount", precision: 15, scale: 2, default: "0.0", null: false
+    t.string "memo_type", default: "appreciation", null: false
+    t.text "reason"
+    t.string "status", default: "draft", null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "approved_by_id"
+    t.datetime "approved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved_by_id"], name: "fk_rails_d9cc769b47"
+    t.index ["created_by_id"], name: "fk_rails_dab0378961"
+    t.index ["customer_id", "status"], name: "index_customer_credit_memos_on_customer_id_and_status"
+    t.index ["customer_id"], name: "index_customer_credit_memos_on_customer_id"
+    t.index ["memo_number"], name: "index_customer_credit_memos_on_memo_number", unique: true
   end
 
   create_table "customers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1017,11 +1049,16 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_23_105246) do
   add_foreign_key "cheques", "users"
   add_foreign_key "comments", "statuses"
   add_foreign_key "comments", "users"
+  add_foreign_key "credit_memo_allocations", "customer_credit_memos"
+  add_foreign_key "credit_memo_allocations", "sales"
   add_foreign_key "customer_adjustment_items", "customer_adjustments"
   add_foreign_key "customer_adjustment_items", "nile_products"
   add_foreign_key "customer_adjustment_items", "sale_items"
   add_foreign_key "customer_adjustments", "customers"
   add_foreign_key "customer_adjustments", "sales"
+  add_foreign_key "customer_credit_memos", "customers"
+  add_foreign_key "customer_credit_memos", "users", column: "approved_by_id"
+  add_foreign_key "customer_credit_memos", "users", column: "created_by_id"
   add_foreign_key "customers", "territories"
   add_foreign_key "department_modules", "departments"
   add_foreign_key "dispatch_items", "beer_dispatches"

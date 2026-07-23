@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  customer: one
+  memo_number: MyString
+  memo_date: 2026-07-23
+  amount: 9.99
+  memo_type: MyString
+  reason: MyText
+  status: MyString
+  created_by_id: 
+  approved_by_id: 
+  approved_at: 2026-07-23 14:24:41
+
+two:
+  customer: two
+  memo_number: MyString
+  memo_date: 2026-07-23
+  amount: 9.99
+  memo_type: MyString
+  reason: MyText
+  status: MyString
+  created_by_id: 
+  approved_by_id: 
+  approved_at: 2026-07-23 14:24:41

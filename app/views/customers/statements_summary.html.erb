@@ -73,11 +73,11 @@
 
       <div class="p-4 text-orange-800 bg-orange-100 rounded-lg">
         <p class="text-xs font-medium uppercase">
-          Debit Notes
+          Credit Memos
         </p>
 
         <p class="mt-1 text-lg font-bold">
-          UGX <%= number_with_delimiter(@summary_total_debit_notes) %>
+            UGX <%= number_with_delimiter(@summary_total_credit_memos || 0) %>
         </p>
       </div>
 
@@ -237,7 +237,7 @@
                   </div>
                 </td>
 
-                <td class="px-4 py-4 text-sm text-right">
+                <td class="px-4 py-4 text-xs text-right">
                   <%= number_with_delimiter(row[:ordered]) %>
                 </td>
 

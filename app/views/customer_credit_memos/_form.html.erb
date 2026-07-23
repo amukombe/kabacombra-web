@@ -1,0 +1,129 @@
+
+<div class="min-h-screen px-4 py-6 bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-3xl mx-auto">
+
+    <div class="mb-6">
+      <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+        New Customer Credit Memo
+      </h1>
+
+      <p class="mt-1 text-sm text-gray-500">
+        Give account credit to
+        <span class="font-semibold">
+          <%= @customer.name %>
+        </span>.
+      </p>
+    </div>
+
+    <%= form_with model: [@customer, @credit_memo],
+                  local: true,
+                  data: { turbo: false },
+                  class: "space-y-6" do |form| %>
+
+      <% if @credit_memo.errors.any? %>
+        <div class="p-4 text-sm text-red-800 border border-red-200 rounded-lg bg-red-50">
+          <ul class="pl-5 list-disc">
+            <% @credit_memo.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">
+              Customer
+            </label>
+
+            <input type="text"
+                   value="<%= @customer.name %>"
+                   readonly
+                   class="block w-full p-2.5 text-sm bg-gray-100 border border-gray-300 rounded-lg">
+          </div>
+
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">
+              Memo Number
+            </label>
+
+            <input type="text"
+                   value="<%= @credit_memo.memo_number %>"
+                   readonly
+                   class="block w-full p-2.5 text-sm bg-gray-100 border border-gray-300 rounded-lg">
+          </div>
+
+          <div>
+            <%= form.label :memo_date,
+                  "Memo Date",
+                  class: "block mb-1 text-sm font-medium text-gray-700" %>
+
+            <%= form.date_field :memo_date,
+                  required: true,
+                  class: "block w-full p-2.5 text-sm border border-gray-300 rounded-lg" %>
+          </div>
+
+          <div>
+            <%= form.label :memo_type,
+                  "Credit Reason Type",
+                  class: "block mb-1 text-sm font-medium text-gray-700" %>
+
+            <%= form.select :memo_type,
+                  CustomerCreditMemo.memo_types.keys.map {
+                    |type| [type.humanize, type]
+                  },
+                  {},
+                  class: "block w-full p-2.5 text-sm border border-gray-300 rounded-lg" %>
+          </div>
+
+          <div class="md:col-span-2">
+            <%= form.label :amount,
+                  "Credit Amount",
+                  class: "block mb-1 text-sm font-medium text-gray-700" %>
+
+            <div class="relative">
+
+              <%= form.number_field :amount,
+                    min: 1,
+                    step: 1,
+                    required: true,
+                    class: "block w-full p-2.5 pl-14 text-sm border border-gray-300 rounded-lg",
+                    placeholder: "500000" %>
+            </div>
+          </div>
+
+          <div class="md:col-span-2">
+            <%= form.label :reason,
+                  "Description / Reason",
+                  class: "block mb-1 text-sm font-medium text-gray-700" %>
+
+            <%= form.text_area :reason,
+                  rows: 4,
+                  required: true,
+                  placeholder: "Example: Customer appreciation reward for consistent purchases.",
+                  class: "block w-full p-2.5 text-sm border border-gray-300 rounded-lg" %>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="p-4 text-sm text-blue-800 border border-blue-200 rounded-lg bg-blue-50">
+        This credit will not change stock. Once approved, it will reduce the
+        customer’s outstanding invoices or remain available for a future invoice.
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <%= link_to "Cancel",
+              statement_customer_path(@customer),
+              class: "px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg" %>
+
+        <%= form.submit "Save Credit Memo",
+              class: "px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700" %>
+      </div>
+
+    <% end %>
+
+  </div>
+</div>
