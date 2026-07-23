@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_20_134445) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_23_095355) do
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -579,6 +579,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_134445) do
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
+  create_table "payment_allocations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "sale_payment_id", null: false
+    t.bigint "sale_id", null: false
+    t.decimal "amount", precision: 15, scale: 2, default: "0.0", null: false
+    t.datetime "allocated_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sale_id"], name: "index_payment_allocations_on_sale_id"
+    t.index ["sale_payment_id", "sale_id"], name: "index_payment_allocations_on_payment_and_sale"
+    t.index ["sale_payment_id"], name: "index_payment_allocations_on_sale_payment_id"
+  end
+
   create_table "payment_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -664,6 +676,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_134445) do
     t.bigint "nile_product_id", null: false
     t.bigint "loading_order_item_id", null: false
     t.decimal "discount_total", precision: 10
+    t.decimal "quantity_ordered", precision: 15, scale: 3, null: false
     t.index ["loading_order_item_id"], name: "index_sale_items_on_loading_order_item_id"
     t.index ["nile_product_id"], name: "index_sale_items_on_nile_product_id"
     t.index ["purchase_type_id"], name: "index_sale_items_on_purchase_type_id"
@@ -671,7 +684,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_134445) do
   end
 
   create_table "sale_payments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "sale_id", null: false
+    t.bigint "sale_id"
     t.string "invoice_reference"
     t.string "receipt_number"
     t.decimal "amount", precision: 10
@@ -682,6 +695,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_134445) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "customer_id", null: false
+    t.index ["customer_id"], name: "index_sale_payments_on_customer_id"
     t.index ["receipt_number"], name: "index_sale_payments_on_receipt_number", unique: true
     t.index ["sale_id"], name: "index_sale_payments_on_sale_id"
   end
@@ -1055,6 +1070,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_134445) do
   add_foreign_key "orders", "statuses"
   add_foreign_key "orders", "territories"
   add_foreign_key "orders", "users"
+  add_foreign_key "payment_allocations", "sale_payments"
+  add_foreign_key "payment_allocations", "sales"
   add_foreign_key "payments", "bank_accounts"
   add_foreign_key "payments", "territories"
   add_foreign_key "payments", "users"
@@ -1066,6 +1083,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_20_134445) do
   add_foreign_key "sale_items", "nile_products"
   add_foreign_key "sale_items", "purchase_types"
   add_foreign_key "sale_items", "sales"
+  add_foreign_key "sale_payments", "customers"
   add_foreign_key "sale_payments", "sales"
   add_foreign_key "sales", "customers"
   add_foreign_key "sales", "statuses"

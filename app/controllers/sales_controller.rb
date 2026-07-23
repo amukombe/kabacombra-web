@@ -73,6 +73,7 @@ class SalesController < ApplicationController
 
   # GET /sales/1 or /sales/1.json
   def show
+    @active_link = "sales"
   end
 
   # GET /sales/new
@@ -133,7 +134,11 @@ class SalesController < ApplicationController
 
     @products = LoadingOrderItem
       .joins(:loading_order)
-      .where(loading_orders: { sales_man: current_user.employee.id })
+      .where(
+        loading_orders: {
+          sales_man: current_user.employee.id
+        }
+      )
 
     @customers = current_territory.customers
     @employees = current_territory.employees
@@ -141,10 +146,25 @@ class SalesController < ApplicationController
     @purchase_types = PurchaseType.all
 
     respond_to do |format|
-      if @sale.save
+      begin
+        ActiveRecord::Base.transaction do
+          @sale.save!
+
+          # Apply any previous overpayment or advance credit
+          # belonging to this customer.
+          Payments::ApplyCustomerCredit.new(@sale).call
+        end
+
+        @sale.reload
+
         format.html do
-          redirect_to sales_path,
-                      notice: "Sale was successfully created."
+          if @sale.fully_paid?
+            redirect_to sale_path(@sale),
+                        notice: "Sale was successfully created and fully paid using the customer's available credit."
+          else
+            redirect_to new_sale_sale_payment_path(@sale),
+                        notice: "Sale was successfully created. Add payment for the remaining balance."
+          end
         end
 
         format.json do
@@ -152,13 +172,18 @@ class SalesController < ApplicationController
                 status: :created,
                 location: @sale
         end
-      else
-        first_item = @sale.sale_items.first
 
-        if first_item&.loading_order_item.present?
-          @order = first_item.loading_order_item.loading_order
-          @sale_items = @order.loading_order_items
+      rescue ActiveRecord::RecordInvalid => error
+        if error.record.is_a?(Sale)
+          @sale = error.record
+        else
+          @sale.errors.add(
+            :base,
+            error.record.errors.full_messages.to_sentence
+          )
         end
+
+        prepare_failed_sale_form
 
         format.html do
           render :new,
@@ -248,6 +273,29 @@ class SalesController < ApplicationController
 
       params[:sale][:customer_id] = customer.id
     end
+
+    def prepare_failed_sale_form
+      first_item = @sale.sale_items.first
+
+      if first_item&.loading_order_item.present?
+        @order = first_item.loading_order_item.loading_order
+        @sale_items = @order.loading_order_items
+      end
+
+      @products = LoadingOrderItem
+        .joins(:loading_order)
+        .where(
+          loading_orders: {
+            sales_man: current_user.employee.id
+          }
+        )
+
+      @customers = current_territory.customers
+      @employees = current_territory.employees
+      @empties = EmptyType.all
+      @purchase_types = PurchaseType.all
+      @discounts = Discount.active
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_sale
       @sale = Sale.find(params[:id])
@@ -263,6 +311,7 @@ class SalesController < ApplicationController
         :nile_product_id, 
         :purchase_type_id, 
         :quantity_sold, 
+        :quantity_ordered,
         :amount, 
         :total, 
         :discount_total,

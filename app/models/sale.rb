@@ -7,6 +7,13 @@ class Sale < ApplicationRecord
   belongs_to :user
   belongs_to :territory
   belongs_to :customer
+  has_many :original_sale_payments, class_name: "SalePayment", foreign_key: :sale_id, dependent: :nullify
+
+  has_many :payment_allocations, dependent: :restrict_with_error
+
+  has_many :allocated_payments, through: :payment_allocations, source: :sale_payment
+
+  has_many :customer_adjustments, dependent: :restrict_with_error
   belongs_to :status
   belongs_to :store, optional: true
 
@@ -85,11 +92,17 @@ class Sale < ApplicationRecord
   end
 
   def credited_amount
-    approved_credit_notes.sum(:total_amount)
+    customer_adjustments
+      .approved
+      .credit_note
+      .sum(:total_amount)
   end
 
   def debited_amount
-    approved_debit_notes.sum(:total_amount)
+    customer_adjustments
+      .approved
+      .debit_note
+      .sum(:total_amount)
   end
 
   def adjusted_invoice_amount
@@ -99,11 +112,12 @@ class Sale < ApplicationRecord
   end
 
   def paid_amount
-    sale_payments.sum(:amount)
+    payment_allocations.sum(:amount)
   end
 
   def balance
-    adjusted_invoice_amount.to_d - paid_amount.to_d
+    adjusted_invoice_amount.to_d -
+      paid_amount.to_d
   end
 
   #def total_price

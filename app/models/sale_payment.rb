@@ -1,5 +1,13 @@
 class SalePayment < ApplicationRecord
-  belongs_to :sale
+  belongs_to :customer
+  belongs_to :sale, optional: true
+
+  has_many :payment_allocations,
+           dependent: :restrict_with_error
+
+  has_many :allocated_sales,
+           through: :payment_allocations,
+           source: :sale
 
   enum :mode_of_payment, {
     cash: 0,
@@ -8,18 +16,23 @@ class SalePayment < ApplicationRecord
     bank: 3
   }
 
-  validates :amount, numericality: { greater_than: 0 }
-  validates :receipt_number, presence: true, uniqueness: true
-  validates :invoice_reference, presence: true
+  validates :amount,
+            numericality: { greater_than: 0 }
+
+  validates :receipt_number,
+            presence: true,
+            uniqueness: true
+
+  validates :invoice_reference,
+            presence: true
+
+  validates :payment_date,
+            presence: true
 
   before_validation :set_payment_date, on: :create
+  before_validation :set_customer_from_sale, on: :create
   before_validation :set_invoice_reference, on: :create
   before_validation :generate_receipt_number, on: :create
-  before_validation :set_balances, on: :create
-
-  validate :amount_cannot_exceed_balance
-  before_validation :generate_receipt_number, on: :create
-  before_validation :set_invoice_reference, on: :create
 
   def self.search(params)
     query = all
@@ -55,58 +68,79 @@ class SalePayment < ApplicationRecord
 
     query
   end
-  def self.next_receipt_number
-    year  = Date.current.year
-    month = Date.current.strftime("%m")
+  def allocated_amount
+    payment_allocations.sum(:amount)
+  end
 
-    last_payment = SalePayment
-                     .where("receipt_number LIKE ?", "RPT/#{year}/#{month}/%")
-                     .order(id: :desc)
-                     .first
+  def available_amount
+    amount.to_d - allocated_amount.to_d
+  end
+
+  def fully_allocated?
+    available_amount <= 0
+  end
+
+  def partially_allocated?
+    allocated_amount.positive? && available_amount.positive?
+  end
+
+  def allocation_status
+    if fully_allocated?
+      "Fully Allocated"
+    elsif partially_allocated?
+      "Partially Allocated"
+    else
+      "Unallocated"
+    end
+  end
+
+  def self.next_receipt_number
+    year = Date.current.year
+    month = Date.current.strftime("%m")
+    prefix = "RPT/#{year}/#{month}/"
+
+    last_payment = where(
+      "receipt_number LIKE ?",
+      "#{prefix}%"
+    ).order(id: :desc).first
 
     last_number =
-      if last_payment.present?
-        last_payment.receipt_number.split("/").last.to_i
-      else
-        0
-      end
+      last_payment&.receipt_number
+        .to_s
+        .split("/")
+        .last
+        .to_i
 
     next_number = last_number + 1
 
-    "RPT/#{year}/#{month}/#{next_number.to_s.rjust(5, '0')}"
+    "#{prefix}#{next_number.to_s.rjust(5, '0')}"
   end
 
-  
   private
-  def set_invoice_reference
-    last_payment = sale.sale_payments.order(id: :desc).first
-
-    self.invoice_reference =
-      if last_payment.present?
-        last_payment.receipt_number
-      else
-        sale.invoice_no
-      end
-  end
 
   def set_payment_date
     self.payment_date ||= Date.current
   end
 
-  def set_balances
-    self.balance_before = sale.balance
-    self.balance_after = balance_before - amount.to_d
+  def set_customer_from_sale
+    self.customer ||= sale&.customer
   end
 
-  def amount_cannot_exceed_balance
+  def set_invoice_reference
+    return if invoice_reference.present?
     return if sale.blank?
 
-    if amount.to_d > sale.balance
-      errors.add(:amount, "cannot be greater than remaining balance")
-    end
+    previous_payment = sale.sale_payments
+                           .where.not(id: id)
+                           .order(id: :desc)
+                           .first
+
+    self.invoice_reference =
+      previous_payment&.receipt_number ||
+      sale.invoice_no
   end
 
   def generate_receipt_number
-    self.receipt_number ||= SalePayment.next_receipt_number
+    self.receipt_number ||= self.class.next_receipt_number
   end
 end

@@ -109,7 +109,7 @@
                                 <%= link_to new_sale_sale_payment_path(sale), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Add Payment<%end%>
                               </li>
                               <li>
-                                <%= link_to sale_pdf_sale_path(sale, format: :pdf), class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Print Invoice<%end%>
+                                <%= link_to  sale_path(sale), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>View Invoice<%end%>
                               </li>
                               <li>
                                 <%= link_to edit_sale_path(sale), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
@@ -117,10 +117,6 @@
 
                               <li>
                                 <%= link_to new_sale_customer_adjustment_path(sale, adjustment_type: "credit_note"), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Credit Note<%end%>
-                              </li>
-
-                              <li>
-                                <%= link_to new_sale_customer_adjustment_path(sale, adjustment_type: "debit_note"), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Debit Note<%end%>
                               </li>
                               
                               <li>

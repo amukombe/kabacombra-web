@@ -64,6 +64,10 @@ Rails.application.routes.draw do
   resources :customers do
     collection do
       get :autocomplete
+      get :statements_summary
+    end
+    member do
+      get :statement
     end
   end
   resources :sale_payments, only: [:index]

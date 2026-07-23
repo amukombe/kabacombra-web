@@ -1,0 +1,451 @@
+
+<div class="min-h-screen px-4 py-6 bg-gray-50 dark:bg-gray-900">
+  <div class="mx-auto max-w-screen-2xl">
+
+    <!-- Header -->
+    <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+          Customer Statement
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <%= @customer.name %>
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <%= link_to "All Statements",
+              statements_summary_customers_path,
+              class: "px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700" %>
+
+        <%= link_to "Back to Customers",
+              customers_path,
+              class: "px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100" %>
+      </div>
+    </div>
+
+    <!-- Customer details -->
+    <div class="grid grid-cols-1 gap-3 mb-6 md:grid-cols-3">
+      <div class="p-4 bg-white border border-gray-200 rounded-lg">
+        <p class="text-xs font-medium text-gray-500 uppercase">
+          Customer
+        </p>
+
+        <p class="mt-1 font-semibold">
+          <%= @customer.name %>
+        </p>
+      </div>
+
+      <div class="p-4 bg-white border border-gray-200 rounded-lg">
+        <p class="text-xs font-medium text-gray-500 uppercase">
+          Mobile
+        </p>
+
+        <p class="mt-1 font-semibold">
+          <%= @customer.mobile.presence || "-" %>
+        </p>
+      </div>
+
+      <div class="p-4 bg-white border border-gray-200 rounded-lg">
+        <p class="text-xs font-medium text-gray-500 uppercase">
+          BRN / NIN / TIN
+        </p>
+
+        <p class="mt-1 font-semibold">
+          <%= @customer.brn.presence || "-" %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="p-4 mb-6 bg-white border border-gray-200 rounded-lg">
+      <%= form_tag statement_customer_path(@customer),
+            method: :get,
+            class: "flex flex-wrap items-end gap-3",
+            data: { turbo: false } do %>
+
+        <div>
+          <%= label_tag :start_date,
+                "From",
+                class: "block mb-1 text-xs font-medium text-gray-600" %>
+
+          <%= date_field_tag :start_date,
+                params[:start_date],
+                class: "p-2.5 text-sm border border-gray-300 rounded-lg" %>
+        </div>
+
+        <div>
+          <%= label_tag :end_date,
+                "To",
+                class: "block mb-1 text-xs font-medium text-gray-600" %>
+
+          <%= date_field_tag :end_date,
+                params[:end_date],
+                class: "p-2.5 text-sm border border-gray-300 rounded-lg" %>
+        </div>
+
+        <%= submit_tag "Apply Filter",
+              class: "px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700" %>
+
+        <%= link_to "Reset",
+              statement_customer_path(@customer),
+              class: "px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg" %>
+      <% end %>
+    </div>
+
+    <!-- Financial cards -->
+    <div class="grid grid-cols-1 gap-3 mb-6 sm:grid-cols-2 xl:grid-cols-4">
+      <div class="p-4 text-blue-800 bg-blue-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Total Invoiced
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@total_invoiced) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-orange-800 bg-orange-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Debit Notes
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@total_debit_notes) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-purple-800 bg-purple-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Credit Notes
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@total_credit_notes) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-green-800 bg-green-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Payments Received
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@total_payments_received) %>
+        </p>
+      </div>
+
+      <div class="p-4 rounded-lg text-cyan-800 bg-cyan-100">
+        <p class="text-xs font-medium uppercase">
+          Adjusted Invoices
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@adjusted_invoice_total) %>
+        </p>
+      </div>
+
+      <div class="p-4 rounded-lg text-emerald-800 bg-emerald-100">
+        <p class="text-xs font-medium uppercase">
+          Allocated Payments
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@total_allocated_payments) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-red-800 bg-red-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Outstanding
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@outstanding_balance) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-indigo-800 bg-indigo-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Advance Credit
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@available_credit) %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Account position -->
+    <div class="p-5 mb-6 border rounded-lg
+      <%= @net_account_balance.to_d.positive? ?
+            'text-red-800 bg-red-50 border-red-200' :
+            'text-green-800 bg-green-50 border-green-200' %>">
+
+      <p class="text-xs font-medium uppercase">
+        Net Customer Position
+      </p>
+
+      <% if @net_account_balance.to_d.positive? %>
+        <p class="mt-2 text-xl font-bold">
+          Customer owes Kabacombra:
+          UGX <%= number_with_delimiter(@net_account_balance) %>
+        </p>
+      <% elsif @net_account_balance.to_d.negative? %>
+        <p class="mt-2 text-xl font-bold">
+          Customer has advance credit:
+          UGX <%= number_with_delimiter(@net_account_balance.abs) %>
+        </p>
+      <% else %>
+        <p class="mt-2 text-xl font-bold">
+          Account fully settled
+        </p>
+      <% end %>
+    </div>
+
+    <!-- Goods summary -->
+    <div class="mb-6 overflow-hidden bg-white border border-gray-200 rounded-lg">
+      <div class="p-5 border-b border-gray-200">
+        <h2 class="font-semibold text-gray-900">
+          Goods Ordered and Delivered
+        </h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">
+                Product
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Ordered
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Delivered
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Balance
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-200">
+            <% @goods_summary.each do |row| %>
+              <tr>
+                <td class="px-4 py-4 text-sm font-medium">
+                  <%= row[:product_name] %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right">
+                  <%= number_with_delimiter(row[:ordered]) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right text-green-700">
+                  <%= number_with_delimiter(row[:delivered]) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-semibold text-right
+                  <%= row[:balance].positive? ?
+                        'text-red-600' :
+                        'text-green-600' %>">
+                  <%= number_with_delimiter(row[:balance]) %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+
+          <tfoot class="bg-gray-50">
+            <tr>
+              <td class="px-4 py-4 text-sm font-bold">
+                Totals
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right">
+                <%= number_with_delimiter(@total_quantity_ordered) %>
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right text-green-700">
+                <%= number_with_delimiter(@total_quantity_delivered) %>
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right text-red-600">
+                <%= number_with_delimiter(@total_quantity_balance) %>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Financial ledger -->
+    <div class="mb-6 overflow-hidden bg-white border border-gray-200 rounded-lg">
+      <div class="p-5 border-b border-gray-200">
+        <h2 class="font-semibold text-gray-900">
+          Customer Account Ledger
+        </h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">
+                Date
+              </th>
+
+              <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">
+                Document
+              </th>
+
+              <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">
+                Description
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Debit
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Credit
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Running Balance
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-200">
+            <% @statement_transactions.each do |transaction| %>
+              <tr>
+                <td class="px-4 py-4 text-sm whitespace-nowrap">
+                  <%= transaction[:date]&.strftime("%d %b, %Y") %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-medium">
+                  <% if transaction[:path].present? %>
+                    <%= link_to transaction[:document],
+                          transaction[:path],
+                          class: "text-blue-600 hover:underline",
+                          data: { turbo: false } %>
+                  <% else %>
+                    <%= transaction[:document] %>
+                  <% end %>
+                </td>
+
+                <td class="px-4 py-4 text-sm">
+                  <%= transaction[:description] %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right text-red-600">
+                  <% if transaction[:debit].positive? %>
+                    UGX <%= number_with_delimiter(transaction[:debit]) %>
+                  <% else %>
+                    -
+                  <% end %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right text-green-600">
+                  <% if transaction[:credit].positive? %>
+                    UGX <%= number_with_delimiter(transaction[:credit]) %>
+                  <% else %>
+                    -
+                  <% end %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-bold text-right">
+                  <% if transaction[:running_balance].negative? %>
+                    Credit UGX
+                    <%= number_with_delimiter(transaction[:running_balance].abs) %>
+                  <% else %>
+                    UGX
+                    <%= number_with_delimiter(transaction[:running_balance]) %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Payments and credit -->
+    <div class="overflow-hidden bg-white border border-gray-200 rounded-lg">
+      <div class="p-5 border-b border-gray-200">
+        <h2 class="font-semibold text-gray-900">
+          Payment Allocation and Credit
+        </h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">
+                Receipt
+              </th>
+
+              <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">
+                Date
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Received
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Allocated
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Available Credit
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-200">
+            <% @payments.each do |payment| %>
+              <tr>
+                <td class="px-4 py-4 text-sm font-medium">
+                  <% if payment.sale.present? %>
+                    <%= link_to payment.receipt_number,
+                          sale_sale_payment_path(
+                            payment.sale,
+                            payment
+                          ),
+                          class: "text-blue-600 hover:underline",
+                          data: { turbo: false } %>
+                  <% else %>
+                    <%= payment.receipt_number %>
+                  <% end %>
+                </td>
+
+                <td class="px-4 py-4 text-sm">
+                  <%= payment.payment_date&.strftime("%d %b, %Y") %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right">
+                  UGX <%= number_with_delimiter(payment.amount) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-semibold text-right text-green-600">
+                  UGX <%= number_with_delimiter(payment.allocated_amount) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-semibold text-right text-purple-600">
+                  UGX <%= number_with_delimiter(payment.available_amount) %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

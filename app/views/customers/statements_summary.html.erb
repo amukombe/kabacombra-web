@@ -1,0 +1,346 @@
+
+<div class="min-h-screen px-4 py-6 bg-gray-50 dark:bg-gray-900">
+  <div class="mx-auto max-w-screen-2xl">
+
+    <div class="mb-6">
+      <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+        Customer Statements Summary
+      </h1>
+
+      <p class="mt-1 text-sm text-gray-500">
+        Customer balances, payments, credits and delivery quantities.
+      </p>
+    </div>
+
+    <!-- Filters -->
+    <div class="p-4 mb-6 bg-white border border-gray-200 rounded-lg">
+      <%= form_tag statements_summary_customers_path,
+            method: :get,
+            class: "flex flex-wrap items-end gap-3",
+            data: { turbo: false } do %>
+
+        <div class="w-full md:w-72">
+          <%= label_tag :query,
+                "Customer",
+                class: "block mb-1 text-xs font-medium text-gray-600" %>
+
+          <%= text_field_tag :query,
+                params[:query],
+                placeholder: "Name, mobile or BRN...",
+                class: "block w-full p-2.5 text-sm border border-gray-300 rounded-lg" %>
+        </div>
+
+        <div>
+          <%= label_tag :start_date,
+                "From",
+                class: "block mb-1 text-xs font-medium text-gray-600" %>
+
+          <%= date_field_tag :start_date,
+                params[:start_date],
+                class: "p-2.5 text-sm border border-gray-300 rounded-lg" %>
+        </div>
+
+        <div>
+          <%= label_tag :end_date,
+                "To",
+                class: "block mb-1 text-xs font-medium text-gray-600" %>
+
+          <%= date_field_tag :end_date,
+                params[:end_date],
+                class: "p-2.5 text-sm border border-gray-300 rounded-lg" %>
+        </div>
+
+        <%= submit_tag "Apply Filter",
+              class: "px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg cursor-pointer" %>
+
+        <%= link_to "Reset",
+              statements_summary_customers_path,
+              class: "px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg" %>
+      <% end %>
+    </div>
+
+    <!-- Overall financial summary -->
+    <div class="grid grid-cols-1 gap-3 mb-6 sm:grid-cols-2 xl:grid-cols-4">
+      <div class="p-4 text-blue-800 bg-blue-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Total Invoiced
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@summary_total_invoiced) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-orange-800 bg-orange-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Debit Notes
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@summary_total_debit_notes) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-purple-800 bg-purple-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Credit Notes
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@summary_total_credit_notes) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-green-800 bg-green-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Payments Received
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@summary_total_payments) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-red-800 bg-red-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Outstanding Balance
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@summary_total_outstanding) %>
+        </p>
+      </div>
+
+      <div class="p-4 text-indigo-800 bg-indigo-100 rounded-lg">
+        <p class="text-xs font-medium uppercase">
+          Customer Advance Credit
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          UGX <%= number_with_delimiter(@summary_total_available_credit) %>
+        </p>
+      </div>
+
+      <div class="p-4 rounded-lg text-cyan-800 bg-cyan-100">
+        <p class="text-xs font-medium uppercase">
+          Quantity Ordered
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          <%= number_with_delimiter(@summary_total_ordered) %>
+        </p>
+      </div>
+
+      <div class="p-4 rounded-lg text-emerald-800 bg-emerald-100">
+        <p class="text-xs font-medium uppercase">
+          Quantity Delivered
+        </p>
+
+        <p class="mt-1 text-lg font-bold">
+          <%= number_with_delimiter(@summary_total_delivered) %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Overall net position -->
+    <div class="p-5 mb-6 border rounded-lg
+      <%= @summary_net_balance.to_d.positive? ?
+            'text-red-800 bg-red-50 border-red-200' :
+            'text-green-800 bg-green-50 border-green-200' %>">
+
+      <% if @summary_net_balance.to_d.positive? %>
+        <p class="text-xl font-bold">
+          Total owed by customers:
+          UGX <%= number_with_delimiter(@summary_net_balance) %>
+        </p>
+      <% elsif @summary_net_balance.to_d.negative? %>
+        <p class="text-xl font-bold">
+          Net customer advance credit:
+          UGX <%= number_with_delimiter(@summary_net_balance.abs) %>
+        </p>
+      <% else %>
+        <p class="text-xl font-bold">
+          All customer accounts are settled
+        </p>
+      <% end %>
+
+      <p class="mt-2 text-sm">
+        Undelivered quantity:
+        <strong>
+          <%= number_with_delimiter(@summary_quantity_balance) %>
+        </strong>
+      </p>
+    </div>
+
+    <!-- Customer table -->
+    <div class="overflow-hidden bg-white border border-gray-200 rounded-lg">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-xs text-left text-gray-500 uppercase">
+                Customer
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Ordered
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Delivered
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Qty Balance
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Invoiced
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Payments
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Outstanding
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Advance Credit
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Net Position
+              </th>
+
+              <th class="px-4 py-3 text-xs text-right text-gray-500 uppercase">
+                Action
+              </th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-200">
+            <% @customer_statement_rows.each do |row| %>
+              <% customer = row[:customer] %>
+
+              <tr>
+                <td class="px-4 py-4 text-sm">
+                  <div class="flex flex-col">
+                    <span class="font-semibold">
+                      <%= customer.name %>
+                    </span>
+
+                    <span class="text-xs text-gray-500">
+                      <%= customer.mobile.presence || "-" %>
+                    </span>
+                  </div>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right">
+                  <%= number_with_delimiter(row[:ordered]) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right text-green-600">
+                  <%= number_with_delimiter(row[:delivered]) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-semibold text-right text-red-600">
+                  <%= number_with_delimiter(row[:quantity_balance]) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right">
+                  UGX <%= number_with_delimiter(row[:invoiced]) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right text-green-600">
+                  UGX <%= number_with_delimiter(row[:payments]) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-semibold text-right text-red-600">
+                  UGX <%= number_with_delimiter(row[:outstanding]) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-semibold text-right text-purple-600">
+                  UGX <%= number_with_delimiter(row[:available_credit]) %>
+                </td>
+
+                <td class="px-4 py-4 text-sm font-bold text-right">
+                  <% if row[:net_balance].positive? %>
+                    <span class="text-red-600">
+                      Owes UGX
+                      <%= number_with_delimiter(row[:net_balance]) %>
+                    </span>
+                  <% elsif row[:net_balance].negative? %>
+                    <span class="text-green-600">
+                      Credit UGX
+                      <%= number_with_delimiter(row[:net_balance].abs) %>
+                    </span>
+                  <% else %>
+                    <span class="text-green-600">
+                      Settled
+                    </span>
+                  <% end %>
+                </td>
+
+                <td class="px-4 py-4 text-sm text-right">
+                  <%= link_to "View Statement",
+                        statement_customer_path(
+                          customer,
+                          start_date: params[:start_date],
+                          end_date: params[:end_date]
+                        ),
+                        data: { turbo: false },
+                        class: "px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+
+          <tfoot class="bg-gray-50">
+            <tr>
+              <td class="px-4 py-4 text-sm font-bold">
+                Totals
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right">
+                <%= number_with_delimiter(@summary_total_ordered) %>
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right text-green-600">
+                <%= number_with_delimiter(@summary_total_delivered) %>
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right text-red-600">
+                <%= number_with_delimiter(@summary_quantity_balance) %>
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right">
+                UGX <%= number_with_delimiter(@summary_total_invoiced) %>
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right text-green-600">
+                UGX <%= number_with_delimiter(@summary_total_payments) %>
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right text-red-600">
+                UGX <%= number_with_delimiter(@summary_total_outstanding) %>
+              </td>
+
+              <td class="px-4 py-4 text-sm font-bold text-right text-purple-600">
+                UGX <%= number_with_delimiter(@summary_total_available_credit) %>
+              </td>
+
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <%= render "pagination" %>
+    </div>
+
+  </div>
+</div>
