@@ -92,11 +92,23 @@ class Order < ApplicationRecord
   end
 
   private
-  def generate_order_number
-    if self.order_number.blank?
-      last_order = Order.order(:created_at).last
-      next_number = last_order&.order_number.to_i + 1 || 1
-      self.order_number = next_number.to_s.rjust(5, '0')
+    def generate_order_number
+      return unless order_number.blank?
+
+      prefix = Time.current.strftime("%y%m") # e.g. "2607"
+
+      last_order = Order
+                    .where("order_number LIKE ?", "#{prefix}%")
+                    .order(order_number: :desc)
+                    .first
+
+      if last_order.present?
+        last_sequence = last_order.order_number[-4..].to_i
+        next_sequence = last_sequence + 1
+      else
+        next_sequence = 1
+      end
+
+      self.order_number = "#{prefix}#{next_sequence.to_s.rjust(4, '0')}"
     end
-  end
 end

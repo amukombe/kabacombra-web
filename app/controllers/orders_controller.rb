@@ -4,7 +4,7 @@ class OrdersController < ApplicationController
   # GET /orders or /orders.json
   def index
     @active_link = "orders"
-    @orders = Order.search(params, current_territory.id).page(params[:page]).per(20)
+    @orders = Order.search(params, current_territory.id).order(:order_date => :desc).page(params[:page]).per(20)
   end
 
   def export
