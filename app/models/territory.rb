@@ -18,6 +18,7 @@ class Territory < ApplicationRecord
   has_many :bank_transactions, dependent: :destroy
   has_many :financial_transactions, dependent: :destroy
   has_many :sales, dependent: :destroy
+  has_many :bank_reconciliations, dependent: :destroy
   # has_many :sale_empties, through: :sales, dependent: :destroy
   has_many :user_modules, dependent: :destroy
   def self.search(params)

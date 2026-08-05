@@ -3,8 +3,32 @@ class VendorAdjustimentsController < ApplicationController
 
   # GET /vendor_adjustiments or /vendor_adjustiments.json
   def index
-    @territory = Territory.find(current_territory.id)
-    @vendor_adjustiments = @territory.vendor_adjustiments.order(created_at: :desc).page(params[:page]).per(15)
+    @active_link = "adjustiments"
+    params[:start_date] ||= Date.current.to_s
+    params[:end_date] ||= Date.current.to_s
+
+    filtered_adjustments =
+      VendorAdjustiment.search(params)
+
+    @vendor_adjustiments =
+      filtered_adjustments
+        .order(adjustment_date: :desc, id: :desc)
+        .page(params[:page])
+        .per(20)
+
+    @total_debits =
+      filtered_adjustments
+        .debit
+        .sum(:amount)
+
+    @total_credits =
+      filtered_adjustments
+        .credit
+        .sum(:amount)
+
+    @net_adjustments =
+      @total_credits - @total_debits
+
   end
 
   # GET /vendor_adjustiments/1 or /vendor_adjustiments/1.json
@@ -13,10 +37,12 @@ class VendorAdjustimentsController < ApplicationController
 
   # GET /vendor_adjustiments/new
   def new
-    @vendor_adjustiment = VendorAdjustiment.new(adjustment_date:Date.today)
-    @purchase_types = PurchaseType.where("name != ?", "Normal")
-    @vendor_adjustiment.vendor_adjustiment_items.build
-    @products = NileProduct.all
+    @active_link = "adjustiments"
+    @vendor_adjustiment = VendorAdjustiment.new(
+      adjustment_date: Date.current,
+      adjustment_type: "credit",
+      adjustment_category: "manual"
+    )
   end
 
   # GET /vendor_adjustiments/1/edit
@@ -27,16 +53,19 @@ class VendorAdjustimentsController < ApplicationController
 
   # POST /vendor_adjustiments or /vendor_adjustiments.json
   def create
+    @active_link = "adjustiments"
     @vendor_adjustiment = VendorAdjustiment.new(vendor_adjustiment_params)
 
-    respond_to do |format|
-      if @vendor_adjustiment.save
-        format.html { redirect_to vendor_adjustiments_path, notice: "Vendor adjustiment was successfully created." }
-        format.json { render :show, status: :created, location: @vendor_adjustiment }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @vendor_adjustiment.errors, status: :unprocessable_entity }
-      end
+    @vendor_adjustiment.user = current_user
+    @vendor_adjustiment.territory = current_territory
+    @vendor_adjustiment.adjustment_category = "manual"
+
+    if @vendor_adjustiment.save
+      redirect_to vendor_adjustiment_path(@vendor_adjustiment),
+                  notice: "Vendor adjustment created successfully."
+    else
+      render :new,
+            status: :unprocessable_entity
     end
   end
 
@@ -71,7 +100,13 @@ class VendorAdjustimentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def vendor_adjustiment_params
-      params.require(:vendor_adjustiment).permit(:user_id, :purchase_type_id, :adjustment_date, :territory_id, :journal_no, :ref_no, 
-      vendor_adjustiment_items_attributes: [:id, :nile_product_id, :quantity, :quantity_sold, :_destroy])
+      params.require(:vendor_adjustiment).permit(
+        :purchase_type_id,
+        :adjustment_date,
+        :adjustment_type,
+        :amount,
+        :ref_no,
+        :description
+      )
     end
 end

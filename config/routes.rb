@@ -1,4 +1,28 @@
 Rails.application.routes.draw do
+  resources :bank_import_mappings
+  resources :bank_reconciliation_items
+  resources :bank_reconciliations do
+    member do
+      get :import
+      post :upload_statement
+      post :auto_match
+      post :finalize
+      get :report
+      get :download_template
+      get :map_columns
+
+      post :save_mapping
+
+      post :import_statement
+    end
+  end
+  resources :bank_statements
+  resources :bank_transactions, only: [:index, :show] do
+    collection do
+      get :export_pdf
+      get :export_excel
+    end
+  end
   get "customer_credit_memos/index"
   get "customer_credit_memos/show"
   resources :sale_payments do
@@ -35,6 +59,8 @@ Rails.application.routes.draw do
   get "statements/empty_returns"
   get "statements/payments"
   get "statements/adjustments"
+  get "vendor_statement", to: "statements#vendor_statement", as: :vendor_statement
+  
   resources :stock_transfer_items
   resources :stock_transfers do
     member do
@@ -60,7 +86,11 @@ Rails.application.routes.draw do
   resources :empty_types
   resources :bank_withdraws
   resources :bank_deposits
-  resources :bank_accounts
+  resources :bank_accounts do
+    member do
+      get :statement
+    end
+  end
   resources :banks
   resources :sale_items
   resources :customers do

@@ -1,0 +1,12 @@
+<% content_for :title, "Editing bank reconciliation" %>
+
+<h1>Editing bank reconciliation</h1>
+
+<%= render "form", bank_reconciliation: @bank_reconciliation %>
+
+<br>
+
+<div>
+  <%= link_to "Show this bank reconciliation", @bank_reconciliation %> |
+  <%= link_to "Back to bank reconciliations", bank_reconciliations_path %>
+</div>

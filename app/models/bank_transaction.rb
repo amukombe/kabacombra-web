@@ -4,4 +4,6 @@ class BankTransaction < ApplicationRecord
   belongs_to :territory
   belongs_to :financial_transaction
   belongs_to :bank_account
+
+  belongs_to :source, polymorphic: true, optional: true
 end

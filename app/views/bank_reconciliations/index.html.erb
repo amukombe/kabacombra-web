@@ -1,0 +1,264 @@
+<%= render "/shared/finance_nav" %>
+
+<div class="px-6 py-6">
+
+  <!-- Header -->
+
+  <div class="flex items-center justify-between mb-6">
+
+    <div>
+
+      <h1 class="text-2xl font-bold">
+
+        Bank Reconciliations
+
+      </h1>
+
+      <p class="text-gray-500">
+
+        Compare ERP transactions against bank statements.
+
+      </p>
+
+    </div>
+
+    <%= link_to "New Reconciliation",
+          new_bank_reconciliation_path,
+          class: "px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700" %>
+
+  </div>
+
+  <!-- Summary -->
+
+  <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-4">
+
+    <div class="p-5 bg-yellow-50 rounded-xl">
+
+      <p class="text-xs uppercase">
+
+        Draft
+
+      </p>
+
+      <p class="mt-2 text-3xl font-bold">
+
+        <%= @draft_count %>
+
+      </p>
+
+    </div>
+
+    <div class="p-5 bg-green-50 rounded-xl">
+
+      <p class="text-xs uppercase">
+
+        Reconciled
+
+      </p>
+
+      <p class="mt-2 text-3xl font-bold">
+
+        <%= @reconciled_count %>
+
+      </p>
+
+    </div>
+
+    <div class="p-5 bg-blue-50 rounded-xl">
+
+      <p class="text-xs uppercase">
+
+        Approved
+
+      </p>
+
+      <p class="mt-2 text-3xl font-bold">
+
+        <%= @approved_count %>
+
+      </p>
+
+    </div>
+
+    <div class="p-5 bg-red-50 rounded-xl">
+
+      <p class="text-xs uppercase">
+
+        Outstanding Difference
+
+      </p>
+
+      <p class="mt-2 text-xl font-bold">
+
+        UGX
+        <%= number_with_delimiter(@total_difference) %>
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- Filters -->
+
+  <%= form_with url: bank_reconciliations_path,
+                method: :get,
+                local: true,
+                class: "grid grid-cols-1 md:grid-cols-4 gap-4 mb-8" do %>
+
+    <%= text_field_tag :query,
+          params[:query],
+          placeholder: "Search...",
+          class: "rounded-lg" %>
+
+    <%= select_tag :status,
+
+          options_for_select(
+            BankReconciliation.statuses.keys.map {
+              |s|
+              [s.titleize, s]
+            },
+            params[:status]
+          ),
+
+          include_blank: "All Status",
+
+          class: "rounded-lg" %>
+
+    <%= select_tag :bank_account_id,
+
+          options_from_collection_for_select(
+            @accounts,
+            :id,
+            :account_name,
+            params[:bank_account_id]
+          ),
+
+          include_blank: "All Accounts",
+
+          class: "rounded-lg" %>
+
+    <%= submit_tag "Filter",
+          class: "rounded-lg bg-slate-700 text-white" %>
+
+  <% end %>
+
+  <!-- Table -->
+
+  <div class="overflow-hidden bg-white shadow rounded-xl">
+
+    <table class="min-w-full">
+
+      <thead class="bg-gray-100">
+
+        <tr>
+
+          <th class="px-4 py-3 text-left">
+
+            Reference
+
+          </th>
+
+          <th class="px-4 py-3 text-left">
+
+            Account
+
+          </th>
+
+          <th class="px-4 py-3 text-left">
+
+            Period
+
+          </th>
+
+          <th class="px-4 py-3 text-right">
+
+            Difference
+
+          </th>
+
+          <th class="px-4 py-3">
+
+            Status
+
+          </th>
+
+          <th></th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+      <% @bank_reconciliations.each do |reconciliation| %>
+
+        <tr class="border-t">
+
+          <td class="px-4 py-3">
+
+            <%= reconciliation.reference %>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <%= reconciliation.bank_account.account_name %>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <%= reconciliation.statement_from.strftime("%d %b %Y") %>
+
+            -
+
+            <%= reconciliation.statement_to.strftime("%d %b %Y") %>
+
+          </td>
+
+          <td class="px-4 py-3 text-right">
+
+            UGX
+
+            <%= number_with_delimiter(reconciliation.difference) %>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <span class="px-3 py-1 rounded-full text-xs
+              <%= case reconciliation.status
+                  when "draft"
+                    "bg-yellow-100 text-yellow-800"
+                  when "reconciled"
+                    "bg-green-100 text-green-800"
+                  else
+                    "bg-blue-100 text-blue-800"
+                  end %>">
+
+              <%= reconciliation.status.titleize %>
+
+            </span>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <%= link_to "View",
+                  reconciliation,
+                  class: "text-blue-600 hover:text-blue-800" %>
+
+          </td>
+
+        </tr>
+
+      <% end %>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

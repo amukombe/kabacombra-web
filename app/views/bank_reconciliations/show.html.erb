@@ -1,0 +1,213 @@
+<!-- ===================================================== -->
+<!-- Reconciliation Workspace -->
+<!-- ===================================================== -->
+
+<div class="grid grid-cols-1 gap-8 xl:grid-cols-2">
+
+  <!-- ERP Transactions -->
+  <div class="bg-white border shadow-sm rounded-xl">
+
+    <div class="px-6 py-4 border-b">
+
+      <div class="flex items-center justify-between">
+
+        <div>
+
+          <h2 class="text-lg font-semibold">
+            ERP Transactions
+          </h2>
+
+          <p class="text-sm text-gray-500">
+            Transactions recorded in Kabacombra
+          </p>
+
+        </div>
+
+        <span class="px-3 py-1 text-sm font-semibold text-blue-700 bg-blue-100 rounded-full">
+          <%= @transactions.count %>
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="overflow-y-auto max-h-[650px]">
+
+      <table class="min-w-full">
+
+        <thead class="sticky top-0 bg-gray-50">
+
+          <tr>
+
+            <th class="px-4 py-3 text-left">
+              Date
+            </th>
+
+            <th class="px-4 py-3 text-left">
+              Reference
+            </th>
+
+            <th class="px-4 py-3 text-right">
+              Amount
+            </th>
+
+            <th class="px-4 py-3">
+              Status
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <% @transactions.each do |transaction| %>
+
+            <tr class="border-b hover:bg-gray-50">
+
+              <td class="px-4 py-3">
+                <%= transaction.cleared_date %>
+              </td>
+
+              <td class="px-4 py-3">
+                <%= transaction.financial_transaction&.reference %>
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                UGX <%= number_with_delimiter(transaction.amount) %>
+              </td>
+
+              <td class="px-4 py-3 text-center">
+
+                <% if transaction.bank_reconciliation_item.present? %>
+
+                  <span class="px-2 py-1 text-xs text-green-700 bg-green-100 rounded-full">
+                    Matched
+                  </span>
+
+                <% else %>
+
+                  <span class="px-2 py-1 text-xs text-red-700 bg-red-100 rounded-full">
+                    Unmatched
+                  </span>
+
+                <% end %>
+
+              </td>
+
+            </tr>
+
+          <% end %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- Imported Bank Statement -->
+  <div class="bg-white border shadow-sm rounded-xl">
+
+    <div class="px-6 py-4 border-b">
+
+      <div class="flex items-center justify-between">
+
+        <div>
+
+          <h2 class="text-lg font-semibold">
+            Bank Statement
+          </h2>
+
+          <p class="text-sm text-gray-500">
+            Imported bank statement lines
+          </p>
+
+        </div>
+
+        <span class="px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
+          <%= @bank_reconciliation.bank_reconciliation_items.count %>
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="overflow-y-auto max-h-[650px]">
+
+      <table class="min-w-full">
+
+        <thead class="sticky top-0 bg-gray-50">
+
+          <tr>
+
+            <th class="px-4 py-3 text-left">
+              Date
+            </th>
+
+            <th class="px-4 py-3 text-left">
+              Reference
+            </th>
+
+            <th class="px-4 py-3 text-right">
+              Amount
+            </th>
+
+            <th class="px-4 py-3">
+              Status
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <% @bank_reconciliation.bank_reconciliation_items.each do |item| %>
+
+            <tr class="border-b hover:bg-gray-50">
+
+              <td class="px-4 py-3">
+                <%= item.bank_date %>
+              </td>
+
+              <td class="px-4 py-3">
+                <%= item.bank_reference %>
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                UGX <%= number_with_delimiter(item.bank_amount) %>
+              </td>
+
+              <td class="px-4 py-3 text-center">
+
+                <% if item.matched? %>
+
+                  <span class="px-2 py-1 text-xs text-green-700 bg-green-100 rounded-full">
+                    Matched
+                  </span>
+
+                <% else %>
+
+                  <span class="px-2 py-1 text-xs text-red-700 bg-red-100 rounded-full">
+                    Unmatched
+                  </span>
+
+                <% end %>
+
+              </td>
+
+            </tr>
+
+          <% end %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

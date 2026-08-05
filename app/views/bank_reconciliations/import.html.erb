@@ -1,0 +1,68 @@
+<%= render "/shared/finance_nav" %>
+
+<div class="max-w-3xl px-6 py-8 mx-auto">
+
+  <div class="mb-8">
+
+    <h1 class="text-3xl font-bold">
+      Import Bank Statement
+    </h1>
+
+    <p class="mt-2 text-gray-500">
+      Upload your bank statement in CSV or Excel format.
+    </p>
+
+  </div>
+
+  <%= link_to download_template_bank_reconciliation_path(@bank_reconciliation),
+      class: "inline-flex items-center px-5 py-2 font-medium text-white bg-green-600 rounded-lg hover:bg-green-700" do %>
+
+    <svg class="w-5 h-5 mr-2"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="2"
+         viewBox="0 0 24 24">
+      <path stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 16V4m0 12l-4-4m4 4l4-4M5 20h14"/>
+    </svg>
+
+    Download Template
+
+  <% end %>
+
+
+  <%= form_with url: upload_statement_bank_reconciliation_path(@bank_reconciliation),
+                multipart: true,
+                local: true do |form| %>
+
+    <div class="p-8 bg-white shadow rounded-xl">
+
+      <div class="mb-6">
+
+        <%= form.label :file,
+              "Statement File",
+              class: "block mb-2 font-medium" %>
+
+        <%= form.file_field :file,
+              accept: ".csv,.xlsx,.xls",
+              class: "block w-full rounded-lg border-gray-300" %>
+
+      </div>
+
+      <div class="flex justify-end gap-3">
+
+        <%= link_to "Back",
+              @bank_reconciliation,
+              class: "px-5 py-2 bg-gray-200 rounded-lg" %>
+
+        <%= form.submit "Import Statement",
+              class: "px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" %>
+
+      </div>
+
+    </div>
+
+  <% end %>
+
+</div>

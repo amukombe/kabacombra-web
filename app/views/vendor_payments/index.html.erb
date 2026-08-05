@@ -1,16 +1,321 @@
-<p style="color: green"><%= notice %></p>
+<%= render "/shared/purchases_nav" %>
 
-<% content_for :title, "Vendor payments" %>
+<div class="px-4 pt-4 bg-white dark:bg-gray-900">
 
-<h1>Vendor payments</h1>
+  <!-- Header -->
+  <div class="grid items-center grid-cols-2 gap-4 mb-6">
 
-<div id="vendor_payments">
-  <% @vendor_payments.each do |vendor_payment| %>
-    <%= render vendor_payment %>
-    <p>
-      <%= link_to "Show this vendor payment", vendor_payment %>
-    </p>
+    <div>
+      <h1 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Vendor Payments
+      </h1>
+
+      <p class="mt-1 text-sm text-gray-500">
+        Manage supplier payments
+      </p>
+    </div>
+
+    <div class="text-right">
+
+      <%= link_to "New Payment",
+          new_vendor_payment_path,
+          data: { turbo: false },
+          class: "px-5 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" %>
+
+    </div>
+
+  </div>
+
+  <!-- Summary -->
+
+  <div class="grid grid-cols-2 gap-4 mb-6 lg:grid-cols-6">
+
+    <div class="p-4 bg-blue-100 rounded-lg">
+      <p class="text-xs font-semibold uppercase">
+        Total Paid
+      </p>
+
+      <p class="mt-2 text-sm font-bold">
+        UGX <%= number_with_delimiter(@total_paid) %>
+      </p>
+    </div>
+
+    <div class="p-4 bg-yellow-100 rounded-lg">
+      <p class="text-xs font-semibold uppercase">
+        Suspense
+      </p>
+
+      <p class="mt-2 text-sm font-bold">
+        UGX <%= number_with_delimiter(@total_suspense) %>
+      </p>
+    </div>
+
+    <div class="p-4 bg-green-100 rounded-lg">
+      <p class="text-xs font-semibold uppercase">
+        Cash Out
+      </p>
+
+      <p class="mt-2 text-sm font-bold">
+        UGX <%= number_with_delimiter(@cash_out) %>
+      </p>
+    </div>
+
+    <div class="p-4 bg-indigo-100 rounded-lg">
+      <p class="text-xs font-semibold uppercase">
+        Payments
+      </p>
+
+      <p class="mt-2 text-sm font-bold">
+        <%= @payment_count %>
+      </p>
+    </div>
+
+    <div class="p-4 bg-purple-100 rounded-lg">
+      <p class="text-xs font-semibold uppercase">
+        Average
+      </p>
+
+      <p class="mt-2 text-sm font-bold">
+        UGX <%= number_with_delimiter(@average_payment) %>
+      </p>
+    </div>
+
+    <div class="p-4 bg-gray-100 rounded-lg">
+      <p class="text-xs font-semibold uppercase">
+        Bank Payments
+      </p>
+
+      <p class="mt-2 text-sm font-bold">
+        UGX <%= number_with_delimiter(@bank_total) %>
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Filters -->
+
+  <%= form_with url: vendor_payments_path,
+                method: :get,
+                local: true,
+                class: "flex flex-wrap items-end gap-3 mb-6" do %>
+
+    <div>
+      <%= label_tag :query,
+          "Search",
+          class: "block mb-1 text-xs" %>
+
+      <%= text_field_tag :query,
+          params[:query],
+          placeholder: "Payment No / Journal / Ref",
+          class: "w-64 border rounded-lg p-2.5" %>
+    </div>
+
+    <div>
+
+      <%= label_tag :payment_method,
+          "Payment Method",
+          class: "block mb-1 text-xs" %>
+
+      <%= select_tag :payment_method,
+          options_for_select(
+            VendorPayment.payment_methods.keys.map { |m| [m.titleize, m] },
+            params[:payment_method]
+          ),
+          include_blank: "All",
+          class: "border rounded-lg p-2.5" %>
+
+    </div>
+
+    <div>
+
+      <%= label_tag :start_date,
+          "From",
+          class: "block mb-1 text-xs" %>
+
+      <%= date_field_tag :start_date,
+          params[:start_date],
+          class: "border rounded-lg p-2.5" %>
+
+    </div>
+
+    <div>
+
+      <%= label_tag :end_date,
+          "To",
+          class: "block mb-1 text-xs" %>
+
+      <%= date_field_tag :end_date,
+          params[:end_date],
+          class: "border rounded-lg p-2.5" %>
+
+    </div>
+
+    <div>
+
+      <%= submit_tag "Filter",
+          class: "px-5 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" %>
+
+    </div>
+
   <% end %>
-</div>
 
-<%= link_to "New vendor payment", new_vendor_payment_path %>
+  <!-- Table -->
+
+  <div class="overflow-hidden bg-white rounded-lg shadow">
+
+    <table class="min-w-full divide-y divide-gray-200">
+
+      <thead class="bg-gray-50">
+
+        <tr>
+
+          <th class="px-4 py-3 text-left">Payment Details</th>
+
+          <th class="px-4 py-3 text-right">Amount</th>
+
+          <th class="px-4 py-3 text-right">Suspense</th>
+
+          <th class="px-4 py-3 text-center">Method</th>
+
+          <th class="px-4 py-3 text-center">Action</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+
+      <% @vendor_payments.each do |payment| %>
+
+        <tr class="hover:bg-gray-50">
+
+          <td class="p-4">
+
+            <div class="space-y-1">
+
+              <p class="font-semibold">
+                <%= payment.payment_no %>
+              </p>
+
+              <p class="text-sm text-gray-500">
+                <%= payment.payment_date.strftime("%d %b %Y") %>
+              </p>
+
+              <p class="text-sm">
+                Journal:
+                <span class="font-medium">
+                  <%= payment.journal_no.presence || "-" %>
+                </span>
+              </p>
+
+              <p class="text-sm">
+                Reference:
+                <span class="font-medium">
+                  <%= payment.ref_no.presence || "-" %>
+                </span>
+              </p>
+
+              <% if payment.notes.present? %>
+
+                <p class="text-xs text-gray-500">
+
+                  <%= truncate(payment.notes, length: 80) %>
+
+                </p>
+
+              <% end %>
+
+            </div>
+
+          </td>
+
+          <td class="p-4 font-semibold text-right">
+
+            UGX
+            <%= number_with_delimiter(payment.amount) %>
+
+          </td>
+
+          <td class="p-4 text-right">
+
+            UGX
+            <%= number_with_delimiter(payment.suspense_amount) %>
+
+          </td>
+
+          <td class="p-4 text-center">
+
+            <span class="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
+
+              <%= payment.payment_method.titleize %>
+
+            </span>
+
+          </td>
+
+          <td class="p-4 text-center">
+
+            <button
+              type="button"
+              class="px-3 py-1 text-sm text-blue-800 bg-blue-200 rounded-lg"
+              data-dropdown-toggle="payment-dropdown-<%= payment.id %>">
+
+              Action
+
+            </button>
+
+            <div id="payment-dropdown-<%= payment.id %>"
+                 class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+
+              <ul class="py-2 text-sm">
+
+                <li>
+
+                  <%= link_to "View",
+                      vendor_payment_path(payment),
+                      class: "block px-4 py-2 hover:bg-gray-100" %>
+
+                </li>
+
+                <li>
+
+                  <%= link_to "Edit",
+                      edit_vendor_payment_path(payment),
+                      data: { turbo: false },
+                      class: "block px-4 py-2 hover:bg-gray-100" %>
+
+                </li>
+
+                <li>
+
+                  <%= link_to "Delete",
+                      vendor_payment_path(payment),
+                      data: {
+                        turbo_method: :delete,
+                        turbo_confirm: "Are you sure?"
+                      },
+                      class: "block px-4 py-2 text-red-600 hover:bg-gray-100" %>
+
+                </li>
+
+              </ul>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      <% end %>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <div class="mt-6">
+    <%= render "pagination" %>
+  </div>
+
+</div>

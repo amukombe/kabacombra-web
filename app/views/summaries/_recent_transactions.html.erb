@@ -1,0 +1,242 @@
+<div class="bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+
+    <div>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Recent Transactions
+      </h2>
+
+      <p class="text-sm text-gray-500">
+        Latest banking activity
+      </p>
+    </div>
+
+    <% if defined?(bank_transactions_path) %>
+      <%= link_to "View All",
+          bank_transactions_path,
+          class: "text-sm font-medium text-blue-600 hover:text-blue-800" %>
+    <% end %>
+
+  </div>
+
+  <% if @recent_transactions.present? %>
+
+    <div class="overflow-x-auto">
+
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+
+        <thead class="bg-gray-50 dark:bg-gray-900">
+
+          <tr>
+
+            <th class="px-4 py-3 text-xs font-semibold text-left uppercase">
+              Date
+            </th>
+
+            <th class="px-4 py-3 text-xs font-semibold text-left uppercase">
+              Reference
+            </th>
+
+            <th class="px-4 py-3 text-xs font-semibold text-left uppercase">
+              Bank Account
+            </th>
+
+            <th class="px-4 py-3 text-xs font-semibold text-left uppercase">
+              Transaction
+            </th>
+
+            <th class="px-4 py-3 text-xs font-semibold text-right uppercase">
+              Debit
+            </th>
+
+            <th class="px-4 py-3 text-xs font-semibold text-right uppercase">
+              Credit
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+
+          <% @recent_transactions.each do |transaction| %>
+
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+
+              <!-- Date -->
+
+              <td class="px-4 py-3 whitespace-nowrap">
+
+                <%= transaction.cleared_date&.strftime("%d %b %Y") || "-" %>
+
+              </td>
+
+              <!-- Reference -->
+
+              <td class="px-4 py-3 whitespace-nowrap">
+
+                <%= transaction.financial_transaction&.reference.presence ||
+                    transaction.cheque_number.presence ||
+                    "-" %>
+
+              </td>
+
+              <!-- Account -->
+
+              <td class="px-4 py-3 whitespace-nowrap">
+
+                <div class="font-semibold text-gray-900 dark:text-white">
+                  <%= transaction.bank_account&.account_name %>
+                </div>
+
+                <div class="text-xs text-gray-500">
+                  <%= transaction.bank_account&.account_number %>
+                </div>
+
+              </td>
+
+              <!-- Transaction Type -->
+
+              <td class="px-4 py-3">
+
+                <% if transaction.method == "deposit" %>
+
+                  <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
+                    Deposit
+                  </span>
+
+                <% elsif transaction.method == "withdraw" %>
+
+                  <span class="px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
+                    Withdrawal
+                  </span>
+
+                <% elsif transaction.method == "transfer" %>
+
+                  <span class="px-2 py-1 text-xs font-semibold text-purple-700 bg-purple-100 rounded-full">
+                    Transfer
+                  </span>
+
+                <% elsif transaction.method == "payment" %>
+
+                  <span class="px-2 py-1 text-xs font-semibold text-orange-700 bg-orange-100 rounded-full">
+                    Supplier Payment
+                  </span>
+
+                <% elsif transaction.method == "customer_payment" %>
+
+                  <span class="px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full">
+                    Customer Receipt
+                  </span>
+
+                <% elsif transaction.method == "expense" %>
+
+                  <span class="px-2 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 rounded-full">
+                    Expense
+                  </span>
+
+                <% elsif transaction.method == "bank_charge" %>
+
+                  <span class="px-2 py-1 text-xs font-semibold text-pink-700 bg-pink-100 rounded-full">
+                    Bank Charge
+                  </span>
+
+                <% elsif transaction.method == "interest" %>
+
+                  <span class="px-2 py-1 text-xs font-semibold rounded-full text-emerald-700 bg-emerald-100">
+                    Interest
+                  </span>
+
+                <% else %>
+
+                  <span class="px-2 py-1 text-xs font-semibold text-gray-700 bg-gray-100 rounded-full">
+                    <%= transaction.method.to_s.titleize %>
+                  </span>
+
+                <% end %>
+
+              </td>
+
+              <!-- Debit -->
+
+              <td class="px-4 py-3 text-right">
+
+                <% if ["deposit", "customer_payment", "interest"].include?(transaction.method) %>
+
+                  <span class="font-semibold text-green-600">
+
+                    UGX
+                    <%= number_with_delimiter(transaction.amount) %>
+
+                  </span>
+
+                <% else %>
+
+                  -
+
+                <% end %>
+
+              </td>
+
+              <!-- Credit -->
+
+              <td class="px-4 py-3 text-right">
+
+                <% unless ["deposit", "customer_payment", "interest"].include?(transaction.method) %>
+
+                  <span class="font-semibold text-red-600">
+
+                    UGX
+                    <%= number_with_delimiter(transaction.amount) %>
+
+                  </span>
+
+                <% else %>
+
+                  -
+
+                <% end %>
+
+              </td>
+
+            </tr>
+
+          <% end %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  <% else %>
+
+    <div class="p-12 text-center">
+
+      <svg class="w-12 h-12 mx-auto text-gray-300"
+           fill="none"
+           stroke="currentColor"
+           viewBox="0 0 24 24">
+
+        <path stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586A1 1 0 0113.293 3.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/>
+
+      </svg>
+
+      <h3 class="mt-4 text-lg font-semibold text-gray-700 dark:text-gray-300">
+        No Transactions Found
+      </h3>
+
+      <p class="mt-2 text-sm text-gray-500">
+        Banking transactions will appear here once they are recorded.
+      </p>
+
+    </div>
+
+  <% end %>
+
+</div>

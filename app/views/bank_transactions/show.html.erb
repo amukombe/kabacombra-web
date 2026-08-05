@@ -1,0 +1,359 @@
+<%= render "/shared/finance_nav" %>
+
+<div class="min-h-screen px-4 py-4 bg-gray-50 dark:bg-gray-900">
+
+  <!-- Header -->
+
+  <div class="flex items-center justify-between mb-6">
+
+    <div>
+
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        Bank Transaction
+      </h1>
+
+      <p class="text-gray-500">
+
+        Transaction Details
+
+      </p>
+
+    </div>
+
+    <div class="flex gap-3">
+
+      <%= link_to "Back",
+          bank_transactions_path,
+          class: "px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300" %>
+
+    </div>
+
+  </div>
+
+  <!-- Summary Cards -->
+
+  <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-4">
+
+    <div class="p-5 bg-white shadow rounded-xl">
+
+      <p class="text-xs text-gray-500 uppercase">
+        Amount
+      </p>
+
+      <p class="mt-2 text-2xl font-bold">
+
+        UGX
+        <%= number_with_delimiter(@transaction.amount) %>
+
+      </p>
+
+    </div>
+
+    <div class="p-5 bg-white shadow rounded-xl">
+
+      <p class="text-xs text-gray-500 uppercase">
+
+        Method
+
+      </p>
+
+      <p class="mt-2 text-lg font-semibold">
+
+        <%= @transaction.method.to_s.titleize %>
+
+      </p>
+
+    </div>
+
+    <div class="p-5 bg-white shadow rounded-xl">
+
+      <p class="text-xs text-gray-500 uppercase">
+
+        Transaction Type
+
+      </p>
+
+      <p class="mt-2 text-lg font-semibold">
+
+        <%= @transaction.transaction_type.to_s.titleize %>
+
+      </p>
+
+    </div>
+
+    <div class="p-5 bg-white shadow rounded-xl">
+
+      <p class="text-xs text-gray-500 uppercase">
+
+        Cleared Date
+
+      </p>
+
+      <p class="mt-2 text-lg font-semibold">
+
+        <%= @transaction.cleared_date.strftime("%d %b %Y") %>
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- Details -->
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+    <!-- Transaction -->
+
+    <div class="bg-white shadow rounded-xl">
+
+      <div class="px-6 py-4 border-b">
+
+        <h2 class="text-lg font-semibold">
+
+          Transaction Details
+
+        </h2>
+
+      </div>
+
+      <table class="min-w-full">
+
+        <tbody>
+
+          <tr class="border-b">
+
+            <td class="px-6 py-3 font-medium">
+
+              Account
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.bank_account.account_name %>
+
+            </td>
+
+          </tr>
+
+          <tr class="border-b">
+
+            <td class="px-6 py-3 font-medium">
+
+              Account Number
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.bank_account.account_number %>
+
+            </td>
+
+          </tr>
+
+          <tr class="border-b">
+
+            <td class="px-6 py-3 font-medium">
+
+              Bank
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.bank_account.bank.name %>
+
+            </td>
+
+          </tr>
+
+          <tr class="border-b">
+
+            <td class="px-6 py-3 font-medium">
+
+              Amount
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              UGX
+              <%= number_with_delimiter(@transaction.amount) %>
+
+            </td>
+
+          </tr>
+
+          <tr class="border-b">
+
+            <td class="px-6 py-3 font-medium">
+
+              Method
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.method.to_s.titleize %>
+
+            </td>
+
+          </tr>
+
+          <tr>
+
+            <td class="px-6 py-3 font-medium">
+
+              Cheque Number
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.cheque_number.presence || "-" %>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- Financial -->
+
+    <div class="bg-white shadow rounded-xl">
+
+      <div class="px-6 py-4 border-b">
+
+        <h2 class="text-lg font-semibold">
+
+          Financial Information
+
+        </h2>
+
+      </div>
+
+      <table class="min-w-full">
+
+        <tbody>
+
+          <tr class="border-b">
+
+            <td class="px-6 py-3 font-medium">
+
+              Reference
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.financial_transaction&.reference || "-" %>
+
+            </td>
+
+          </tr>
+
+          <tr class="border-b">
+
+            <td class="px-6 py-3 font-medium">
+
+              Financial Type
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.financial_transaction&.transaction_type&.titleize || "-" %>
+
+            </td>
+
+          </tr>
+
+          <tr class="border-b">
+
+            <td class="px-6 py-3 font-medium">
+
+              Status
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.financial_transaction&.status&.titleize || "-" %>
+
+            </td>
+
+          </tr>
+
+          <tr class="border-b">
+
+            <td class="px-6 py-3 font-medium">
+
+              Recorded By
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.user.employee&.fullname || @transaction.user&.email %>
+
+            </td>
+
+          </tr>
+
+          <tr>
+
+            <td class="px-6 py-3 font-medium">
+
+              Created
+
+            </td>
+
+            <td class="px-6 py-3">
+
+              <%= @transaction.created_at.strftime("%d %b %Y %H:%M") %>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- Linked Record -->
+
+  <% if @transaction.financial_transaction.present? %>
+
+    <div class="mt-6 bg-white shadow rounded-xl">
+
+      <div class="px-6 py-4 border-b">
+
+        <h2 class="text-lg font-semibold">
+
+          Linked Financial Transaction
+
+        </h2>
+
+      </div>
+
+      <div class="p-6">
+
+       
+
+      </div>
+
+    </div>
+
+  <% end %>
+
+</div>

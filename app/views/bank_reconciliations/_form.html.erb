@@ -1,0 +1,206 @@
+<%= form_with model: bank_reconciliation,
+              local: true,
+              class: "space-y-8" do |form| %>
+
+  <% if bank_reconciliation.errors.any? %>
+
+    <div class="p-4 border border-red-300 rounded-lg bg-red-50">
+
+      <h2 class="mb-3 font-semibold text-red-700">
+
+        Please correct the following errors
+
+      </h2>
+
+      <ul class="ml-5 text-red-600 list-disc">
+
+        <% bank_reconciliation.errors.full_messages.each do |message| %>
+
+          <li><%= message %></li>
+
+        <% end %>
+
+      </ul>
+
+    </div>
+
+  <% end %>
+
+  <div class="bg-white shadow rounded-xl">
+
+    <div class="px-6 py-4 border-b">
+
+      <h2 class="text-lg font-semibold">
+
+        Reconciliation Details
+
+      </h2>
+
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-3">
+
+      <!-- Reference -->
+
+      <div>
+
+        <label class="block mb-2 text-sm font-medium">
+
+          Reference
+
+        </label>
+
+        <input
+          type="text"
+          value="<%= bank_reconciliation.reference.presence || 'Auto Generated' %>"
+          disabled
+          class="w-full bg-gray-100 border-gray-300 rounded-lg">
+
+      </div>
+
+      <!-- Bank Account -->
+
+      <div>
+
+        <%= form.label :bank_account_id,
+              class: "block mb-2 text-sm font-medium" %>
+
+        <%= form.collection_select :bank_account_id,
+              @accounts,
+              :id,
+              :account_name,
+              { prompt: "-- Select Bank Account --" },
+              class: "w-full rounded-lg border-gray-300" %>
+
+      </div>
+
+      <!-- Status -->
+
+      <div>
+
+        <label class="block mb-2 text-sm font-medium">
+
+          Status
+
+        </label>
+
+        <input
+          type="text"
+          value="Draft"
+          disabled
+          class="w-full bg-gray-100 border-gray-300 rounded-lg">
+
+      </div>
+
+      <!-- Statement From -->
+
+      <div>
+
+        <%= form.label :statement_from,
+              class: "block mb-2 text-sm font-medium" %>
+
+        <%= form.date_field :statement_from,
+              class: "w-full rounded-lg border-gray-300" %>
+
+      </div>
+
+      <!-- Statement To -->
+
+      <div>
+
+        <%= form.label :statement_to,
+              class: "block mb-2 text-sm font-medium" %>
+
+        <%= form.date_field :statement_to,
+              class: "w-full rounded-lg border-gray-300" %>
+
+      </div>
+
+      <!-- Reconciled At -->
+
+      <div>
+
+        <label class="block mb-2 text-sm font-medium">
+
+          Reconciled At
+
+        </label>
+
+        <input
+          type="text"
+          disabled
+          value="Not Reconciled"
+          class="w-full bg-gray-100 border-gray-300 rounded-lg">
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Information -->
+
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+    <div class="p-5 rounded-lg bg-blue-50">
+
+      <h3 class="font-semibold text-blue-700">
+
+        Step 1
+
+      </h3>
+
+      <p class="mt-2 text-sm">
+
+        Create the reconciliation.
+
+      </p>
+
+    </div>
+
+    <div class="p-5 rounded-lg bg-yellow-50">
+
+      <h3 class="font-semibold text-yellow-700">
+
+        Step 2
+
+      </h3>
+
+      <p class="mt-2 text-sm">
+
+        Import the bank statement (CSV/Excel).
+
+      </p>
+
+    </div>
+
+    <div class="p-5 rounded-lg bg-green-50">
+
+      <h3 class="font-semibold text-green-700">
+
+        Step 3
+
+      </h3>
+
+      <p class="mt-2 text-sm">
+
+        Match and finalize reconciliation.
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="flex justify-end gap-3">
+
+    <%= link_to "Cancel",
+          bank_reconciliations_path,
+          class: "px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300" %>
+
+    <%= form.submit "Create Reconciliation",
+          class: "px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700" %>
+
+  </div>
+
+<% end %>

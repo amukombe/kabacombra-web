@@ -1,76 +1,312 @@
-<%= render "nav" %>
+<%= render "/shared/purchases_nav" %>
 
-<div class="flex flex-col gap-4 p-4 bg-white rounded-lg shadow dark:bg-gray-900">
-  <h1 class="mb-4 text-2xl font-bold">Vendor Statement</h1>
+<div class="px-4 pt-4 bg-white dark:bg-gray-900">
 
-    <div class="mb-3">
-        <%= form_tag nile_products_path, class:"flex items-start max-w-sm", method: :get, data:{turbo_frame:"search_results", turbo_action:"advance", controller:"search", action:"input->search#submit"} do |form| %>
-        <label for="simple-search" class="sr-only">Search</label>
-        <div class="relative w-full">
-            <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
-                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                </svg>
-                <span class="sr-only">Search</span>
-            </div>
-            <%= date_field_tag "query", nil, class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", placeholder:"Search nile_product ..." %>
-            
-        </div>
-        <%end%>
+  <!-- Header -->
+  <div class="grid items-center grid-cols-2 gap-4 mb-6">
+
+    <div>
+      <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+        Vendor Statement
+      </h1>
+
+      <p class="mt-1 text-sm text-gray-500">
+        Supplier account statement
+      </p>
     </div>
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-            
-            <tbody class="bg-white dark:bg-gray-800">
-                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">OPENING BALANCE</span>
-                    </td>
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">35000204403</span>
-                    </td>
-                </tr>
-                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">PURCHASES</span>
-                    </td>
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">100000</span>
-                    </td>
-                </tr>
-                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">EMPTY RETURNS</span>
-                    </td>
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">105000</span>
-                    </td>
-                </tr>
-                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">PAYMENTS</span>
-                    </td>
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">22000204403</span>
-                    </td>
-                </tr>
-                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">ADJUSTMENTS</span>
-                    </td>
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">0</span>
-                    </td>
-                </tr>
-                <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">CLOSING BALANCE</span>
-                    </td>
-                    <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                        <span class="font-semibold">15000204403</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
+    <div class="text-right">
+
+      <%= link_to "Export PDF",
+          vendor_statement_path(
+            format: :pdf,
+            start_date: params[:start_date],
+            end_date: params[:end_date]
+          ),
+          class: "px-5 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700" %>
+
     </div>
+
+  </div>
+
+  <!-- Filters -->
+
+  <%= form_with url: vendor_statement_path,
+                method: :get,
+                local: true,
+                class: "flex flex-wrap items-end gap-4 mb-8" do %>
+
+      <div>
+
+        <label class="block mb-1 text-xs font-medium">
+          From
+        </label>
+
+        <%= date_field_tag :start_date,
+              params[:start_date],
+              class:"border rounded-lg p-2.5" %>
+
+      </div>
+
+      <div>
+
+        <label class="block mb-1 text-xs font-medium">
+          To
+        </label>
+
+        <%= date_field_tag :end_date,
+              params[:end_date],
+              class:"border rounded-lg p-2.5" %>
+
+      </div>
+
+      <div>
+
+        <%= submit_tag "Apply Filter",
+            class:"px-5 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" %>
+
+      </div>
+
+  <% end %>
+
+
+<!-- Summary Cards -->
+
+<div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-5">
+
+  <div class="p-5 bg-gray-100 rounded-lg">
+    <p class="text-xs font-medium uppercase">
+      Opening Balance
+    </p>
+
+    <p class="mt-2 text-2xl font-bold">
+      UGX <%= number_with_delimiter(@opening_balance || 0) %>
+    </p>
+  </div>
+
+  <div class="p-5 bg-blue-100 rounded-lg">
+    <p class="text-xs font-medium uppercase">
+      Purchases
+    </p>
+
+    <p class="mt-2 text-2xl font-bold">
+      UGX <%= number_with_delimiter(@purchase_total || 0) %>
+    </p>
+  </div>
+
+  <div class="p-5 bg-green-100 rounded-lg">
+    <p class="text-xs font-medium uppercase">
+      Payments
+    </p>
+
+    <p class="mt-2 text-2xl font-bold">
+      UGX <%= number_with_delimiter(@payment_total || 0) %>
+    </p>
+  </div>
+
+  <div class="p-5 bg-yellow-100 rounded-lg">
+    <p class="text-xs font-medium uppercase">
+      Net Adjustments
+    </p>
+
+    <p class="mt-2 text-2xl font-bold">
+      UGX <%= number_with_delimiter(@adjustments_total || 0) %>
+    </p>
+  </div>
+
+  <div class="p-5 bg-purple-100 rounded-lg">
+    <p class="text-xs font-medium uppercase">
+      Closing Balance
+    </p>
+
+    <p class="mt-2 text-2xl font-bold">
+      UGX <%= number_with_delimiter(@closing_balance || 0) %>
+    </p>
+  </div>
+
+</div>
+
+  <!-- Ledger -->
+
+  <div class="overflow-hidden bg-white rounded-lg shadow">
+
+    <table class="min-w-full divide-y divide-gray-200">
+
+      <thead class="bg-gray-50">
+
+        <tr>
+
+          <th class="px-4 py-3 text-left">Date</th>
+
+          <th class="px-4 py-3 text-left">
+            Journal
+          </th>
+
+          <th class="px-4 py-3 text-left">
+            Reference
+          </th>
+
+          <th class="px-4 py-3 text-left">
+            Description
+          </th>
+
+          <th class="px-4 py-3 text-right">
+            Debit
+          </th>
+
+          <th class="px-4 py-3 text-right">
+            Credit
+          </th>
+
+          <th class="px-4 py-3 text-right">
+            Balance
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+
+      <% @ledger.each do |entry| %>
+
+        <tr>
+
+          <td class="px-4 py-3">
+
+            <%= entry[:date].strftime("%d %b %Y") %>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <%= entry[:journal] %>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <%= entry[:reference] %>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <%= entry[:description] %>
+
+          </td>
+
+          <td class="px-4 py-3 text-right">
+
+            <% if entry[:debit] > 0 %>
+
+              UGX
+              <%= number_with_delimiter(entry[:debit]) %>
+
+            <% end %>
+
+          </td>
+
+          <td class="px-4 py-3 text-right">
+
+            <% if entry[:credit] > 0 %>
+
+              UGX
+              <%= number_with_delimiter(entry[:credit]) %>
+
+            <% end %>
+
+          </td>
+
+          <td class="px-4 py-3 font-semibold text-right">
+
+            UGX
+            <%= number_with_delimiter(entry[:balance]) %>
+
+          </td>
+
+        </tr>
+
+      <% end %>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- Adjustment Summary -->
+
+  <div class="grid grid-cols-2 gap-4 mt-8 md:grid-cols-4">
+
+    <div class="p-4 bg-green-100 rounded">
+
+      <p class="text-xs uppercase">
+
+        Payment Incentives
+
+      </p>
+
+      <p class="mt-2 text-lg font-bold">
+
+        UGX
+        <%= number_with_delimiter(@payment_incentives) %>
+
+      </p>
+
+    </div>
+
+    <div class="p-4 bg-blue-100 rounded">
+
+      <p class="text-xs uppercase">
+
+        Warehouse Incentives
+
+      </p>
+
+      <p class="mt-2 text-lg font-bold">
+
+        UGX
+        <%= number_with_delimiter(@warehouse_incentives) %>
+
+      </p>
+
+    </div>
+
+    <div class="p-4 bg-purple-100 rounded">
+
+      <p class="text-xs uppercase">
+
+        Rebates
+
+      </p>
+
+      <p class="mt-2 text-lg font-bold">
+
+        UGX
+        <%= number_with_delimiter(@rebates) %>
+
+      </p>
+
+    </div>
+
+    <div class="p-4 bg-gray-100 rounded">
+
+      <p class="text-xs uppercase">
+
+        Manual Adjustments
+
+      </p>
+
+      <p class="mt-2 text-lg font-bold">
+
+        UGX
+        <%= number_with_delimiter(@manual_adjustments) %>
+
+      </p>
+
+    </div>
+
+  </div>
+
 </div>

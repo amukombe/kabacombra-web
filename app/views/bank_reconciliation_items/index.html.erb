@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Bank reconciliation items" %>
+
+<h1>Bank reconciliation items</h1>
+
+<div id="bank_reconciliation_items">
+  <% @bank_reconciliation_items.each do |bank_reconciliation_item| %>
+    <%= render bank_reconciliation_item %>
+    <p>
+      <%= link_to "Show this bank reconciliation item", bank_reconciliation_item %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New bank reconciliation item", new_bank_reconciliation_item_path %>

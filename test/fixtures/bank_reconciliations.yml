@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  territory: one
+  user: one
+  bank_account: one
+  statement_from: 2026-08-04
+  statement_to: 2026-08-04
+  book_balance: 9.99
+  bank_balance: 9.99
+  difference: 9.99
+  status: MyString
+  reference: MyString
+  reconciled_at: 2026-08-04 15:39:23
+
+two:
+  territory: two
+  user: two
+  bank_account: two
+  statement_from: 2026-08-04
+  statement_to: 2026-08-04
+  book_balance: 9.99
+  bank_balance: 9.99
+  difference: 9.99
+  status: MyString
+  reference: MyString
+  reconciled_at: 2026-08-04 15:39:23

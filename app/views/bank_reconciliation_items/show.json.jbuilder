@@ -1,0 +1,1 @@
+json.partial! "bank_reconciliation_items/bank_reconciliation_item", bank_reconciliation_item: @bank_reconciliation_item

@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @bank_import_mapping %>
+
+<div>
+  <%= link_to "Edit this bank import mapping", edit_bank_import_mapping_path(@bank_import_mapping) %> |
+  <%= link_to "Back to bank import mappings", bank_import_mappings_path %>
+
+  <%= button_to "Destroy this bank import mapping", @bank_import_mapping, method: :delete %>
+</div>

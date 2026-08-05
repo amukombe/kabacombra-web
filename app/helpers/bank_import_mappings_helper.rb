@@ -1,0 +1,2 @@
+module BankImportMappingsHelper
+end

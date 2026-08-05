@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @bank_reconciliation_item %>
+
+<div>
+  <%= link_to "Edit this bank reconciliation item", edit_bank_reconciliation_item_path(@bank_reconciliation_item) %> |
+  <%= link_to "Back to bank reconciliation items", bank_reconciliation_items_path %>
+
+  <%= button_to "Destroy this bank reconciliation item", @bank_reconciliation_item, method: :delete %>
+</div>

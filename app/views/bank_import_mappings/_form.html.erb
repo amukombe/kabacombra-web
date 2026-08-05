@@ -1,0 +1,57 @@
+<%= form_with(model: bank_import_mapping) do |form| %>
+  <% if bank_import_mapping.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(bank_import_mapping.errors.count, "error") %> prohibited this bank_import_mapping from being saved:</h2>
+
+      <ul>
+        <% bank_import_mapping.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :bank_id, style: "display: block" %>
+    <%= form.text_field :bank_id %>
+  </div>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :date_column, style: "display: block" %>
+    <%= form.text_field :date_column %>
+  </div>
+
+  <div>
+    <%= form.label :reference_column, style: "display: block" %>
+    <%= form.text_field :reference_column %>
+  </div>
+
+  <div>
+    <%= form.label :description_column, style: "display: block" %>
+    <%= form.text_field :description_column %>
+  </div>
+
+  <div>
+    <%= form.label :debit_column, style: "display: block" %>
+    <%= form.text_field :debit_column %>
+  </div>
+
+  <div>
+    <%= form.label :credit_column, style: "display: block" %>
+    <%= form.text_field :credit_column %>
+  </div>
+
+  <div>
+    <%= form.label :balance_column, style: "display: block" %>
+    <%= form.text_field :balance_column %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

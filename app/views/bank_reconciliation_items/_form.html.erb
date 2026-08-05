@@ -1,0 +1,62 @@
+<%= form_with(model: bank_reconciliation_item) do |form| %>
+  <% if bank_reconciliation_item.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(bank_reconciliation_item.errors.count, "error") %> prohibited this bank_reconciliation_item from being saved:</h2>
+
+      <ul>
+        <% bank_reconciliation_item.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :bank_reconciliation_id, style: "display: block" %>
+    <%= form.text_field :bank_reconciliation_id %>
+  </div>
+
+  <div>
+    <%= form.label :bank_transaction_id, style: "display: block" %>
+    <%= form.text_field :bank_transaction_id %>
+  </div>
+
+  <div>
+    <%= form.label :bank_date, style: "display: block" %>
+    <%= form.date_field :bank_date %>
+  </div>
+
+  <div>
+    <%= form.label :bank_reference, style: "display: block" %>
+    <%= form.text_field :bank_reference %>
+  </div>
+
+  <div>
+    <%= form.label :description, style: "display: block" %>
+    <%= form.text_field :description %>
+  </div>
+
+  <div>
+    <%= form.label :bank_amount, style: "display: block" %>
+    <%= form.text_field :bank_amount %>
+  </div>
+
+  <div>
+    <%= form.label :matched, style: "display: block" %>
+    <%= form.check_box :matched %>
+  </div>
+
+  <div>
+    <%= form.label :cleared, style: "display: block" %>
+    <%= form.check_box :cleared %>
+  </div>
+
+  <div>
+    <%= form.label :notes, style: "display: block" %>
+    <%= form.text_area :notes %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -10,7 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_23_112509) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_05_063220) do
+  create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "bank_accounts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "bank_id", null: false
     t.bigint "territory_id", null: false
@@ -43,6 +71,59 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_23_112509) do
     t.index ["bank_account_id"], name: "index_bank_deposits_on_bank_account_id"
     t.index ["territory_id"], name: "index_bank_deposits_on_territory_id"
     t.index ["user_id"], name: "index_bank_deposits_on_user_id"
+  end
+
+  create_table "bank_import_mappings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "bank_id", null: false
+    t.bigint "user_id", null: false
+    t.string "date_column"
+    t.string "reference_column"
+    t.string "description_column"
+    t.string "debit_column"
+    t.string "credit_column"
+    t.string "balance_column"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_id"], name: "index_bank_import_mappings_on_bank_id"
+    t.index ["user_id"], name: "index_bank_import_mappings_on_user_id"
+  end
+
+  create_table "bank_reconciliation_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "bank_reconciliation_id", null: false
+    t.bigint "bank_transaction_id", null: false
+    t.date "bank_date"
+    t.string "bank_reference"
+    t.string "description"
+    t.decimal "bank_amount", precision: 10
+    t.boolean "matched"
+    t.boolean "cleared"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "matched_transaction_id"
+    t.datetime "matched_at"
+    t.index ["bank_reconciliation_id"], name: "index_bank_reconciliation_items_on_bank_reconciliation_id"
+    t.index ["bank_transaction_id"], name: "index_bank_reconciliation_items_on_bank_transaction_id"
+    t.index ["matched_transaction_id"], name: "index_bank_reconciliation_items_on_matched_transaction_id"
+  end
+
+  create_table "bank_reconciliations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "territory_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "bank_account_id", null: false
+    t.date "statement_from"
+    t.date "statement_to"
+    t.decimal "book_balance", precision: 10
+    t.decimal "bank_balance", precision: 10
+    t.decimal "difference", precision: 10
+    t.string "status"
+    t.string "reference"
+    t.datetime "reconciled_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_bank_reconciliations_on_bank_account_id"
+    t.index ["territory_id"], name: "index_bank_reconciliations_on_territory_id"
+    t.index ["user_id"], name: "index_bank_reconciliations_on_user_id"
   end
 
   create_table "bank_transactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -992,6 +1073,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_23_112509) do
     t.datetime "updated_at", null: false
     t.string "journal_no"
     t.string "ref_no"
+    t.decimal "amount", precision: 15, scale: 2, default: "0.0", null: false
+    t.string "adjustment_type", default: "credit"
+    t.string "adjustment_category", default: "manual"
+    t.decimal "calculation_base_amount", precision: 15, scale: 2, default: "0.0"
+    t.decimal "calculation_rate", precision: 6, scale: 4, default: "0.0"
+    t.string "source_type"
+    t.bigint "source_id"
+    t.text "description"
     t.index ["purchase_type_id"], name: "index_vendor_adjustiments_on_purchase_type_id"
     t.index ["territory_id"], name: "index_vendor_adjustiments_on_territory_id"
     t.index ["user_id"], name: "index_vendor_adjustiments_on_user_id"
@@ -1003,10 +1092,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_23_112509) do
     t.date "payment_date"
     t.string "journal_no"
     t.string "ref_no"
-    t.decimal "payments", precision: 10
-    t.decimal "suspence", precision: 10
+    t.decimal "amount", precision: 10
+    t.decimal "suspense_amount", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "payment_no"
+    t.integer "payment_method", default: 0
+    t.text "notes"
     t.index ["territory_id"], name: "index_vendor_payments_on_territory_id"
     t.index ["user_id"], name: "index_vendor_payments_on_user_id"
   end
@@ -1019,12 +1111,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_23_112509) do
     t.index ["territory_id"], name: "index_warehouses_on_territory_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bank_accounts", "banks"
   add_foreign_key "bank_accounts", "territories"
   add_foreign_key "bank_accounts", "users"
   add_foreign_key "bank_deposits", "bank_accounts"
   add_foreign_key "bank_deposits", "territories"
   add_foreign_key "bank_deposits", "users"
+  add_foreign_key "bank_import_mappings", "banks"
+  add_foreign_key "bank_import_mappings", "users"
+  add_foreign_key "bank_reconciliation_items", "bank_reconciliations"
+  add_foreign_key "bank_reconciliation_items", "bank_transactions"
+  add_foreign_key "bank_reconciliation_items", "bank_transactions", column: "matched_transaction_id"
+  add_foreign_key "bank_reconciliations", "bank_accounts"
+  add_foreign_key "bank_reconciliations", "territories"
+  add_foreign_key "bank_reconciliations", "users"
   add_foreign_key "bank_transactions", "bank_accounts"
   add_foreign_key "bank_transactions", "financial_transactions"
   add_foreign_key "bank_transactions", "territories"

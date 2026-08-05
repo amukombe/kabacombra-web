@@ -1,10 +1,16 @@
 class BanksController < ApplicationController
-  before_action :set_bank, only: %i[ show edit update destroy ]
+  before_action :set_bank, only: %i[ show edit update destroy statement]
   before_action :set_active_link
   # GET /banks or /banks.json
   def index
     @active_link='banks'
     @banks = Bank.search(params).page(params[:page]).per(20)
+  end
+
+  def statement
+    @active_link = "banking"
+    load_statement
+    load_statement_summary
   end
 
   # GET /banks/1 or /banks/1.json
@@ -59,9 +65,51 @@ class BanksController < ApplicationController
   end
 
   private
+    def load_statement
+      params[:start_date] ||= Date.current.beginning_of_month.to_s
+      params[:end_date] ||= Date.current.to_s
+
+      @transactions =
+        @bank_account
+          .bank_transactions
+          .includes(:financial_transaction)
+          .where(
+            cleared_date:
+              params[:start_date]..
+              params[:end_date]
+          )
+          .order(
+            :cleared_date,
+            :created_at
+          )
+
+    end
+    def load_statement_summary
+
+      @opening_balance = 0
+
+      @total_deposits =
+        @transactions
+          .where(method: "deposit")
+          .sum(:amount)
+
+      @total_withdrawals =
+        @transactions
+          .where
+          .not(method: "deposit")
+          .sum(:amount)
+
+      @closing_balance =
+          @opening_balance +
+          @total_deposits -
+          @total_withdrawals
+
+    end
     # Use callbacks to share common setup or constraints between actions.
-    def set_bank
-      @bank = Bank.find(params[:id])
+    def set_bank_account
+      @bank_account =
+        BankAccount.includes(:bank)
+                  .find(params[:id])
     end
 
     def set_active_link

@@ -1,0 +1,125 @@
+<div class="bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700">
+
+  <!-- Header -->
+
+  <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+
+    <div>
+
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Bank Accounts
+      </h2>
+
+      <p class="text-sm text-gray-500">
+        Current balances by account
+      </p>
+
+    </div>
+
+    <%= link_to "View All",
+        bank_accounts_path,
+        class: "text-sm font-medium text-blue-600 hover:text-blue-800" %>
+
+  </div>
+
+  <!-- Accounts -->
+
+  <div class="divide-y divide-gray-200 dark:divide-gray-700">
+
+    <% @accounts.each do |account| %>
+
+      <div class="p-5 hover:bg-gray-50 dark:hover:bg-gray-700">
+
+        <div class="flex items-start justify-between">
+
+          <div>
+
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+              <%= account.account_name %>
+            </h3>
+
+            <p class="mt-1 text-sm text-gray-500">
+
+              <%= account.bank.name %>
+
+            </p>
+
+            <p class="text-sm text-gray-500">
+
+              A/C
+              <%= account.account_number %>
+
+            </p>
+
+            <% if account.branch_name.present? %>
+
+              <p class="text-xs text-gray-400">
+
+                <%= account.branch_name %>
+
+              </p>
+
+            <% end %>
+
+          </div>
+
+          <div class="text-right">
+
+            <p class="text-xs text-gray-500 uppercase">
+              Current Balance
+            </p>
+
+            <p class="mt-1 text-xl font-bold text-green-600">
+
+              UGX
+              <%= number_with_delimiter(account.current_balance) %>
+
+            </p>
+
+          </div>
+
+        </div>
+
+        <!-- Quick Actions -->
+
+        <div class="flex flex-wrap gap-2 mt-5">
+
+          <%= link_to "Statement",
+              statement_bank_account_path(account),
+              class: "px-3 py-1 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700" %>
+
+          <%= link_to "Deposit",
+              new_bank_deposit_path(bank_account_id: account.id),
+              class: "px-3 py-1 text-sm text-white bg-green-600 rounded-lg hover:bg-green-700" %>
+
+          <%= link_to "Withdraw",
+              new_bank_withdraw_path(bank_account_id: account.id),
+              class: "px-3 py-1 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700" %>
+
+          <%= link_to "Transfer",
+              new_bank_transfer_path(from_account_id: account.id),
+              class: "px-3 py-1 text-sm text-white bg-purple-600 rounded-lg hover:bg-purple-700" %>
+
+        </div>
+
+      </div>
+
+    <% end %>
+
+    <% if @accounts.empty? %>
+
+      <div class="p-10 text-center">
+
+        <p class="text-gray-500">
+
+          No bank accounts found.
+
+        </p>
+
+      </div>
+
+    <% end %>
+
+  </div>
+
+</div>

@@ -1,0 +1,335 @@
+<%= render "/shared/finance_nav" %>
+
+<div class="min-h-screen px-4 py-4 bg-gray-50 dark:bg-gray-900">
+
+  <!-- ===================================================== -->
+  <!-- Header -->
+  <!-- ===================================================== -->
+
+  <div class="flex items-center justify-between mb-6">
+
+    <div>
+
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        Bank Statement
+      </h1>
+
+      <p class="mt-1 text-gray-500">
+        <strong><%= @bank_account.bank.name %></strong> —
+        <%= @bank_account.account_name %>
+      </p>
+
+      <p class="text-sm text-gray-400">
+
+        Account Number:
+        <%= @bank_account.account_number %>
+
+      </p>
+
+    </div>
+
+    <div>
+
+      <%= link_to "Back",
+            banking_summary_path,
+            class: "px-5 py-2 bg-gray-200 rounded-lg hover:bg-gray-300" %>
+
+    </div>
+
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- Filters -->
+  <!-- ===================================================== -->
+
+  <%= form_with url: statement_bank_account_path(@bank_account),
+                method: :get,
+                local: true,
+                class: "flex flex-wrap gap-4 items-end mb-8" do %>
+
+      <div>
+
+        <label class="block mb-1 text-xs font-medium">
+          From
+        </label>
+
+        <%= date_field_tag :start_date,
+              params[:start_date],
+              class: "border rounded-lg p-2.5" %>
+
+      </div>
+
+      <div>
+
+        <label class="block mb-1 text-xs font-medium">
+          To
+        </label>
+
+        <%= date_field_tag :end_date,
+              params[:end_date],
+              class: "border rounded-lg p-2.5" %>
+
+      </div>
+
+      <div>
+
+        <%= submit_tag "Apply Filter",
+            class: "px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" %>
+
+      </div>
+
+  <% end %>
+
+  <!-- ===================================================== -->
+  <!-- Summary Cards -->
+  <!-- ===================================================== -->
+
+  <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-4">
+
+    <div class="p-5 bg-blue-100 rounded-xl">
+
+      <p class="text-xs text-blue-700 uppercase">
+        Opening Balance
+      </p>
+
+      <p class="mt-2 text-2xl font-bold text-blue-900">
+
+        UGX
+        <%= number_with_delimiter(@opening_balance) %>
+
+      </p>
+
+    </div>
+
+    <div class="p-5 bg-green-100 rounded-xl">
+
+      <p class="text-xs text-green-700 uppercase">
+        Deposits
+      </p>
+
+      <p class="mt-2 text-2xl font-bold text-green-900">
+
+        UGX
+        <%= number_with_delimiter(@total_deposits) %>
+
+      </p>
+
+    </div>
+
+    <div class="p-5 bg-red-100 rounded-xl">
+
+      <p class="text-xs text-red-700 uppercase">
+        Withdrawals
+      </p>
+
+      <p class="mt-2 text-2xl font-bold text-red-900">
+
+        UGX
+        <%= number_with_delimiter(@total_withdrawals) %>
+
+      </p>
+
+    </div>
+
+    <div class="p-5 bg-purple-100 rounded-xl">
+
+      <p class="text-xs text-purple-700 uppercase">
+        Closing Balance
+      </p>
+
+      <p class="mt-2 text-2xl font-bold text-purple-900">
+
+        UGX
+        <%= number_with_delimiter(@closing_balance) %>
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- Ledger -->
+  <!-- ===================================================== -->
+
+  <div class="overflow-hidden bg-white border border-gray-200 shadow rounded-xl">
+
+    <table class="min-w-full divide-y divide-gray-200">
+
+      <thead class="bg-gray-100">
+
+        <tr>
+
+          <th class="px-4 py-3 text-left">
+            Date
+          </th>
+
+          <th class="px-4 py-3 text-left">
+            Reference
+          </th>
+
+          <th class="px-4 py-3 text-left">
+            Description
+          </th>
+
+          <th class="px-4 py-3 text-center">
+            Type
+          </th>
+
+          <th class="px-4 py-3 text-right">
+            Debit
+          </th>
+
+          <th class="px-4 py-3 text-right">
+            Credit
+          </th>
+
+          <th class="px-4 py-3 text-right">
+            Running Balance
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+
+      <%
+        running_balance = @opening_balance
+      %>
+
+      <% @transactions.each do |transaction| %>
+
+        <%
+
+          if transaction.method == "deposit"
+
+            running_balance += transaction.amount.to_d
+
+          else
+
+            running_balance -= transaction.amount.to_d
+
+          end
+
+        %>
+
+        <tr>
+
+          <td class="px-4 py-3">
+
+            <%= transaction.cleared_date.strftime("%d %b %Y") %>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <%= transaction.financial_transaction&.reference ||
+                transaction.cheque_number ||
+                "-" %>
+
+          </td>
+
+          <td class="px-4 py-3">
+
+            <%= transaction.transaction_type.to_s.titleize rescue transaction.method.to_s.titleize %>
+
+          </td>
+
+          <td class="px-4 py-3 text-center">
+
+            <% if transaction.method == "deposit" %>
+
+              <span class="px-2 py-1 text-xs text-green-700 bg-green-100 rounded-full">
+
+                Deposit
+
+              </span>
+
+            <% else %>
+
+              <span class="px-2 py-1 text-xs text-red-700 bg-red-100 rounded-full">
+
+                Withdrawal
+
+              </span>
+
+            <% end %>
+
+          </td>
+
+          <td class="px-4 py-3 text-right">
+
+            <% if transaction.method == "deposit" %>
+
+              UGX
+              <%= number_with_delimiter(transaction.amount) %>
+
+            <% end %>
+
+          </td>
+
+          <td class="px-4 py-3 text-right">
+
+            <% unless transaction.method == "deposit" %>
+
+              UGX
+              <%= number_with_delimiter(transaction.amount) %>
+
+            <% end %>
+
+          </td>
+
+          <td class="px-4 py-3 font-semibold text-right">
+
+            UGX
+            <%= number_with_delimiter(running_balance) %>
+
+          </td>
+
+        </tr>
+
+      <% end %>
+
+      </tbody>
+
+      <tfoot class="font-semibold bg-gray-100">
+
+        <tr>
+
+          <td colspan="4" class="px-4 py-3 text-right">
+
+            Totals
+
+          </td>
+
+          <td class="px-4 py-3 text-right text-green-700">
+
+            UGX
+            <%= number_with_delimiter(@total_deposits) %>
+
+          </td>
+
+          <td class="px-4 py-3 text-right text-red-700">
+
+            UGX
+            <%= number_with_delimiter(@total_withdrawals) %>
+
+          </td>
+
+          <td class="px-4 py-3 text-right text-blue-700">
+
+            UGX
+            <%= number_with_delimiter(@closing_balance) %>
+
+          </td>
+
+        </tr>
+
+      </tfoot>
+
+    </table>
+
+  </div>
+
+</div>
