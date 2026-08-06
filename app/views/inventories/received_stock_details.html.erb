@@ -88,9 +88,7 @@
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   <div class="flex flex-col space-y-1">
-                    <span class="text-sm font-medium"><%= inventory.delivery_time&.strftime("%d %b, %Y") %> (<%= inventory.beer_dispatch.order.order_number %>)</span>
-                    <span class="text-xs">Invoice #: <span class="font-normal"><%= inventory.beer_dispatch.invoice_no %></span></span>
-                    <span class="text-xs">FDN: <span class="font-normal"><%= inventory.beer_dispatch.fdn_number %></span></span>
+                    <span class="text-sm font-medium"><%= inventory.beer_dispatch.order.order_date&.strftime("%d %b, %Y") %> (<%= inventory.beer_dispatch.order.order_number %>)</span>
                     <span class="text-xs">Truck No: <span class="font-normal"><%= inventory.beer_dispatch.truck_numberplate %> <%if inventory.beer_dispatch.driver_name? %>(<%= inventory.beer_dispatch.driver_name %>)<% end %></span></span>
                     <span class="text-xs">Warehouse: <span class="font-normal"><%= inventory.warehouse&.name %></span></span>
                     <% if inventory.beer_dispatch.order.status.code != "POS" %>
