@@ -69,7 +69,7 @@ class Inventory < ApplicationRecord
     # Start date filter
     if params[:start_date].present?
       query = query.where(
-        "DATE(beer_dispatches.loading_time) >= ?",
+        "DATE(orders.order_date) >= ?",
         params[:start_date]
       )
     end
@@ -77,7 +77,7 @@ class Inventory < ApplicationRecord
     # End date filter
     if params[:end_date].present?
       query = query.where(
-        "DATE(beer_dispatches.loading_time) <= ?",
+        "DATE(orders.order_date) <= ?",
         params[:end_date]
       )
     end

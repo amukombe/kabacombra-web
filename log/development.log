@@ -230052,3 +230052,516 @@ Processing by Rails::PwaController#manifest as JSON
 Completed 200 OK in 5ms (Views: 4.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
 
 
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :role, {:staff=>0, :supplier=>1, :admin=>2}
+ (called from <class:User> at /home/david/kabacombra-web/app/models/user.rb:2)
+Started GET "/inventories/received_stock_details" for ::1 at 2026-08-06 13:58:04 +0300
+  [1m[36mActiveRecord::SchemaMigration Load (6.2ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by InventoriesController#received_stock_details as HTML
+  [1m[36mUser Load (1.1ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[36mTerritory Load (1.4ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (4.5ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (6.3ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (2.5ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (5.5ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (3.6ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (3.0ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (4.0ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (2.0ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (3.8ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (1.8ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :payment_method, {:cash=>0, :cheque=>1, :mobile_money=>2, :bank_transfer=>3}
+ (called from <class:Payment> at /home/david/kabacombra-web/app/models/payment.rb:6)
+  [1m[36mPayment Load (3.7ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (1.4ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (6.8ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (3.0ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (2.5ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (3.8ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (5.5ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :mode_of_payment, {:cash=>"cash", :credit=>"credit"}
+ (called from <class:Sale> at /home/david/kabacombra-web/app/models/sale.rb:2)
+  [1m[36mSale Load (5.2ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankReconciliation Load (1.4ms)[0m  [1m[34mSELECT `bank_reconciliations`.* FROM `bank_reconciliations` WHERE `bank_reconciliations`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (1.6ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering inventories/received_stock_details.html.erb within layouts/application
+  Rendered shared/_beer_movement_nav.html.erb (Duration: 1.1ms | GC: 0.0ms)
+  [1m[36mInventory Load (7.1ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` INNER JOIN `beer_dispatches` ON `beer_dispatches`.`id` = `inventories`.`beer_dispatch_id` INNER JOIN `orders` ON `orders`.`id` = `beer_dispatches`.`order_id` WHERE `inventories`.`territory_id` = 1 AND `beer_dispatches`.`status_id` IN (4, 13) ORDER BY orders.order_date DESC, orders.order_number DESC LIMIT 20 OFFSET 0[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:87:in `each_with_index'
+  [1m[36mBeerDispatch Load (1.5ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 43 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.2ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 40 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mWarehouse Load (1.2ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mStatus Load (3.7ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 4 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (5.0ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 65[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mNileProduct Load (4.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.6ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 66 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 2.0ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 5.5ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (2.1ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 42 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.3ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 39 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.0ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mStatus Load (1.2ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.0ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 64[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.3ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 65 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (1.0ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 41 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (0.8ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 38 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.0ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mCACHE Status Load (0.0ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.1ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 63[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.0ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 62 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  [1m[36mNileProduct Load (0.8ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 9 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (0.8ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 63 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  [1m[36mNileProduct Load (1.1ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 10 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.2ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 64 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.7ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (1.0ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 39 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.1ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 36 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.1ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mCACHE Status Load (0.1ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.3ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 61[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 10 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.5ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 60 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 1.1ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.6ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (1.2ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 38 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.1ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 35 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.0ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mCACHE Status Load (0.0ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.7ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 60[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.3ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 59 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.6ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (1.6ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 37 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.2ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 34 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.0ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mCACHE Status Load (0.0ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.5ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 59[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.1ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 9 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.3ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 57 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 10 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.1ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 58 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (1.4ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 36 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.2ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 33 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.1ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mCACHE Status Load (0.0ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.6ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 58[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.3ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 56 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 1.0ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.9ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (2.0ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 35 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.5ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 32 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.0ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mCACHE Status Load (0.0ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.3ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 57[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.1ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.2ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 53 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 9 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.3ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 54 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 10 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.2ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 55 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 1.0ms | GC: 0.0ms)
+  Rendered inventories/_pagination.html.erb (Duration: 9.0ms | GC: 0.0ms)
+  Rendered inventories/received_stock_details.html.erb within layouts/application (Duration: 585.2ms | GC: 50.4ms)
+  [1m[36mEmployee Load (1.5ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 2.0ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1048.8ms | GC: 87.5ms)
+Completed 200 OK in 2167ms (Views: 950.4ms | ActiveRecord: 435.3ms (90 queries, 23 cached) | GC: 161.9ms)
+
+
+Started GET "/manifest.json" for ::1 at 2026-08-06 13:58:07 +0300
+Processing by Rails::PwaController#manifest as JSON
+  Rendering pwa/manifest.json.erb
+  Rendered pwa/manifest.json.erb (Duration: 0.7ms | GC: 0.0ms)
+Completed 200 OK in 5ms (Views: 4.7ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 1.3ms)
+
+
+Started GET "/inventories/received_stock_details?query=&start_date=2026-07-06&end_date=" for ::1 at 2026-08-06 13:58:19 +0300
+Processing by InventoriesController#received_stock_details as HTML
+  Parameters: {"query"=>"", "start_date"=>"2026-07-06", "end_date"=>""}
+  [1m[36mUser Load (1.5ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[36mTerritory Load (1.1ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (0.9ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (1.8ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (1.1ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (1.2ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (1.1ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (1.2ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (1.0ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (1.3ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (1.0ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (1.3ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mPayment Load (0.8ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (1.0ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (1.3ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (0.8ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (0.9ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (1.0ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (1.1ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSale Load (1.2ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankReconciliation Load (0.9ms)[0m  [1m[34mSELECT `bank_reconciliations`.* FROM `bank_reconciliations` WHERE `bank_reconciliations`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (1.3ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout /home/david/.asdf/installs/ruby/3.3.3/lib/ruby/gems/3.3.0/gems/turbo-rails-2.0.11/app/views/layouts/turbo_rails/frame.html.erb
+  Rendering inventories/received_stock_details.html.erb within layouts/turbo_rails/frame
+  Rendered shared/_beer_movement_nav.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  [1m[36mInventory Load (2.3ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` INNER JOIN `beer_dispatches` ON `beer_dispatches`.`id` = `inventories`.`beer_dispatch_id` INNER JOIN `orders` ON `orders`.`id` = `beer_dispatches`.`order_id` WHERE `inventories`.`territory_id` = 1 AND `beer_dispatches`.`status_id` IN (4, 13) AND (DATE(orders.order_date) >= '2026-07-06') ORDER BY orders.order_date DESC, orders.order_number DESC LIMIT 20 OFFSET 0[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:87:in `each_with_index'
+  [1m[36mBeerDispatch Load (0.9ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 43 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.2ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 40 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mWarehouse Load (1.2ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mStatus Load (1.3ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 4 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.2ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 65[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mNileProduct Load (1.2ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.2ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 66 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 1.0ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.9ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (1.3ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 42 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.1ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 39 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.0ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mStatus Load (1.0ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.1ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 64[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.0ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 65 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 0.9ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.9ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (1.1ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 41 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.3ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 38 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.1ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mCACHE Status Load (0.0ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.3ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 63[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.2ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 62 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  [1m[36mNileProduct Load (1.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 9 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (0.9ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 63 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  [1m[36mNileProduct Load (1.2ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 10 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (0.9ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 64 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 0.7ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered inventories/_pagination.html.erb (Duration: 0.4ms | GC: 0.0ms)
+  Rendered inventories/received_stock_details.html.erb within layouts/turbo_rails/frame (Duration: 110.9ms | GC: 6.5ms)
+  Rendered layout /home/david/.asdf/installs/ruby/3.3.3/lib/ruby/gems/3.3.0/gems/turbo-rails-2.0.11/app/views/layouts/turbo_rails/frame.html.erb (Duration: 112.2ms | GC: 6.5ms)
+Completed 200 OK in 234ms (Views: 91.8ms | ActiveRecord: 49.0ms (48 queries, 5 cached) | GC: 9.5ms)
+
+
+Started GET "/inventories/received_stock_details?query=&start_date=2026-08-01&end_date=" for ::1 at 2026-08-06 13:58:21 +0300
+Processing by InventoriesController#received_stock_details as HTML
+  Parameters: {"query"=>"", "start_date"=>"2026-08-01", "end_date"=>""}
+  [1m[36mUser Load (1.3ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[36mTerritory Load (0.8ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (0.8ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (0.9ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (0.9ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (1.0ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (0.9ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (1.1ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (1.2ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (1.1ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (1.1ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (1.1ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mPayment Load (0.9ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (1.2ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (1.0ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (1.2ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (1.3ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (1.2ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (1.1ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSale Load (1.3ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankReconciliation Load (1.0ms)[0m  [1m[34mSELECT `bank_reconciliations`.* FROM `bank_reconciliations` WHERE `bank_reconciliations`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (0.8ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout /home/david/.asdf/installs/ruby/3.3.3/lib/ruby/gems/3.3.0/gems/turbo-rails-2.0.11/app/views/layouts/turbo_rails/frame.html.erb
+  Rendering inventories/received_stock_details.html.erb within layouts/turbo_rails/frame
+  Rendered shared/_beer_movement_nav.html.erb (Duration: 0.1ms | GC: 0.0ms)
+  [1m[36mInventory Load (3.3ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` INNER JOIN `beer_dispatches` ON `beer_dispatches`.`id` = `inventories`.`beer_dispatch_id` INNER JOIN `orders` ON `orders`.`id` = `beer_dispatches`.`order_id` WHERE `inventories`.`territory_id` = 1 AND `beer_dispatches`.`status_id` IN (4, 13) AND (DATE(orders.order_date) >= '2026-08-01') ORDER BY orders.order_date DESC, orders.order_number DESC LIMIT 20 OFFSET 0[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:87:in `each_with_index'
+  Rendered inventories/_pagination.html.erb (Duration: 0.2ms | GC: 0.0ms)
+  Rendered inventories/received_stock_details.html.erb within layouts/turbo_rails/frame (Duration: 16.1ms | GC: 1.5ms)
+  Rendered layout /home/david/.asdf/installs/ruby/3.3.3/lib/ruby/gems/3.3.0/gems/turbo-rails-2.0.11/app/views/layouts/turbo_rails/frame.html.erb (Duration: 16.8ms | GC: 1.5ms)
+Completed 200 OK in 139ms (Views: 14.2ms | ActiveRecord: 26.0ms (23 queries, 0 cached) | GC: 7.2ms)
+
+
+Started GET "/inventories/received_stock_details?query=&start_date=2026-07-01&end_date=" for ::1 at 2026-08-06 13:58:45 +0300
+Processing by InventoriesController#received_stock_details as HTML
+  Parameters: {"query"=>"", "start_date"=>"2026-07-01", "end_date"=>""}
+  [1m[36mUser Load (1.7ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[36mTerritory Load (1.1ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (1.0ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (1.4ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (1.1ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (1.0ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (1.7ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (1.2ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (1.1ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (1.3ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (1.2ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (1.0ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mPayment Load (1.1ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (1.2ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (1.2ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (1.0ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (1.3ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (1.1ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (1.0ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mSale Load (1.1ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankReconciliation Load (1.2ms)[0m  [1m[34mSELECT `bank_reconciliations`.* FROM `bank_reconciliations` WHERE `bank_reconciliations`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (1.2ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout /home/david/.asdf/installs/ruby/3.3.3/lib/ruby/gems/3.3.0/gems/turbo-rails-2.0.11/app/views/layouts/turbo_rails/frame.html.erb
+  Rendering inventories/received_stock_details.html.erb within layouts/turbo_rails/frame
+  Rendered shared/_beer_movement_nav.html.erb (Duration: 0.3ms | GC: 0.0ms)
+  [1m[36mInventory Load (2.1ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` INNER JOIN `beer_dispatches` ON `beer_dispatches`.`id` = `inventories`.`beer_dispatch_id` INNER JOIN `orders` ON `orders`.`id` = `beer_dispatches`.`order_id` WHERE `inventories`.`territory_id` = 1 AND `beer_dispatches`.`status_id` IN (4, 13) AND (DATE(orders.order_date) >= '2026-07-01') ORDER BY orders.order_date DESC, orders.order_number DESC LIMIT 20 OFFSET 0[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:87:in `each_with_index'
+  [1m[36mBeerDispatch Load (1.2ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 43 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.4ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 40 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mWarehouse Load (1.3ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mStatus Load (2.1ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 4 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.8ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 65[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mNileProduct Load (1.7ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.3ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 66 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 1.4ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (1.4ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 42 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (1.1ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 39 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.1ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mStatus Load (1.6ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.4ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 64[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.3ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 65 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 1.2ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 0.8ms | GC: 0.0ms)
+  [1m[36mBeerDispatch Load (1.7ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 41 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mOrder Load (3.3ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 38 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:91
+  [1m[36mCACHE Warehouse Load (0.1ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:93
+  [1m[36mCACHE Status Load (0.0ms)[0m  [1m[34mSELECT `statuses`.* FROM `statuses` WHERE `statuses`.`id` = 13 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:94
+  [1m[36mInventoryItem Load (1.4ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 63[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:131:in `each_with_index'
+  [1m[36mCACHE NileProduct Load (0.0ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 8 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (2.7ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 62 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  [1m[36mNileProduct Load (1.2ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 9 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.3ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 63 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  [1m[36mNileProduct Load (1.6ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 10 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:133
+  [1m[36mDispatchItem Load (1.4ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 64 LIMIT 1[0m
+  ↳ app/views/inventories/received_stock_details.html.erb:134
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 2.7ms | GC: 0.0ms)
+  Rendered inventories/_confirm_reject_modal.html.erb (Duration: 3.5ms | GC: 1.0ms)
+  Rendered inventories/_pagination.html.erb (Duration: 0.5ms | GC: 0.0ms)
+  Rendered inventories/received_stock_details.html.erb within layouts/turbo_rails/frame (Duration: 169.2ms | GC: 23.1ms)
+  Rendered layout /home/david/.asdf/installs/ruby/3.3.3/lib/ruby/gems/3.3.0/gems/turbo-rails-2.0.11/app/views/layouts/turbo_rails/frame.html.erb (Duration: 169.9ms | GC: 23.1ms)
+Completed 200 OK in 295ms (Views: 138.9ms | ActiveRecord: 58.9ms (48 queries, 5 cached) | GC: 27.0ms)
+
+
