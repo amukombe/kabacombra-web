@@ -47,7 +47,7 @@ class Inventory < ApplicationRecord
 
   def self.search_received(params, territory_id)
 
-    query = joins(:beer_dispatch)
+    query = joins(beer_dispatch: :order)
               .where(
                 territory_id: territory_id,
                 beer_dispatches: {
@@ -82,7 +82,7 @@ class Inventory < ApplicationRecord
       )
     end
 
-    query.order("beer_dispatches.loading_time DESC")
+    query.order("orders.order_date DESC, orders.order_number DESC")
   end
 
   def total_price
