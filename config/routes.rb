@@ -53,7 +53,11 @@ Rails.application.routes.draw do
   get "reports/banking"
   resources :cheques
   resources :vendor_adjustiments
-  resources :vendor_payments
+  resources :vendor_payments do
+    member do
+      patch :reconcile
+    end
+  end
   get "statements/vendor_statement"
   get "statements/beer_purchases"
   get "statements/empty_returns"

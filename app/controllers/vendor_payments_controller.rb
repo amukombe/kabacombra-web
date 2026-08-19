@@ -252,6 +252,20 @@ class VendorPaymentsController < ApplicationController
     end
   end
 
+  def reconcile
+    @vendor_payment = VendorPayment.find(params[:id])
+
+    if @vendor_payment.pending?
+      @vendor_payment.reconciled!
+
+      redirect_to vendor_payments_path,
+                  notice: "Payment reconciled successfully."
+    else
+      redirect_to vendor_payments_path,
+                  alert: "This payment has already been reconciled."
+    end
+  end
+
   ####################################################
   private
   ####################################################

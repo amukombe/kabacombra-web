@@ -9,6 +9,11 @@ class VendorPayment < ApplicationRecord
     mobile_money: 3
   }
 
+  enum :status, {
+    pending: 0,
+    reconciled: 1
+  }
+
   validates :payment_date, :amount, presence: true
   validates :amount,
             numericality: {

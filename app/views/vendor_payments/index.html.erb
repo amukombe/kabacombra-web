@@ -40,16 +40,6 @@
       </p>
     </div>
 
-    <div class="p-4 bg-yellow-100 rounded-lg">
-      <p class="text-xs font-semibold uppercase">
-        Suspense
-      </p>
-
-      <p class="mt-2 text-sm font-bold">
-        UGX <%= number_with_delimiter(@total_suspense) %>
-      </p>
-    </div>
-
     <div class="p-4 bg-green-100 rounded-lg">
       <p class="text-xs font-semibold uppercase">
         Cash Out
@@ -173,7 +163,7 @@
 
           <th class="px-4 py-3 text-right">Amount</th>
 
-          <th class="px-4 py-3 text-right">Suspense</th>
+          <th class="px-4 py-3 text-right">Status</th>
 
           <th class="px-4 py-3 text-center">Method</th>
 
@@ -238,8 +228,7 @@
 
           <td class="p-4 text-right">
 
-            UGX
-            <%= number_with_delimiter(payment.suspense_amount) %>
+            <%= payment&.status.titleize %>
 
           </td>
 
@@ -276,6 +265,18 @@
                       class: "block px-4 py-2 hover:bg-gray-100" %>
 
                 </li>
+
+                <% if payment.pending? %>
+                  <li>
+                    <%= link_to "Reconcile",
+                        reconcile_vendor_payment_path(payment),
+                        data: {
+                          turbo_method: :patch,
+                          turbo_confirm: "Are you sure you want to reconcile this payment?"
+                        },
+                        class: "block px-4 py-2 text-green-700 hover:bg-gray-100" %>
+                  </li>
+                <% end %>
 
                 <li>
 
