@@ -4,6 +4,7 @@ class VendorAdjustimentsController < ApplicationController
   # GET /vendor_adjustiments or /vendor_adjustiments.json
   def index
     @active_link = "adjustiments"
+
     params[:start_date] ||= Date.current.to_s
     params[:end_date] ||= Date.current.to_s
 
@@ -29,6 +30,14 @@ class VendorAdjustimentsController < ApplicationController
     @net_adjustments =
       @total_credits - @total_debits
 
+    @purchase_type_totals = {}
+
+    PurchaseType.find_each do |purchase_type|
+      @purchase_type_totals[purchase_type] =
+        filtered_adjustments
+          .where(purchase_type_id: purchase_type.id)
+          .sum(:amount)
+    end
   end
 
   # GET /vendor_adjustiments/1 or /vendor_adjustiments/1.json

@@ -6,7 +6,8 @@ class VendorPayment < ApplicationRecord
     cash: 0,
     bank: 1,
     cheque: 2,
-    mobile_money: 3
+    mobile_money: 3,
+    bank_transfer: 4
   }
 
   enum :status, {

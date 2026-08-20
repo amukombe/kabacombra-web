@@ -57,6 +57,30 @@
 
   </div>
 
+  <!-- Purchase Type Summary Cards -->
+    <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4">
+
+      <% @purchase_type_totals.each do |purchase_type, total| %>
+
+        <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
+
+          <p class="text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <%= purchase_type.name %>
+          </p>
+
+          <p class="mt-2 text-sm font-bold text-gray-900">
+            UGX <%= number_with_delimiter(total) %>
+          </p>
+
+          <p class="mt-1 text-xs text-gray-500">
+            Total adjustments
+          </p>
+
+        </div>
+
+      <% end %>
+
+    </div>
   <!-- Search -->
   <%= form_with url: vendor_adjustiments_path,
                 method: :get,

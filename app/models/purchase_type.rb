@@ -4,4 +4,5 @@ class PurchaseType < ApplicationRecord
     end
 
     has_many :sale_items
+    has_many :vendor_adjustiments
 end
