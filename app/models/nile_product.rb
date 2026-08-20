@@ -11,6 +11,7 @@ class NileProduct < ApplicationRecord
   has_many :store_transactions, dependent: :destroy
   has_many :beer_return_items, dependent: :destroy
   belongs_to :destination, optional: true
+  belongs_to :store, optional: true
   validates :name, uniqueness: true, presence: true
   def self.search(params)
       params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")

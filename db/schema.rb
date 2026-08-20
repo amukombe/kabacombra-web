@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_19_075512) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_20_093449) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -638,9 +638,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_19_075512) do
     t.bigint "empty_type_id"
     t.integer "product_number"
     t.bigint "destination_id"
+    t.bigint "store_id"
     t.index ["destination_id"], name: "index_nile_products_on_destination_id"
     t.index ["empty_type_id"], name: "index_nile_products_on_empty_type_id"
     t.index ["nile_category_id"], name: "index_nile_products_on_nile_category_id"
+    t.index ["store_id"], name: "index_nile_products_on_store_id"
   end
 
   create_table "order_drivers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1200,6 +1202,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_19_075512) do
   add_foreign_key "nile_products", "destinations"
   add_foreign_key "nile_products", "empty_types"
   add_foreign_key "nile_products", "nile_categories"
+  add_foreign_key "nile_products", "stores"
   add_foreign_key "order_drivers", "drivers"
   add_foreign_key "order_drivers", "orders"
   add_foreign_key "order_items", "nile_products"
