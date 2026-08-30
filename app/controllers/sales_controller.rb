@@ -90,14 +90,15 @@ class SalesController < ApplicationController
     @order.loading_order_items.each do |loading_item|
       quantity = loading_item.remaining_quantity || loading_item.quantity_loaded
 
-      next if quantity <= 0
+      next if quantity.to_f <= 0
 
       @sale.sale_items.build(
         loading_order_item_id: loading_item.id,
         nile_product_id: loading_item.nile_product_id,
+        quantity_ordered: quantity,
         quantity_sold: quantity,
         amount: loading_item.nile_product.selling_price,
-        total: quantity * loading_item.nile_product.selling_price.to_i
+        total: quantity * loading_item.nile_product.selling_price.to_f
       )
     end
 
@@ -131,6 +132,22 @@ class SalesController < ApplicationController
     create_customer_if_needed
 
     @sale = Sale.new(sale_params)
+
+    # Set quantity_ordered from the loading order item.
+    # Do this server-side instead of relying on the form.
+    @sale.sale_items.each do |sale_item|
+      loading_item = sale_item.loading_order_item
+
+      next unless loading_item
+
+      quantity = loading_item.remaining_quantity
+
+      if quantity.nil?
+        quantity = loading_item.quantity_loaded
+      end
+
+      sale_item.quantity_ordered = quantity
+    end
 
     @products = LoadingOrderItem
       .joins(:loading_order)
@@ -174,6 +191,7 @@ class SalesController < ApplicationController
         end
 
       rescue ActiveRecord::RecordInvalid => error
+
         if error.record.is_a?(Sale)
           @sale = error.record
         else
@@ -197,7 +215,6 @@ class SalesController < ApplicationController
       end
     end
   end
-
   # PATCH/PUT /sales/1
   def update
     @products = LoadingOrderItem
