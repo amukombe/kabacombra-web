@@ -177,7 +177,7 @@
               <% if current_user.is_super? %>
                 <% @depts = Department.all %>
                   <% @depts.each do |department|%>
-                    <a href="<%=department.app_url%>?id=<%= department.id %>" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600">
+                    <a href="<%=department.app_url%>?id=<%= department.id %>" data:{turbo:false} class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600">
                       <%= raw department.app_icon%>
                       <div class="text-sm font-medium text-gray-900 dark:text-white">
                         <%= department.name %>
@@ -187,7 +187,7 @@
                   <%end%>
               <%else%>
                   <% @current_user.departments.distinct.each do |department|%>
-                    <a href="<%=department.app_url%>?id=<%= department.id %>" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600">
+                    <a href="<%=department.app_url%>?id=<%= department.id %>" data:{turbo:false} class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600">
                       <%= raw department.app_icon%>
                       <div class="text-sm font-medium text-gray-900 dark:text-white">
                         <%= department.name %>

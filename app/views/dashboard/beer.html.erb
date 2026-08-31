@@ -1,6 +1,6 @@
 <div class="flex justify-center gap-2 text-center">
     <% @employee_territories.each do |emp_t| %>
-        <%= link_to emp_t.territory.name, welcome_beer_path(id: emp_t.territory.id), class:"px-4 py-1 rounded bg-amber-700 text-amber-100 hover:bg-green-700 dark:bg-amber-100 dark:text-amber-700" %>
+        <%= link_to emp_t.territory.name, welcome_beer_path(id: emp_t.territory.id),  data:{turbo:false} , class:"px-4 py-1 rounded bg-amber-700 text-amber-100 hover:bg-green-700 dark:bg-amber-100 dark:text-amber-700" %>
     <%end%>
 </div>
 
