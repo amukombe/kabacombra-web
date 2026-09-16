@@ -24,6 +24,10 @@ class Sale < ApplicationRecord
   has_many :credit_memo_allocations, dependent: :restrict_with_error
   has_many :customer_credit_memos, through: :credit_memo_allocations
 
+  has_many :customer_payment_allocations, class_name: "CustomerPaymentAllocation", dependent: :destroy
+
+  has_many :customer_payments, through: :customer_payment_allocations
+
   validates :sale_date, :mode_of_payment, presence: true
 
   validate :sufficient_stock
@@ -145,6 +149,18 @@ class Sale < ApplicationRecord
 
   def credit_memo_amount
     credit_memo_allocations.sum(:amount)
+  end
+
+  def total_customer_payments
+    customer_payment_allocations.sum(:amount)
+  end
+
+  def customer_payment_balance
+    total_amount.to_d - total_customer_payments.to_d
+  end
+
+  def customer_payment_fully_paid?
+    customer_payment_balance <= 0
   end
 
   private

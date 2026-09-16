@@ -7,6 +7,7 @@ class Customer < ApplicationRecord
     has_many :sale_payments, dependent: :restrict_with_error
     has_many :customer_credit_memos, dependent: :restrict_with_error
     has_many :customer_adjustments, dependent: :restrict_with_error
+    has_many :customer_payments, dependent: :restrict_with_exception
     def self.search(params)
         params[:query].blank? ? all : where("name LIKE?", "%#{sanitize_sql_like(params[:query])}%")
     end

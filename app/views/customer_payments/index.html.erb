@@ -1,0 +1,36 @@
+<div class="flex items-center justify-between mb-5">
+
+  <div>
+
+    <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
+      Payments
+    </h1>
+
+    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+      Manage invoice payments and customer account payments
+    </p>
+
+  </div>
+
+  <%= link_to new_customer_payment_path,
+      class: "inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700" do %>
+
+    <svg
+      class="w-4 h-4"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor">
+
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 5v14m-7-7h14" />
+
+    </svg>
+
+    Receive Customer Payment
+
+  <% end %>
+
+</div>

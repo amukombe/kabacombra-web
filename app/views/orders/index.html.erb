@@ -132,8 +132,14 @@
                 <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=order.id%>">                    
                     <ul class="py-2" aria-labelledby="order-menu-button">
                         <%if  order.status.code=="OS"%>
-                          <li>
-                            <%= link_to new_beer_dispatch_path(id: order.id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Dispatch order<%end%>
+                        <li>
+                          <button
+                            type="button"
+                            data-modal-target="popup-modal-approve-<%= order.id %>"
+                            data-modal-toggle="popup-modal-approve-<%= order.id %>"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                            Approve Order
+                          </button>
                         </li>
                         <li>
                             <%= link_to edit_order_path(order), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
@@ -151,6 +157,7 @@
               </tr>
               <%= render "confirm_delete_modal", order: order%>
               <%= render "confirm_cancel_modal", order: order%>
+              <%= render "confirm_approve_modal", order: order %>
             <%end%>
             </tbody>
           </table>

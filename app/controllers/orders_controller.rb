@@ -7,6 +7,11 @@ class OrdersController < ApplicationController
     @orders = Order.search(params, current_territory.id).order(:order_date => :desc).page(params[:page]).per(20)
   end
 
+  def approved
+    @active_link = "approved"
+    @orders = Order.search_approved(params, current_territory.id).order(:order_date => :desc).page(params[:page]).per(20)
+  end
+
   def export
     @orders = Order
                 .search(params, current_territory.id)
@@ -231,6 +236,16 @@ class OrdersController < ApplicationController
   def vendor_statement
     @date = Date.today # params[:date].present? ? Date.parse(params[:date]) : Date.today
     @statements = InventoryTransaction.daily_statement(@date)
+  end
+
+  def approve
+    @order = Order.find(params[:id])
+
+    if @order.update(status_id: 15)
+      redirect_to orders_path, notice: "Order #{@order.order_number} has been approved."
+    else
+      redirect_to orders_path, alert: "Unable to approve order #{@order.order_number}."
+    end
   end
 
   private

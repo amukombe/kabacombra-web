@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  resources :customer_payments do
+    member do
+      post :auto_allocate
+    end
+  end
   resources :bank_import_mappings
   resources :bank_reconciliation_items
   resources :bank_reconciliations do
@@ -159,6 +164,7 @@ Rails.application.routes.draw do
   resources :loading_orders do
     member do
       patch :approve
+      patch :reject
     end
     collection do
       get :loading_summary
@@ -222,11 +228,13 @@ Rails.application.routes.draw do
       get "dispatch_pdf"
       patch :cancel
       patch :reverse
+      patch :approve
     end
     collection do
       get "vendor_statement"
       get :export
       get :canceled
+      get :approved
     end
   end
   resources :statuses

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_20_093449) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_16_033611) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -337,6 +337,38 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_20_093449) do
     t.index ["memo_number"], name: "index_customer_credit_memos_on_memo_number", unique: true
   end
 
+  create_table "customer_payment_allocations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "customer_payment_id", null: false
+    t.bigint "sale_id", null: false
+    t.decimal "amount", precision: 10
+    t.datetime "allocated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_payment_id", "sale_id"], name: "index_customer_payment_allocations_unique", unique: true
+    t.index ["customer_payment_id"], name: "index_customer_payment_allocations_on_customer_payment_id"
+    t.index ["sale_id"], name: "index_customer_payment_allocations_on_sale_id"
+  end
+
+  create_table "customer_payments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.bigint "territory_id", null: false
+    t.bigint "user_id", null: false
+    t.string "payment_no"
+    t.datetime "payment_date"
+    t.integer "payment_method"
+    t.decimal "amount", precision: 10
+    t.string "payment_ref"
+    t.decimal "allocated_amount", precision: 10
+    t.decimal "credit_amount", precision: 10
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_customer_payments_on_customer_id"
+    t.index ["payment_no"], name: "index_customer_payments_on_payment_no", unique: true
+    t.index ["territory_id"], name: "index_customer_payments_on_territory_id"
+    t.index ["user_id"], name: "index_customer_payments_on_user_id"
+  end
+
   create_table "customers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -584,6 +616,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_20_093449) do
     t.bigint "territory_id"
     t.index ["nile_product_id"], name: "index_inventory_transactions_on_nile_product_id"
     t.index ["territory_id"], name: "index_inventory_transactions_on_territory_id"
+  end
+
+  create_table "loading_order_allocations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "loading_order_id", null: false
+    t.bigint "loading_order_item_id", null: false
+    t.bigint "inventory_item_id", null: false
+    t.decimal "quantity", precision: 15
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["inventory_item_id"], name: "index_loading_order_allocations_on_inventory_item_id"
+    t.index ["loading_order_id"], name: "index_loading_order_allocations_on_loading_order_id"
+    t.index ["loading_order_item_id"], name: "index_loading_order_allocations_on_loading_order_item_id"
   end
 
   create_table "loading_order_items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1164,6 +1208,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_20_093449) do
   add_foreign_key "customer_credit_memos", "customers"
   add_foreign_key "customer_credit_memos", "users", column: "approved_by_id"
   add_foreign_key "customer_credit_memos", "users", column: "created_by_id"
+  add_foreign_key "customer_payment_allocations", "customer_payments"
+  add_foreign_key "customer_payment_allocations", "sales"
+  add_foreign_key "customer_payments", "customers"
+  add_foreign_key "customer_payments", "territories"
+  add_foreign_key "customer_payments", "users"
   add_foreign_key "customers", "territories"
   add_foreign_key "department_modules", "departments"
   add_foreign_key "dispatch_items", "beer_dispatches"
@@ -1193,6 +1242,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_20_093449) do
   add_foreign_key "inventory_items", "nile_products"
   add_foreign_key "inventory_transactions", "nile_products"
   add_foreign_key "inventory_transactions", "territories"
+  add_foreign_key "loading_order_allocations", "inventory_items"
+  add_foreign_key "loading_order_allocations", "loading_order_items"
+  add_foreign_key "loading_order_allocations", "loading_orders"
   add_foreign_key "loading_order_items", "loading_orders"
   add_foreign_key "loading_order_items", "nile_products"
   add_foreign_key "loading_orders", "statuses"

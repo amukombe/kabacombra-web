@@ -1,0 +1,20 @@
+<%= render "/shared/sales_nav" %>
+
+<div class="max-w-5xl px-6 py-8 mx-auto">
+
+  <div class="mb-8">
+
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+      Receive Customer Payment
+    </h1>
+
+    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+      Receive a payment from a customer and allocate it against outstanding invoices.
+    </p>
+
+  </div>
+
+  <%= render "form",
+      customer_payment: @customer_payment %>
+
+</div>

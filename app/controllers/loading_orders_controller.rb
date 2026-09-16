@@ -351,6 +351,19 @@ class LoadingOrdersController < ApplicationController
     @loading_orders = LoadingOrder.where(sales_man: sales_man).order(loading_date: :desc).page(params[:page]).per(20)
   end
 
+  def reject
+    @loading_order = LoadingOrder.find(params[:id])
+    begin
+      @loading_order.reject!
+      redirect_to pending_loading_summary_loading_orders_path, notice: "Loading order was rejected successfully."
+    rescue StandardError => e
+      Rails.logger.error("Loading order rejection failed: #{e.message}")
+
+      Rails.logger.error(e.backtrace.join("\n"))
+      redirect_to pending_loading_summary_loading_orders_path,alert: e.message
+    end
+  end
+
   private
 
     def deallocate_inventory(loading_order)

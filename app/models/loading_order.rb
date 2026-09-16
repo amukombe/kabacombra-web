@@ -138,6 +138,37 @@ class LoadingOrder < ApplicationRecord
     Employee.find_by(id: sales_man)&.fullname
   end
 
+  def reject!
+
+    ActiveRecord::Base.transaction do
+
+      loading_order_items.each do |item|
+
+        quantity = item.remaining_quantity.to_d
+
+        next if quantity <= 0
+
+
+        InventoryTransaction.create!(
+          nile_product_id: item.nile_product_id,
+          territory_id: territory_id,
+          transaction_quantity: quantity,
+          transaction_type: "rejected",
+          direction: "in",
+          transaction_date: Date.current
+        )
+
+      end
+
+
+      # Delete the loading order after returning the
+      # remaining quantities to inventory.
+      destroy!
+
+    end
+
+  end
+
   private
   def generate_order_number
     if self.order_number.blank?
@@ -162,8 +193,6 @@ class LoadingOrder < ApplicationRecord
       )
     end
   end
-
-  private
 
   def generate_order_number
     return if order_number.present? || territory.blank?
