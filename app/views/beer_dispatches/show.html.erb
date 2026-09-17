@@ -3,8 +3,8 @@
 <%= render @beer_dispatch %>
 
 <div>
-  <%= link_to "Edit this beer dispatch", edit_beer_dispatch_path(@beer_dispatch) %> |
-  <%= link_to "Back to beer dispatches", beer_dispatches_path %>
+  <%= link_to "Edit this dispatch", edit_beer_dispatch_path(@beer_dispatch) %> |
+  <%= link_to "Back to dispatches", beer_dispatches_path %>
 
-  <%= button_to "Destroy this beer dispatch", @beer_dispatch, method: :delete %>
+  <%= button_to "Destroy this dispatch", @beer_dispatch, method: :delete %>
 </div>
