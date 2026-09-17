@@ -51,7 +51,47 @@ class Inventory < ApplicationRecord
               .where(
                 territory_id: territory_id,
                 beer_dispatches: {
-                  status_id: [4, 13]
+                  status_id: [13]
+                }
+              )
+
+    # Search filter
+    if params[:query].present?
+      search = "%#{sanitize_sql_like(params[:query])}%"
+
+      query = query.where(
+        "beer_dispatches.fdn_number LIKE :search
+        OR beer_dispatches.dispatch_no LIKE :search",
+        search: search
+      )
+    end
+
+    # Start date filter
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(orders.order_date) >= ?",
+        params[:start_date]
+      )
+    end
+
+    # End date filter
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(orders.order_date) <= ?",
+        params[:end_date]
+      )
+    end
+
+    query.order("orders.order_date DESC, orders.order_number DESC")
+  end
+
+  def self.search_receive_order(params, territory_id)
+
+    query = joins(beer_dispatch: :order)
+              .where(
+                territory_id: territory_id,
+                beer_dispatches: {
+                  status_id: [4]
                 }
               )
 

@@ -199,6 +199,8 @@ Rails.application.routes.draw do
       post :create_existing_stock
       get :export
       get :export_received_stock_details
+      get :receive_order
+      get :export_receive_order
     end
   end
   resources :beer_dispatches do
