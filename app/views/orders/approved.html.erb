@@ -135,10 +135,13 @@
                             <%= link_to new_beer_dispatch_path(id: order.id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Dispatch order<%end%>
                         </li>
                         <li>
-                            <button data-modal-target="popup-modal-<%=order.id%>" data-modal-toggle="popup-modal-<%=order.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
-                        </li>
-                        <li>
-                            <button data-modal-target="popup-modal-cancel-<%=order.id%>" data-modal-toggle="popup-modal-cancel-<%=order.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Cancel Order</button>
+                          <button
+                            type="button"
+                            data-modal-target="popup-modal-order-reverse-<%= order.id %>"
+                            data-modal-toggle="popup-modal-order-reverse-<%= order.id %>"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                            Reverse Order
+                          </button>
                         </li>
                     </ul>
                 </div>
@@ -146,6 +149,7 @@
               </tr>
               <%= render "confirm_delete_modal", order: order%>
               <%= render "confirm_cancel_modal", order: order%>
+              <%= render "confirm_order_reverse_modal", order: order%>
             <%end%>
             </tbody>
           </table>

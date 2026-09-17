@@ -248,6 +248,23 @@ class OrdersController < ApplicationController
     end
   end
 
+  def approved_reverse
+    @order = Order.find(params[:id])
+
+    if @order.status_id == 15
+      if @order.update(status_id: 2)
+        redirect_to orders_path,
+                    notice: "Order #{@order.order_number} has been reversed."
+      else
+        redirect_to orders_path,
+                    alert: "Unable to reverse order #{@order.order_number}."
+      end
+    else
+      redirect_to orders_path,
+                  alert: "Only approved orders can be reversed."
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_order

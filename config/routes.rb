@@ -229,6 +229,7 @@ Rails.application.routes.draw do
       patch :cancel
       patch :reverse
       patch :approve
+      patch :approved_reverse
     end
     collection do
       get "vendor_statement"
