@@ -90,8 +90,8 @@
                   <div class="flex flex-col space-y-1">
                     <span class="text-sm font-medium"><%= order.order_date&.strftime("%d %b, %Y") %></span>
                     <span class="text-sm">Order #: <span class="font-normal"><%= order.order_number %></span></span>
-                    <span class="text-xs">Route: <span class="font-normal"><%= order.description %></span></span>
-                    <span class="text-xs">Sales Rep: <span class="font-xs"><%= order.user.employee.firstname if order.user %>, <i><%= order.user.employee.mobile if order.user %></i></span></span>
+                    <span class="text-xs">Route: <span class="font-normal"><%= order.description.upcase %></span></span>
+                    <span class="text-xs">Sales Rep: <span class="font-xs"><%= order.user.employee.firstname.upcase if order.user %>, <i><%= order.user.employee.mobile if order.user %></i></span></span>
                     <span class="text-xs">Status: <span class="font-normal"><%= render "order_status", order: order %></span></span>
                   </div>
                 </td>
