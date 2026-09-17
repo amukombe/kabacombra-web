@@ -5,6 +5,8 @@ class BeerDispatchesController < ApplicationController
   def index
     @active_link = "dispatched"
     #@oder = Order.find(params[:id])
+    params[:start_date] ||= Date.current.beginning_of_month
+    params[:end_date]   ||= Date.current.end_of_month
     @dispatches = BeerDispatch.search(params, current_territory.id).page(params[:page]).per(20)
   end
 

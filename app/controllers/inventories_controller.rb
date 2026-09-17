@@ -5,6 +5,8 @@ class InventoriesController < ApplicationController
   # GET /inventories or /inventories.json
   def index
     @active_link = "received"
+    params[:start_date] ||= Date.current.beginning_of_month
+    params[:end_date]   ||= Date.current.end_of_month
     @inventories = Inventory.search(params, current_territory.id).page(params[:page]).per(20)
   end
 
