@@ -103,7 +103,9 @@
                               <li>
                                 <%= link_to new_sale_path(id: order.id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Create Sale<%end%>
                               </li>
-
+                              <li>
+                                <%= link_to new_beer_return_path(id: order.id), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Record Return<%end%>
+                              </li>
                               <li>
                                 <button data-modal-target="popup-modal-<%=order.id%>" data-modal-toggle="popup-modal-<%=order.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Reject</button>
                               </li>

@@ -5,6 +5,8 @@ class LoadingOrdersController < ApplicationController
   def index
     @active_link = "purchases"
     @active_sub_link = "loading_orders"
+    params[:start_date] ||= Date.current.beginning_of_month
+    params[:end_date]   ||= Date.current.end_of_month
     @loading_orders = LoadingOrder.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 
@@ -59,6 +61,8 @@ class LoadingOrdersController < ApplicationController
 
   def pending
     @active_link = "pending"
+    params[:start_date] ||= Date.current.beginning_of_month
+    params[:end_date]   ||= Date.current.end_of_month
     @loading_orders = LoadingOrder.search_pending(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 

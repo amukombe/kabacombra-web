@@ -5,7 +5,16 @@ class BeerReturnsController < ApplicationController
   def index
     @active_link = "purchases"
     @active_sub_link = "returns"
+    params[:start_date] ||= Date.current.beginning_of_month
+    params[:end_date]   ||= Date.current.end_of_month
     @beer_returns = BeerReturn.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
+  end
+
+  def outbound_returns
+    @active_link = "pending"
+    params[:start_date] ||= Date.current.beginning_of_month
+    params[:end_date]   ||= Date.current.end_of_month
+    @beer_returns = BeerReturn.search_outbound(params, current_territory.id, current_user.id).order(created_at: :desc).page(params[:page]).per(20)
   end
 
   def export
@@ -291,8 +300,7 @@ class BeerReturnsController < ApplicationController
 
   # GET /beer_returns/new
   def new
-    @active_link = "purchases"
-    @active_sub_link = "returns"
+    @active_link = "pending"
     @order = LoadingOrder.find(params[:id])
 
     @beer_return = BeerReturn.new
@@ -310,8 +318,7 @@ class BeerReturnsController < ApplicationController
   end
   # GET /beer_returns/1/edit
   def edit
-    @active_link = "purchases"
-    @active_sub_link = "returns"
+    @active_link = "pending"
     @order = LoadingOrder.find(@beer_return.loading_order_id)
 
     @order_items = NileProduct.where(
@@ -321,8 +328,7 @@ class BeerReturnsController < ApplicationController
 
   # POST /beer_returns or /beer_returns.json
   def create
-    @active_link = "purchases"
-    @active_sub_link = "returns"
+    @active_link = "pending"
     order_id = beer_return_params[:loading_order_id]
 
     @order = LoadingOrder.find(order_id)
@@ -336,7 +342,7 @@ class BeerReturnsController < ApplicationController
     respond_to do |format|
       if @beer_return.save
         format.html {
-          redirect_to beer_returns_path,
+          redirect_to outbound_returns_beer_returns_path,
           notice: "Beer return was successfully created."
         }
         format.json { render :show, status: :created, location: @beer_return }

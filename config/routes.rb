@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       get :holding_sale
       get :export_return_summary
       get :export
+      get :outbound_returns
     end
   end
   resources :bank_transfers

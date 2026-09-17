@@ -42,6 +42,41 @@ class BeerReturn < ApplicationRecord
 
     query
   end
+  def self.search_outbound(params, territory_id, user_id)
+
+    query = includes(:loading_order).where(
+      territory_id: territory_id,
+      loading_order: { sales_man: user_id }
+    )
+
+    # Search filter
+    if params[:query].present?
+      search = "%#{sanitize_sql_like(params[:query])}%"
+
+      query = query.where(
+        "product_name LIKE :search",
+        search: search
+      )
+    end
+
+    # Start date filter
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(return_date) >= ?",
+        params[:start_date]
+      )
+    end
+
+    # End date filter
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(return_date) <= ?",
+        params[:end_date]
+      )
+    end
+
+    query
+  end
 
   private 
   def create_inventory_transactions

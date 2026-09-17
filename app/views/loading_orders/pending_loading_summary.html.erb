@@ -26,6 +26,9 @@
                     
                     <ul class="py-2" aria-labelledby="sub-menu-button">
                         <li>
+                            <%= link_to outbound_returns_beer_returns_path, data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>View Returns<%end%>
+                        </li>
+                        <li>
                             <%= link_to pending_loading_orders_path, data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>View Details<%end%>
                         </li>
                     </ul>
