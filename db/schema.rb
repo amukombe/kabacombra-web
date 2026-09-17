@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_16_033611) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_17_081541) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -733,6 +733,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_16_033611) do
     t.string "description"
     t.bigint "territory_id", null: false
     t.text "cancel_reason"
+    t.boolean "priority", default: false, null: false
     t.index ["status_id"], name: "index_orders_on_status_id"
     t.index ["territory_id"], name: "index_orders_on_territory_id"
     t.index ["user_id"], name: "index_orders_on_user_id"

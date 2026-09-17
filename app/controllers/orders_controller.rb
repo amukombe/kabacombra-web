@@ -265,6 +265,26 @@ class OrdersController < ApplicationController
     end
   end
 
+  def make_priority
+    @order = Order.find(params[:id])
+
+    if @order.update(priority: true)
+      redirect_to orders_path, notice: "Order #{@order.order_number} has been marked as priority."
+    else
+      redirect_to orders_path, alert: "Unable to mark order as priority."
+    end
+  end
+
+  def remove_priority
+    @order = Order.find(params[:id])
+
+    if @order.update(priority: false)
+      redirect_to orders_path, notice: "Order #{@order.order_number} is no longer a priority order."
+    else
+      redirect_to orders_path, alert: "Unable to remove priority."
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_order

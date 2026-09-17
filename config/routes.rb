@@ -230,6 +230,8 @@ Rails.application.routes.draw do
       patch :reverse
       patch :approve
       patch :approved_reverse
+      patch :make_priority
+      patch :remove_priority
     end
     collection do
       get "vendor_statement"

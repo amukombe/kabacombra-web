@@ -86,7 +86,7 @@
             <tbody class="bg-white dark:bg-gray-800">
             <% @orders.each_with_index do |order, index| %>
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap <%= order.priority? ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white' %>">
                   <div class="flex flex-col space-y-1">
                     <span class="text-sm font-medium"><%= order.order_date&.strftime("%d %b, %Y") %></span>
                     <span class="text-sm">Order #: <span class="font-normal"><%= order.order_number %></span></span>
@@ -151,7 +151,35 @@
                         <li>
                             <button data-modal-target="popup-modal-cancel-<%=order.id%>" data-modal-toggle="popup-modal-cancel-<%=order.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Cancel Order</button>
                         </li>
-                        <%end%>
+
+                        <% if order.priority? %>
+
+                          <li>
+                            <%= button_to remove_priority_order_path(order),
+                              method: :patch,
+                              data: {
+                                turbo: false
+                              },
+                              class: "block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-400" do %>
+                              Remove Priority
+                            <% end %>
+                          </li>
+
+                        <% else %>
+
+                          <li>
+                            <%= button_to make_priority_order_path(order),
+                              method: :patch,
+                              data: {
+                                turbo: false
+                              },
+                              class: "block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-400" do %>
+                              Make Priority
+                            <% end %>
+                          </li>
+
+                        <% end %>
+                      <%end%>
                     </ul>
                 </div>
                 </td>
