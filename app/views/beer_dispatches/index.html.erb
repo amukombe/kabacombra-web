@@ -85,7 +85,9 @@
                   <div class="flex flex-col space-y-1 <% if dispatch.order.status.code == 'ODR' %>text-green-600 dark:text-green-400<% elsif dispatch.order.status.name == "Order Delivered" %>text-blue-600 dark:text-blue-400<% else %>text-gray-600 dark:text-gray-400<% end %>">
                     <span class="text-sm font-medium"><%= dispatch.loading_time&.strftime("%d %b, %Y") %> (<%= dispatch.order.order_number %>)</span>
                     <span class="text-sm">Dispatch #: <span class="font-normal"><%= dispatch.dispatch_no %></span></span>
-                    <span class="text-xs">Truck No: <span class="font-normal"><%= dispatch.truck_numberplate %> <%if dispatch.driver_name? %>(<%= dispatch.driver_name %>)<% end %></span></span>
+                    <span class="text-xs">Truck No: <span class="font-normal"><%= dispatch.truck_numberplate %></span></span>
+                    <span class="text-xs">Driver: <span class="font-normal"><%if dispatch.driver_name? %><%= dispatch.driver_name.upcase %> <i><%= dispatch.driver_mobile %></i><% end %></span></span>
+                    <span class="text-xs">Route: <span class="font-normal"><%= dispatch.order.description.upcase %></span></span>
                     <%if  dispatch.order.status.code=="ODS"%>
                     <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=dispatch.order.id%>" data-dropdown-placement="bottom">
                         <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
