@@ -16253,29 +16253,141 @@ var payment_controller_default = class extends Controller {
 
 // app/javascript/controllers/product_controller.js
 var product_controller_default = class extends Controller {
-  static targets = ["productSelect", "quantityDisplay", "unitPrice", "sellingPrice"];
+  static targets = [
+    "productSelect",
+    "quantityDisplay",
+    "unitPrice",
+    "sellingPrice"
+  ];
   connect() {
     console.log("product connected");
+    const row = this.element.closest(".nested-form-wrapper");
+    if (row) {
+      const quantityField = row.querySelector(".quantity-field");
+      if (quantityField) {
+        quantityField.addEventListener("input", () => {
+          this.validateQuantity(row);
+        });
+      }
+    }
   }
   async updateStock(event) {
     const productId = event.target.value;
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    if (productId) {
-      try {
-        const response = await fetch(`/nile_products/available_stock?id=${productId}`, {
-          headers: { "X-CSRF-Token": token }
-        });
-        const data = await response.json();
-        const row = event.target.closest(".nested-form-wrapper");
-        const quantityDisplay = row.querySelector("[data-product-target='quantityDisplay']");
-        if (quantityDisplay) {
-          quantityDisplay.innerText = `Available Stock: ${data.available_stock}`;
-        }
-      } catch (error2) {
-        console.error("Error fetching available stock:", error2);
+    const row = event.target.closest(".nested-form-wrapper");
+    if (!row) {
+      console.error("Loading order item row not found");
+      return;
+    }
+    const quantityDisplay = row.querySelector(
+      "[data-product-target='quantityDisplay']"
+    );
+    if (!productId) {
+      if (quantityDisplay) {
+        quantityDisplay.innerText = "Available Stock: --";
       }
+      this.clearQuantityError(row);
+      return;
+    }
+    try {
+      const response = await fetch(
+        `/nile_products/available_stock?id=${productId}`,
+        {
+          headers: {
+            "X-CSRF-Token": token
+          }
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch available stock");
+      }
+      const data = await response.json();
+      row.dataset.availableStock = data.available_stock;
+      if (quantityDisplay) {
+        quantityDisplay.innerText = `Available Stock: ${data.available_stock}`;
+      }
+      this.validateQuantity(row);
+    } catch (error2) {
+      console.error("Error fetching available stock:", error2);
+      if (quantityDisplay) {
+        quantityDisplay.innerText = "Available Stock: Unable to load";
+      }
+    }
+  }
+  validateQuantity(row) {
+    if (!row) return;
+    const quantityField = row.querySelector(
+      ".quantity-field"
+    );
+    if (!quantityField) {
+      return;
+    }
+    const quantityLoaded = parseFloat(quantityField.value);
+    const availableStock = parseFloat(row.dataset.availableStock);
+    if (isNaN(quantityLoaded) || isNaN(availableStock)) {
+      this.clearQuantityError(row);
+      return;
+    }
+    if (quantityLoaded > availableStock) {
+      this.showQuantityError(
+        row,
+        `Quantity loaded cannot be greater than available stock (${availableStock}).`
+      );
     } else {
-      console.log("Invalid product id: " + productId);
+      this.clearQuantityError(row);
+    }
+  }
+  showQuantityError(row, message) {
+    const quantityField = row.querySelector(
+      ".quantity-field"
+    );
+    if (!quantityField) return;
+    quantityField.classList.remove(
+      "border-gray-300"
+    );
+    quantityField.classList.add(
+      "border-red-500",
+      "focus:border-red-500",
+      "focus:ring-red-500"
+    );
+    let errorMessage = row.querySelector(
+      ".quantity-error"
+    );
+    if (!errorMessage) {
+      errorMessage = document.createElement("p");
+      errorMessage.classList.add(
+        "quantity-error",
+        "text-xs",
+        "text-red-600",
+        "dark:text-red-400",
+        "mt-1"
+      );
+      quantityField.parentElement.appendChild(
+        errorMessage
+      );
+    }
+    errorMessage.innerText = message;
+    errorMessage.classList.remove("hidden");
+  }
+  clearQuantityError(row) {
+    const quantityField = row.querySelector(
+      ".quantity-field"
+    );
+    if (!quantityField) return;
+    quantityField.classList.remove(
+      "border-red-500",
+      "focus:border-red-500",
+      "focus:ring-red-500"
+    );
+    quantityField.classList.add(
+      "border-gray-300"
+    );
+    const errorMessage = row.querySelector(
+      ".quantity-error"
+    );
+    if (errorMessage) {
+      errorMessage.innerText = "";
+      errorMessage.classList.add("hidden");
     }
   }
   async fetchProductDetails(event) {
@@ -16285,19 +16397,27 @@ var product_controller_default = class extends Controller {
       console.error("Row not found for product selection");
       return;
     }
-    const unitPriceField = row.querySelector('[data-product-target="unitPrice"]');
+    const unitPriceField = row.querySelector(
+      '[data-product-target="unitPrice"]'
+    );
     if (!unitPriceField) {
       console.error("Unit price field not found in this row");
       return;
     }
-    const sellingPriceField = row.querySelector('[data-product-target="sellingPrice"]');
+    const sellingPriceField = row.querySelector(
+      '[data-product-target="sellingPrice"]'
+    );
     if (!sellingPriceField) {
       console.error("Selling price field not found in this row");
       return;
     }
     try {
-      const response = await fetch(`/nile_products/${selectedProductId}/details`);
-      if (!response.ok) throw new Error("Failed to fetch product details");
+      const response = await fetch(
+        `/nile_products/${selectedProductId}/details`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch product details");
+      }
       const productDetails = await response.json();
       unitPriceField.value = productDetails.unit_price || "";
       sellingPriceField.value = productDetails.selling_price || "";

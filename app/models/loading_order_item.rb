@@ -7,7 +7,11 @@ class LoadingOrderItem < ApplicationRecord
   after_create :create_transaction
   before_create :set_remaining_quantity
 
-  validates :remaining_quantity, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :remaining_quantity,
+            numericality: { greater_than_or_equal_to: 0 },
+            allow_nil: true
+
+  validate :quantity_loaded_cannot_exceed_available_stock
 
   def name
     nile_product.name
@@ -17,6 +21,25 @@ class LoadingOrderItem < ApplicationRecord
 
   def set_remaining_quantity
     self.remaining_quantity = quantity_loaded
+  end
+
+  def quantity_loaded_cannot_exceed_available_stock
+    return if nile_product_id.blank?
+    return if quantity_loaded.blank?
+    return if loading_order.blank?
+    return if loading_order.territory_id.blank?
+
+    available_stock = InventoryTransaction.available_quantity(
+      product_id: nile_product_id,
+      territory_id: loading_order.territory_id
+    )
+
+    if quantity_loaded > available_stock
+      errors.add(
+        :quantity_loaded,
+        "cannot be greater than available stock (#{available_stock})"
+      )
+    end
   end
 
   def create_transaction
