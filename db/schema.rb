@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_17_081541) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_18_074440) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -734,6 +734,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_17_081541) do
     t.bigint "territory_id", null: false
     t.text "cancel_reason"
     t.boolean "priority", default: false, null: false
+    t.bigint "approved_by_id"
+    t.datetime "approved_at"
+    t.index ["approved_by_id"], name: "index_orders_on_approved_by_id"
     t.index ["status_id"], name: "index_orders_on_status_id"
     t.index ["territory_id"], name: "index_orders_on_territory_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -1266,6 +1269,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_17_081541) do
   add_foreign_key "orders", "statuses"
   add_foreign_key "orders", "territories"
   add_foreign_key "orders", "users"
+  add_foreign_key "orders", "users", column: "approved_by_id"
   add_foreign_key "payment_allocations", "sale_payments"
   add_foreign_key "payment_allocations", "sales"
   add_foreign_key "payments", "bank_accounts"

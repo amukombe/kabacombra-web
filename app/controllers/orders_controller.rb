@@ -98,7 +98,9 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
 
     if @order.update(
-        status_id: 2
+        status_id: 2,
+        approved_by_id: nil,
+        approved_at: nil
       )
 
       redirect_to canceled_orders_path,
@@ -247,7 +249,11 @@ class OrdersController < ApplicationController
   def approve
     @order = Order.find(params[:id])
 
-    if @order.update(status_id: 15)
+    if @order.update(
+      status_id: 15,
+      approved_by_id: current_user.id,
+      approved_at: Time.current
+    )
       redirect_to orders_path, notice: "Order #{@order.order_number} has been approved."
     else
       redirect_to orders_path, alert: "Unable to approve order #{@order.order_number}."
