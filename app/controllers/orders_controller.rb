@@ -148,14 +148,17 @@ class OrdersController < ApplicationController
   def update
     @products = NileProduct.all
     @units = UnitOfMeasurement.all
-    respond_to do |format|
-      if @order.update(order_params)
-        format.html { redirect_to orders_path, notice: "Order was successfully updated." }
-        format.json { render :show, status: :ok, location: @order }
+
+    if @order.update(order_params)
+      if params[:return_to] == "approved"
+        redirect_to approved_orders_path,
+                    notice: "Order #{@order.order_number} was successfully updated."
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @order.errors, status: :unprocessable_entity }
+        redirect_to orders_path,
+                    notice: "Order #{@order.order_number} was successfully updated."
       end
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 

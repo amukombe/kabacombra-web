@@ -1,5 +1,5 @@
 <div class="rounded-lg shadow-lg dark:bg-gray-800">
-<%= form_with(model: order, data: { controller: 'nested-form', nested_form_wrapper_selector_value: '.nested-form-wrapper' }) do |form| %>
+<%= form_with(model: order, data: { controller: 'nested-form', nested_form_wrapper_selector_value: '.nested-form-wrapper', turbo:false }) do |form| %>
 
   <% if @order.errors.any? %>
     <div class="grid-cols-1" data-controller="alert" data-alert-target="alertDialog">
@@ -33,7 +33,8 @@
     </div>
 
     <div>
-      <%= form.hidden_field :user_id, value: current_user.id %>
+      <%= hidden_field_tag :return_to, params[:return_to] %>
+      <%= form.hidden_field :user_id, value: order.new_record? ? current_user.id : order.user_id %>
       <%= form.hidden_field :status_id, value: order.new_record? ? 2 : order.status_id %>
       <%= form.hidden_field :territory_id, value: current_territory.id %>
     </div>

@@ -149,7 +149,7 @@
                           </button>
                         </li>
                         <li>
-                            <%= link_to edit_order_path(order), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
+                            <%= link_to edit_order_path(order, return_to: "index"), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
                         </li>
                         <li>
                             <button data-modal-target="popup-modal-<%=order.id%>" data-modal-toggle="popup-modal-<%=order.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
