@@ -209,11 +209,16 @@
                       <!-- Opening Stock -->
                       <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
 
-                        <%= link_to openning_stock_nile_product_path(item.id),
-                          data:{turbo: false} do %>
+                        <%= link_to openning_stock_nile_product_path(
+                              item.id,
+                              query: params[:query],
+                              start_date: params[:start_date],
+                              end_date: params[:end_date]
+                            ),
+                            data: { turbo: false } do %>
 
                           <span class="font-normal">
-                            <%= number_with_delimiter(item.opening_stock.to_i, delimiter:",") %>
+                            <%= number_with_delimiter(item.opening_stock.to_i, delimiter: ",") %>
                           </span>
 
                         <% end %>
@@ -223,11 +228,16 @@
                       <!-- Quantity In -->
                       <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
 
-                        <%= link_to quantity_in_nile_product_path(item.id),
-                          data:{turbo: false} do %>
+                        <%= link_to quantity_in_nile_product_path(
+                              item.id,
+                              query: params[:query],
+                              start_date: params[:start_date],
+                              end_date: params[:end_date]
+                            ),
+                            data: { turbo: false } do %>
 
                           <span class="font-normal">
-                            <%= number_with_delimiter(item.quantity_in.to_i, delimiter:",") %>
+                            <%= number_with_delimiter(item.quantity_in.to_i, delimiter: ",") %>
                           </span>
 
                         <% end %>
@@ -237,11 +247,16 @@
                       <!-- Quantity Out -->
                       <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
 
-                        <%= link_to quantity_out_nile_product_path(item.id),
-                          data:{turbo: false} do %>
+                        <%= link_to quantity_out_nile_product_path(
+                              item.id,
+                              query: params[:query],
+                              start_date: params[:start_date],
+                              end_date: params[:end_date]
+                            ),
+                            data: { turbo: false } do %>
 
                           <span class="font-normal">
-                            <%= number_with_delimiter(item.quantity_out.to_i, delimiter:",") %>
+                            <%= number_with_delimiter(item.quantity_out.to_i, delimiter: ",") %>
                           </span>
 
                         <% end %>

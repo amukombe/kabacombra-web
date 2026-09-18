@@ -37,34 +37,70 @@ class InventoryTransaction < ApplicationRecord
   
   def self.search_openning_stock(params, territory_id, product_id)
     query = joins(:territory, :nile_product)
-    .where("territory_id = ? AND nile_products.id=? AND direction=?", territory_id, product_id, "in")
+      .where(
+        territory_id: territory_id,
+        nile_products: { id: product_id },
+        direction: "in"
+      )
 
-    if params[:query].present?
-      query = joins(:territory, :nile_product)
-      .where("territory_id = ? AND nile_products.id=? AND direction=?", territory_id, product_id, "in")
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(inventory_transactions.created_at) >= ?",
+        params[:start_date]
+      )
     end
+
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(inventory_transactions.created_at) <= ?",
+        params[:end_date]
+      )
+    end
+
     query
   end
 
   def self.search_quantity_in(params, territory_id, product_id)
     query = joins(:territory, :nile_product)
-    .where("territory_id = ? AND nile_products.id=? AND direction=?", territory_id, product_id, "in")
+      .where(
+        territory_id: territory_id,
+        nile_products: { id: product_id },
+        direction: "in"
+      )
 
-    if params[:query].present?
-      query = joins(:territory, :nile_product)
-      .where("territory_id = ? AND nile_products.id=? AND direction=?", territory_id, product_id, "in")
+    if params[:start_date].present?
+      query = query.where("DATE(inventory_transactions.created_at) >= ?", params[:start_date])
     end
+
+    if params[:end_date].present?
+      query = query.where("DATE(inventory_transactions.created_at) <= ?", params[:end_date])
+    end
+
     query
   end
 
   def self.search_quantity_out(params, territory_id, product_id)
     query = joins(:territory, :nile_product)
-    .where("territory_id = ? AND nile_products.id=? AND direction=?", territory_id, product_id, "out")
+      .where(
+        territory_id: territory_id,
+        nile_products: { id: product_id },
+        direction: "out"
+      )
 
-    if params[:query].present?
-      query = joins(:territory, :nile_product)
-      .where("territory_id = ? AND nile_products.id=? AND direction=?", territory_id, product_id, "out")
+    if params[:start_date].present?
+      query = query.where(
+        "DATE(inventory_transactions.created_at) >= ?",
+        params[:start_date]
+      )
     end
+
+    if params[:end_date].present?
+      query = query.where(
+        "DATE(inventory_transactions.created_at) <= ?",
+        params[:end_date]
+      )
+    end
+
     query
   end
 
