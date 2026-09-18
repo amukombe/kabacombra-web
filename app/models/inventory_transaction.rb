@@ -45,14 +45,14 @@ class InventoryTransaction < ApplicationRecord
 
     if params[:start_date].present?
       query = query.where(
-        "DATE(inventory_transactions.created_at) >= ?",
+        "DATE(inventory_transactions.transaction_date) >= ?",
         params[:start_date]
       )
     end
 
     if params[:end_date].present?
       query = query.where(
-        "DATE(inventory_transactions.created_at) <= ?",
+        "DATE(inventory_transactions.transaction_date) <= ?",
         params[:end_date]
       )
     end
@@ -69,11 +69,11 @@ class InventoryTransaction < ApplicationRecord
       )
 
     if params[:start_date].present?
-      query = query.where("DATE(inventory_transactions.created_at) >= ?", params[:start_date])
+      query = query.where("DATE(inventory_transactions.transaction_date) >= ?", params[:start_date])
     end
 
     if params[:end_date].present?
-      query = query.where("DATE(inventory_transactions.created_at) <= ?", params[:end_date])
+      query = query.where("DATE(inventory_transactions.transaction_date) <= ?", params[:end_date])
     end
 
     query
@@ -89,14 +89,14 @@ class InventoryTransaction < ApplicationRecord
 
     if params[:start_date].present?
       query = query.where(
-        "DATE(inventory_transactions.created_at) >= ?",
+        "DATE(inventory_transactions.transaction_date) >= ?",
         params[:start_date]
       )
     end
 
     if params[:end_date].present?
       query = query.where(
-        "DATE(inventory_transactions.created_at) <= ?",
+        "DATE(inventory_transactions.transaction_date) <= ?",
         params[:end_date]
       )
     end
