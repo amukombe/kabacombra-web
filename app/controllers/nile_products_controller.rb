@@ -69,16 +69,41 @@ class NileProductsController < ApplicationController
   end
 
   def available_stock
-    # Fetch the product based on the provided ID
     @product = NileProduct.find(params[:id])
-    available_stock = InventoryTransaction.available_quantity(
-      product_id: @product.id,
-      territory_id: current_territory.id
-    )
-  
-    puts "TOTAL AVAILABLE:=========#{available_stock}"
-  
-    render json: { available_stock: available_stock }
+
+    territory_id = current_territory.id
+
+    total_received = InventoryItem
+      .joins(:inventory)
+      .where(
+        nile_product_id: @product.id,
+        inventories: {
+          territory_id: territory_id,
+          status_id: 13
+        }
+      )
+      .where(is_deleted: false)
+      .sum(:quantity_received)
+
+    total_loaded = LoadingOrderItem
+      .joins(:loading_order)
+      .where(
+        nile_product_id: @product.id,
+        loading_orders: {
+          territory_id: territory_id
+        }
+      )
+      .sum(:quantity_loaded)
+
+    available_stock = total_received - total_loaded
+
+    puts "TOTAL RECEIVED: ========= #{total_received}"
+    puts "TOTAL LOADED:   ========= #{total_loaded}"
+    puts "TOTAL AVAILABLE:========= #{available_stock}"
+
+    render json: {
+      available_stock: available_stock
+    }
   end
 
   def details
@@ -142,12 +167,28 @@ class NileProductsController < ApplicationController
 
   def quantity_in
     @product = NileProduct.find(params[:id])
-    @transactions = InventoryTransaction.search_quantity_in(params, current_territory.id, @product.id).page(params[:page]).per(20)
+
+    @transactions = InventoryItem
+      .search_quantity_in(
+        params,
+        current_territory.id,
+        @product.id
+      )
+      .page(params[:page])
+      .per(20)
   end
 
   def quantity_out
     @product = NileProduct.find(params[:id])
-    @transactions = InventoryTransaction.search_quantity_out(params, current_territory.id, @product.id).page(params[:page]).per(20)
+
+    @transactions = LoadingOrderItem
+      .search_quantity_out(
+        params,
+        current_territory.id,
+        @product.id
+      )
+      .page(params[:page])
+      .per(20)
   end
 
   def breakages

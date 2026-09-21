@@ -87,78 +87,105 @@ class InventoryItemsController < ApplicationController
         Date.parse(params[:end_date]).end_of_day :
         Date.today.end_of_day
 
+    territory_id = current_territory.id
+
     @inventory_items = NileProduct
-      .left_joins(:inventory_transactions)
       .includes(:empty_type)
       .select(
         "
         nile_products.*,
 
-        -- Opening Stock
-        COALESCE(
-          SUM(
-            CASE
-              WHEN inventory_transactions.territory_id = #{current_territory.id}
-              AND inventory_transactions.transaction_date < '#{start_date}'
-              AND inventory_transactions.direction = 'in'
-              THEN inventory_transactions.transaction_quantity
-              ELSE 0
-            END
-          ), 0
-        )
-        -
-        COALESCE(
-          SUM(
-            CASE
-              WHEN inventory_transactions.territory_id = #{current_territory.id}
-              AND inventory_transactions.transaction_date < '#{start_date}'
-              AND inventory_transactions.direction = 'out'
-              THEN inventory_transactions.transaction_quantity
-              ELSE 0
-            END
-          ), 0
+        /* ==========================================
+          OPENING STOCK
+          Received before start date
+          minus loaded before start date
+          ========================================== */
+
+        (
+          COALESCE(
+            (
+              SELECT SUM(inventory_items.quantity_received)
+              FROM inventory_items
+              INNER JOIN inventories
+                ON inventories.id = inventory_items.inventory_id
+              WHERE inventory_items.nile_product_id = nile_products.id
+                AND inventories.territory_id = #{territory_id}
+                AND inventories.created_at < '#{start_date}'
+                AND inventory_items.is_deleted = FALSE
+            ),
+            0
+          )
+
+          -
+
+          COALESCE(
+            (
+              SELECT SUM(loading_order_items.quantity_loaded)
+              FROM loading_order_items
+              INNER JOIN loading_orders
+                ON loading_orders.id = loading_order_items.loading_order_id
+              WHERE loading_order_items.nile_product_id = nile_products.id
+                AND loading_orders.territory_id = #{territory_id}
+                AND loading_orders.loading_date < '#{start_date}'
+            ),
+            0
+          )
         ) AS opening_stock,
 
-        -- Quantity In
+
+        /* ==========================================
+          QUANTITY IN
+          Received during selected period
+          ========================================== */
+
         COALESCE(
-          SUM(
-            CASE
-              WHEN inventory_transactions.territory_id = #{current_territory.id}
-              AND inventory_transactions.transaction_date >= '#{start_date}'
-              AND inventory_transactions.transaction_date <= '#{end_date}'
-              AND inventory_transactions.direction = 'in'
-              THEN inventory_transactions.transaction_quantity
-              ELSE 0
-            END
-          ), 0
+          (
+            SELECT SUM(inventory_items.quantity_received)
+            FROM inventory_items
+            INNER JOIN inventories
+              ON inventories.id = inventory_items.inventory_id
+            WHERE inventory_items.nile_product_id = nile_products.id
+              AND inventories.territory_id = #{territory_id}
+              AND inventories.created_at >= '#{start_date}'
+              AND inventories.created_at <= '#{end_date}'
+              AND inventory_items.is_deleted = FALSE
+          ),
+          0
         ) AS quantity_in,
 
-        -- Quantity Out
+
+        /* ==========================================
+          QUANTITY OUT
+          Loaded during selected period
+          ========================================== */
+
         COALESCE(
-          SUM(
-            CASE
-              WHEN inventory_transactions.territory_id = #{current_territory.id}
-              AND inventory_transactions.transaction_date >= '#{start_date}'
-              AND inventory_transactions.transaction_date <= '#{end_date}'
-              AND inventory_transactions.direction = 'out'
-              THEN inventory_transactions.transaction_quantity
-              ELSE 0
-            END
-          ), 0
+          (
+            SELECT SUM(loading_order_items.quantity_loaded)
+            FROM loading_order_items
+            INNER JOIN loading_orders
+              ON loading_orders.id = loading_order_items.loading_order_id
+            WHERE loading_order_items.nile_product_id = nile_products.id
+              AND loading_orders.territory_id = #{territory_id}
+              AND loading_orders.loading_date >= '#{start_date}'
+              AND loading_orders.loading_date <= '#{end_date}'
+          ),
+          0
         ) AS quantity_out
         "
       )
 
     # Optional search
     if params[:query].present?
+      search = "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+
       @inventory_items = @inventory_items.where(
         "nile_products.name LIKE ?",
-        "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+        search
       )
     end
 
     @inventory_items = @inventory_items
-      .group("nile_products.id")
       .order("nile_products.product_number ASC")
       .page(params[:page])
       .per(20)
@@ -181,85 +208,113 @@ class InventoryItemsController < ApplicationController
         Date.parse(params[:end_date]).end_of_day :
         Date.today.end_of_day
 
+    territory_id = current_territory.id
+
     @inventory_items = NileProduct
-      .left_joins(:inventory_transactions)
       .includes(:empty_type)
       .select(
         "
         nile_products.*,
 
-        -- Opening Stock
-        COALESCE(
-          SUM(
-            CASE
-              WHEN inventory_transactions.territory_id = #{current_territory.id}
-              AND inventory_transactions.transaction_date < '#{start_date}'
-              AND inventory_transactions.direction = 'in'
-              THEN inventory_transactions.transaction_quantity
-              ELSE 0
-            END
-          ), 0
-        )
-        -
-        COALESCE(
-          SUM(
-            CASE
-              WHEN inventory_transactions.territory_id = #{current_territory.id}
-              AND inventory_transactions.transaction_date < '#{start_date}'
-              AND inventory_transactions.direction = 'out'
-              THEN inventory_transactions.transaction_quantity
-              ELSE 0
-            END
-          ), 0
+        /* ==========================================
+          OPENING STOCK
+          Received before start date
+          minus loaded before start date
+          ========================================== */
+
+        (
+          COALESCE(
+            (
+              SELECT SUM(inventory_items.quantity_received)
+              FROM inventory_items
+              INNER JOIN inventories
+                ON inventories.id = inventory_items.inventory_id
+              WHERE inventory_items.nile_product_id = nile_products.id
+                AND inventories.territory_id = #{territory_id}
+                AND inventories.created_at < '#{start_date}'
+                AND inventory_items.is_deleted = FALSE
+            ),
+            0
+          )
+
+          -
+
+          COALESCE(
+            (
+              SELECT SUM(loading_order_items.quantity_loaded)
+              FROM loading_order_items
+              INNER JOIN loading_orders
+                ON loading_orders.id = loading_order_items.loading_order_id
+              WHERE loading_order_items.nile_product_id = nile_products.id
+                AND loading_orders.territory_id = #{territory_id}
+                AND loading_orders.loading_date < '#{start_date}'
+            ),
+            0
+          )
         ) AS opening_stock,
 
-        -- Quantity In
+
+        /* ==========================================
+          QUANTITY IN
+          Received during selected period
+          ========================================== */
+
         COALESCE(
-          SUM(
-            CASE
-              WHEN inventory_transactions.territory_id = #{current_territory.id}
-              AND inventory_transactions.transaction_date >= '#{start_date}'
-              AND inventory_transactions.transaction_date <= '#{end_date}'
-              AND inventory_transactions.direction = 'in'
-              THEN inventory_transactions.transaction_quantity
-              ELSE 0
-            END
-          ), 0
+          (
+            SELECT SUM(inventory_items.quantity_received)
+            FROM inventory_items
+            INNER JOIN inventories
+              ON inventories.id = inventory_items.inventory_id
+            WHERE inventory_items.nile_product_id = nile_products.id
+              AND inventories.territory_id = #{territory_id}
+              AND inventories.created_at >= '#{start_date}'
+              AND inventories.created_at <= '#{end_date}'
+              AND inventory_items.is_deleted = FALSE
+          ),
+          0
         ) AS quantity_in,
 
-        -- Quantity Out
+
+        /* ==========================================
+          QUANTITY OUT
+          Loaded during selected period
+          ========================================== */
+
         COALESCE(
-          SUM(
-            CASE
-              WHEN inventory_transactions.territory_id = #{current_territory.id}
-              AND inventory_transactions.transaction_date >= '#{start_date}'
-              AND inventory_transactions.transaction_date <= '#{end_date}'
-              AND inventory_transactions.direction = 'out'
-              THEN inventory_transactions.transaction_quantity
-              ELSE 0
-            END
-          ), 0
+          (
+            SELECT SUM(loading_order_items.quantity_loaded)
+            FROM loading_order_items
+            INNER JOIN loading_orders
+              ON loading_orders.id = loading_order_items.loading_order_id
+            WHERE loading_order_items.nile_product_id = nile_products.id
+              AND loading_orders.territory_id = #{territory_id}
+              AND loading_orders.loading_date >= '#{start_date}'
+              AND loading_orders.loading_date <= '#{end_date}'
+          ),
+          0
         ) AS quantity_out
         "
       )
 
     # Same search as index
     if params[:query].present?
+      search = "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+
       @inventory_items = @inventory_items.where(
         "nile_products.name LIKE ?",
-        "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+        search
       )
     end
 
-    # Same grouping/order as index (NO pagination)
+    # Same ordering as index - no pagination
     @inventory_items = @inventory_items
-      .group("nile_products.id")
       .order("nile_products.product_number ASC")
 
     package = Axlsx::Package.new
     workbook = package.workbook
 
     workbook.add_worksheet(name: "Inventory Summary") do |sheet|
+
       sheet.add_row [
         "Product",
         "Opening Stock",
@@ -272,20 +327,30 @@ class InventoryItemsController < ApplicationController
       ]
 
       @inventory_items.each do |item|
-        closing_stock =
-          item.opening_stock.to_i +
-          item.quantity_in.to_i -
-          item.quantity_out.to_i
 
-        beer_value = closing_stock * item.buying_price.to_i
-        empty_value = closing_stock * item.empty_type&.price.to_i
-        closing_stock_value = closing_stock * item.buying_price.to_i
+        opening_stock = item.opening_stock.to_i
+        quantity_in = item.quantity_in.to_i
+        quantity_out = item.quantity_out.to_i
+
+        closing_stock =
+          opening_stock +
+          quantity_in -
+          quantity_out
+
+        beer_value =
+          closing_stock * item.buying_price.to_i
+
+        empty_value =
+          closing_stock * item.empty_type&.price.to_i
+
+        closing_stock_value =
+          beer_value + empty_value
 
         sheet.add_row [
           item.name,
-          item.opening_stock.to_i,
-          item.quantity_in.to_i,
-          item.quantity_out.to_i,
+          opening_stock,
+          quantity_in,
+          quantity_out,
           closing_stock,
           beer_value,
           empty_value,
@@ -307,7 +372,7 @@ class InventoryItemsController < ApplicationController
     @warehouses = current_territory.warehouses
 
     @inventory_items = InventoryItem
-      .product_summary(params,current_territory.id)
+      .product_summary(params, current_territory.id)
       .page(params[:page])
       .per(20)
   end

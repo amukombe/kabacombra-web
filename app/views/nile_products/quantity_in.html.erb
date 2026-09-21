@@ -1,124 +1,256 @@
 
 <div class="px-4 pt-4 bg-white dark:bg-gray-900">
-<div class="grid w-full grid-cols-2 gap-4 mb-3">
-  <div class="col-span-1">
-    <h1 class="text-gray-800 text-md dark:text-gray-100">Current Quantity In for <span class="px-2 mx-2 text-green-700 bg-green-200"><%= @product.name%></span></h1>
-  </div>
-  <div class="col-span-1 text-right">
-    <%= link_to inventory_items_path, class:"bg-red-700 text-red-100 p-1 px-3 text-sm rounded-full dark:text-red-100 dark:bg-red-700" do %>Return<%end%>
-  </div>  
-</div>
-<div class="flex w-full mb-3">
 
-    <%= form_tag inventory_items_path,
-      class:"flex items-end gap-2 flex-wrap",
+  <!-- Header -->
+  <div class="grid w-full grid-cols-2 gap-4 mb-3">
+
+    <div class="col-span-1">
+      <h1 class="text-gray-800 text-md dark:text-gray-100">
+        Current Quantity In for
+        <span class="px-2 mx-2 text-green-700 bg-green-200">
+          <%= @product.name %>
+        </span>
+      </h1>
+    </div>
+
+    <div class="col-span-1 text-right">
+      <%= link_to inventory_items_path(
+            query: params[:query],
+            start_date: params[:start_date],
+            end_date: params[:end_date]
+          ),
+          class: "bg-red-700 text-red-100 p-1 px-3 text-sm rounded-full dark:text-red-100 dark:bg-red-700",
+          data: { turbo: false } do %>
+        Return
+      <% end %>
+    </div>
+
+  </div>
+
+
+  <!-- Filters -->
+  <div class="flex w-full mb-3">
+
+    <%= form_tag quantity_in_nile_product_path(@product.id),
+      class: "flex items-end gap-2 flex-wrap",
       method: :get,
-      data:{
-        turbo_frame:"search_results",
-        turbo_action:"advance",
-        controller:"search",
-        action:"input->search#submit"
+      data: {
+        turbo_frame: "search_results",
+        turbo_action: "advance",
+        controller: "search",
+        action: "input->search#submit"
       } do %>
 
       <!-- Search -->
       <div class="relative">
-        <%= label_tag :query, "Search", class:"block mb-1 text-xs" %>
+        <%= label_tag :query, "Search", class: "block mb-1 text-xs" %>
 
         <%= text_field_tag "query",
           params[:query],
-          class:"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5",
-          placeholder:"Search product ..." %>
+          class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5",
+          placeholder: "Search stock number ..." %>
       </div>
+
 
       <!-- Start Date -->
       <div>
-        <%= label_tag :start_date, "From", class:"block mb-1 text-xs" %>
+        <%= label_tag :start_date, "From", class: "block mb-1 text-xs" %>
 
         <%= date_field_tag :start_date,
           params[:start_date],
-          class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+          class: "bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
       </div>
+
 
       <!-- End Date -->
       <div>
-        <%= label_tag :end_date, "To", class:"block mb-1 text-xs" %>
+        <%= label_tag :end_date, "To", class: "block mb-1 text-xs" %>
 
         <%= date_field_tag :end_date,
           params[:end_date],
-          class:"bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
+          class: "bg-gray-50 border border-gray-300 text-sm rounded-lg p-2.5" %>
       </div>
 
     <% end %>
 
   </div>
-<!-- Table -->
-<div class="flex flex-col mt-6">
-  <div class="overflow-x-auto rounded-lg">
-    <div class="inline-block min-w-full align-middle">
-      <div class="overflow-hidden shadow sm:rounded-lg">
-        <div id="beer_dispatches">
-        <%= turbo_frame_tag "search_results" do%>
-          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-            <thead class="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  #
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Date.
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Trans Type.
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Quantity
-                </th>
-                <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white dark:bg-gray-800">
-            <% @transactions.each_with_index do |transaction, index| %>
-              <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <span class="font-semibold"><%=index+1%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-semibold"><%=transaction.transaction_date%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=transaction.transaction_type%></span>
-                </td>
-                <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
-                  <span class="font-normal"><%=transaction.transaction_quantity%></span>
-                </td>
-                <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                  <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=transaction.id%>" data-dropdown-placement="bottom">
-                    <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
-                    <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m1 1 4 4 4-4"/>
-                    </svg>
-                </button>
-            
-                <!-- Dropdown menu -->
-                <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="action-dropdown-<%=transaction.id%>">
-                    
-                    <ul class="py-2" aria-labelledby="order-menu-button">
-                        <li>
-                          <%= link_to assign_store_inventory_item_path(transaction), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Assign Store<%end%>
-                        </li>
-                    </ul>
-                </div>
-                </td>
-              </tr>
-            <%end%>
-            </tbody>
-          </table>
-          <%= render "transaction_pagination" %>
-        <%end%>
+
+
+  <!-- Table -->
+  <div class="flex flex-col mt-6">
+
+    <div class="overflow-x-auto rounded-lg">
+
+      <div class="inline-block min-w-full align-middle">
+
+        <div class="overflow-hidden shadow sm:rounded-lg">
+
+          <div id="quantity_in">
+
+            <%= turbo_frame_tag "search_results" do %>
+
+              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+
+                <thead class="bg-gray-50 dark:bg-gray-700">
+
+                  <tr>
+
+                    <th scope="col"
+                        class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      #
+                    </th>
+
+                    <th scope="col"
+                        class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Date
+                    </th>
+
+                    <th scope="col"
+                        class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Stock No.
+                    </th>
+
+                    <th scope="col"
+                        class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Quantity Received
+                    </th>
+
+                    <th scope="col"
+                        class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
+                      Action
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody class="bg-white dark:bg-gray-800">
+
+                  <% @transactions.each_with_index do |inventory_item, index| %>
+
+                    <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+
+                      <!-- Number -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                        <span class="font-semibold">
+                          <%= index + 1 %>
+                        </span>
+                      </td>
+
+
+                      <!-- Date Received -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <span class="font-semibold">
+                          <%= inventory_item.inventory&.delivery_time&.strftime("%d-%m-%Y %H:%M") %>
+                        </span>
+
+                      </td>
+
+
+                      <!-- Stock Number -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <span class="font-normal">
+                          <%= inventory_item.stock_no.presence || "-" %>
+                        </span>
+
+                      </td>
+
+
+                      <!-- Quantity Received -->
+                      <td class="p-4 text-xs font-normal text-gray-900 whitespace-normal dark:text-white">
+
+                        <span class="font-semibold text-green-700">
+                          <%= number_with_delimiter(
+                                inventory_item.quantity_received.to_i,
+                                delimiter: ","
+                              ) %>
+                        </span>
+
+                      </td>
+
+
+                      <!-- Action -->
+                      <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+
+                        <button type="button"
+                                class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800"
+                                id="inventory-item-menu-button-<%= inventory_item.id %>"
+                                aria-expanded="false"
+                                data-dropdown-toggle="action-dropdown-<%= inventory_item.id %>"
+                                data-dropdown-placement="bottom">
+
+                          <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">
+                            Action
+                          </span>
+
+                          <svg class="w-2 h-2"
+                               aria-hidden="true"
+                               xmlns="http://www.w3.org/2000/svg"
+                               fill="none"
+                               viewBox="0 0 10 6">
+
+                            <path stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1"
+                                  d="m1 1 4 4 4-4"/>
+
+                          </svg>
+
+                        </button>
+
+
+                        <!-- Dropdown -->
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+                             id="action-dropdown-<%= inventory_item.id %>">
+
+                          <ul class="py-2"
+                              aria-labelledby="inventory-item-menu-button-<%= inventory_item.id %>">
+
+                            <li>
+
+                              <%= link_to assign_store_inventory_item_path(inventory_item),
+                                data: { turbo: false },
+                                class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+
+                                Assign Store
+
+                              <% end %>
+
+                            </li>
+
+                          </ul>
+
+                        </div>
+
+                      </td>
+
+                    </tr>
+
+                  <% end %>
+
+                </tbody>
+
+              </table>
+
+
+              <!-- Pagination -->
+              <%= render "transaction_pagination" %>
+
+            <% end %>
+
+          </div>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
+
 </div>
+

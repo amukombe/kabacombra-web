@@ -17,6 +17,42 @@ class LoadingOrderItem < ApplicationRecord
     nile_product.name
   end
 
+  def self.search_quantity_out(params, territory_id, product_id)
+    start_date =
+      params[:start_date].present? ?
+        Date.parse(params[:start_date]).beginning_of_day :
+        Date.current.beginning_of_day
+
+    end_date =
+      params[:end_date].present? ?
+        Date.parse(params[:end_date]).end_of_day :
+        Date.current.end_of_day
+
+    query = joins(:loading_order)
+      .where(
+        nile_product_id: product_id,
+        loading_orders: {
+          territory_id: territory_id
+        }
+      )
+      .where(
+        "loading_orders.loading_date >= ? AND loading_orders.loading_date <= ?",
+        start_date,
+        end_date
+      )
+
+    if params[:query].present?
+      search = "%#{sanitize_sql_like(params[:query])}%"
+
+      query = query.where(
+        "loading_orders.order_number LIKE ?",
+        search
+      )
+    end
+
+    query.order("loading_orders.loading_date DESC")
+  end
+
   private
 
   def set_remaining_quantity

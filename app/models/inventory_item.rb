@@ -34,69 +34,100 @@ class InventoryItem < ApplicationRecord
   end
 
   def self.product_summary(params, territory_id)
-    start_date = params[:start_date].presence || Date.current
-    end_date   = params[:end_date].presence || Date.current
+    start_date =
+      params[:start_date].present? ?
+        Date.parse(params[:start_date]).beginning_of_day :
+        Date.current.beginning_of_day
 
-    date_sql = ActiveRecord::Base.send(
-      :sanitize_sql_array,
-      [
-        "AND DATE(inventories.delivery_time) >= ? AND DATE(inventories.delivery_time) <= ?",
-        start_date,
-        end_date
-      ]
-    )
+    end_date =
+      params[:end_date].present? ?
+        Date.parse(params[:end_date]).end_of_day :
+        Date.current.end_of_day
 
     query = NileProduct
       .left_joins(inventory_items: :inventory)
-      .where("inventories.territory_id = ? OR inventories.id IS NULL", territory_id)
+      .where(
+        "inventories.territory_id = ? OR inventories.id IS NULL",
+        territory_id
+      )
 
+    # Search
     if params[:query].present?
+      search = "%#{sanitize_sql_like(params[:query])}%"
+
       query = query.where(
         "nile_products.name LIKE ?",
-        "%#{sanitize_sql_like(params[:query])}%"
+        search
       )
     end
 
-    query.group("nile_products.id, nile_products.name")
-        .select(
-          "nile_products.name AS product_name",
+    query
+      .group("nile_products.id, nile_products.name, nile_products.product_number")
+      .select(
+        "nile_products.id",
+        "nile_products.name AS product_name",
+        "nile_products.product_number",
 
-          "SUM(
-              CASE
-                WHEN inventories.status_id = 13 #{date_sql}
-                THEN COALESCE(inventory_items.quantity_received, 0)
-                ELSE 0
-              END
-            ) AS total_received",
+        # Quantity received
+        "COALESCE(
+          SUM(
+            CASE
+              WHEN inventories.status_id = 13
+              AND inventories.delivery_time >= '#{start_date}'
+              AND inventories.delivery_time <= '#{end_date}'
+              THEN COALESCE(inventory_items.quantity_received, 0)
+              ELSE 0
+            END
+          ),
+          0
+        ) AS total_received",
 
-          "SUM(
-              CASE
-                WHEN inventories.status_id = 13 #{date_sql}
-                THEN COALESCE(inventory_items.breakages, 0)
-                ELSE 0
-              END
-            ) AS total_breakages",
+        # Breakages
+        "COALESCE(
+          SUM(
+            CASE
+              WHEN inventories.status_id = 13
+              AND inventories.delivery_time >= '#{start_date}'
+              AND inventories.delivery_time <= '#{end_date}'
+              THEN COALESCE(inventory_items.breakages, 0)
+              ELSE 0
+            END
+          ),
+          0
+        ) AS total_breakages",
 
-          "SUM(
-              CASE
-                WHEN inventories.status_id = 13 #{date_sql}
-                THEN COALESCE(inventory_items.complaints, 0)
-                ELSE 0
-              END
-            ) AS total_complaints",
+        # Complaints
+        "COALESCE(
+          SUM(
+            CASE
+              WHEN inventories.status_id = 13
+              AND inventories.delivery_time >= '#{start_date}'
+              AND inventories.delivery_time <= '#{end_date}'
+              THEN COALESCE(inventory_items.complaints, 0)
+              ELSE 0
+            END
+          ),
+          0
+        ) AS total_complaints",
 
-          "SUM(
-              CASE
-                WHEN inventories.status_id = 13 #{date_sql}
-                THEN
-                  COALESCE(inventory_items.quantity_received, 0) +
-                  COALESCE(inventory_items.breakages, 0) +
-                  COALESCE(inventory_items.complaints, 0)
-                ELSE 0
-              END
-            ) AS total_quantity"
-        )
-        .order("nile_products.product_number ASC")
+        # Total quantity
+        "COALESCE(
+          SUM(
+            CASE
+              WHEN inventories.status_id = 13
+              AND inventories.delivery_time >= '#{start_date}'
+              AND inventories.delivery_time <= '#{end_date}'
+              THEN
+                COALESCE(inventory_items.quantity_received, 0) +
+                COALESCE(inventory_items.breakages, 0) +
+                COALESCE(inventory_items.complaints, 0)
+              ELSE 0
+            END
+          ),
+          0
+        ) AS total_quantity"
+      )
+      .order("nile_products.product_number ASC")
   end
 
   def self.search_stock(params, territory_id, product_id)
@@ -108,6 +139,35 @@ class InventoryItem < ApplicationRecord
     end
 
     query
+  end
+
+  def self.search_quantity_in(params, territory_id, product_id)
+    start_date =
+      params[:start_date].present? ?
+        Date.parse(params[:start_date]).beginning_of_day :
+        Date.current.beginning_of_day
+
+    end_date =
+      params[:end_date].present? ?
+        Date.parse(params[:end_date]).end_of_day :
+        Date.current.end_of_day
+
+    query = joins(:inventory)
+      .where(
+        nile_product_id: product_id,
+        inventories: {
+          territory_id: territory_id,
+          status_id: 13
+        }
+      )
+      .where(
+        "inventories.delivery_time >= ? AND inventories.delivery_time <= ?",
+        start_date,
+        end_date
+      )
+      .where(is_deleted: false)
+
+    query.order("inventories.delivery_time DESC")
   end
 
   def quantity
