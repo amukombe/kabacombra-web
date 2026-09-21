@@ -110,7 +110,7 @@ class InventoryItemsController < ApplicationController
                 ON inventories.id = inventory_items.inventory_id
               WHERE inventory_items.nile_product_id = nile_products.id
                 AND inventories.territory_id = #{territory_id}
-                AND inventories.created_at < '#{start_date}'
+                AND inventories.delivery_time < '#{start_date}'
                 AND inventory_items.is_deleted = FALSE
             ),
             0
@@ -146,8 +146,8 @@ class InventoryItemsController < ApplicationController
               ON inventories.id = inventory_items.inventory_id
             WHERE inventory_items.nile_product_id = nile_products.id
               AND inventories.territory_id = #{territory_id}
-              AND inventories.created_at >= '#{start_date}'
-              AND inventories.created_at <= '#{end_date}'
+              AND inventories.delivery_time >= '#{start_date}'
+              AND inventories.delivery_time <= '#{end_date}'
               AND inventory_items.is_deleted = FALSE
           ),
           0
