@@ -7,12 +7,12 @@ class InventoriesController < ApplicationController
     @active_link = "received"
     params[:start_date] ||= Date.current.beginning_of_month
     params[:end_date]   ||= Date.current.end_of_month
-    @inventories = Inventory.search(params, current_territory.id).page(params[:page]).per(20)
+    @inventories = Inventory.search(params, current_territory.id, current_user).page(params[:page]).per(20)
   end
 
   def export
     @inventories = Inventory
-                    .search(params, current_territory.id)
+                    .search(params, current_territory.id, current_user)
                     .includes(
                       :warehouse,
                       beer_dispatch: :order,
@@ -94,14 +94,14 @@ class InventoriesController < ApplicationController
     @active_sub_link = "received"
     params[:start_date] ||= Date.current.beginning_of_month
     params[:end_date]   ||= Date.current.end_of_month
-    @inventories = Inventory.search_received(params, current_territory.id).page(params[:page]).per(20)
+    @inventories = Inventory.search_received(params, current_territory.id, current_user).page(params[:page]).per(20)
   end
 
   def export_received_stock_details
     params[:start_date] ||= Date.current.beginning_of_month
     params[:end_date]   ||= Date.current.end_of_month
     @inventories = Inventory
-                    .search_received(params, current_territory.id)
+                    .search_received(params, current_territory.id, current_user)
                     .includes(
                       :warehouse,
                       beer_dispatch: :order,
@@ -163,14 +163,14 @@ class InventoriesController < ApplicationController
   def receive_order
     @active_link = "purchases"
     @active_sub_link = "received"
-    @inventories = Inventory.search_receive_order(params, current_territory.id).page(params[:page]).per(20)
+    @inventories = Inventory.search_receive_order(params, current_territory.id, current_user).page(params[:page]).per(20)
   end
 
   def export_receive_order
     params[:start_date] ||= Date.current.beginning_of_month
     params[:end_date]   ||= Date.current.end_of_month
     @inventories = Inventory
-                    .search_receive_order(params, current_territory.id)
+                    .search_receive_order(params, current_territory.id, current_user)
                     .includes(
                       :warehouse,
                       beer_dispatch: :order,

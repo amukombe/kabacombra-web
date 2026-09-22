@@ -7,8 +7,7 @@ class BeerDispatch < ApplicationRecord
   before_validation :generate_dispatch_number, on: :create
   validates :driver_name, :driver_mobile, :truck_numberplate, :delivery_plant, :shipping_point, :loading_time, presence: true
   
-  def self.search(params, territory_id)
-
+  def self.search(params, territory_id, user)
     query = joins(:order)
               .where(
                 territory_id: territory_id,
@@ -16,6 +15,14 @@ class BeerDispatch < ApplicationRecord
                   status_id: [3, 4]
                 }
               )
+
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query
+                .joins(order: { order_items: :nile_product })
+                .where(nile_products: { store_id: user.store_id })
+                .distinct
+    end
 
     # Search
     if params[:query].present?

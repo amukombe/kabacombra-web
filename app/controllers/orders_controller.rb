@@ -6,19 +6,19 @@ class OrdersController < ApplicationController
     @active_link = "orders"
     params[:start_date] ||= Date.current.beginning_of_month
     params[:end_date]   ||= Date.current.end_of_month
-    @orders = Order.search(params, current_territory.id).order(:order_date => :desc).page(params[:page]).per(20)
+    @orders = Order.search(params, current_territory.id, current_user).order(:order_date => :desc).page(params[:page]).per(20)
   end
 
   def approved
     @active_link = "approved"
     params[:start_date] ||= Date.current.beginning_of_month
     params[:end_date]   ||= Date.current.end_of_month
-    @orders = Order.search_approved(params, current_territory.id).order(:order_date => :desc).page(params[:page]).per(20)
+    @orders = Order.search_approved(params, current_territory.id, current_user).order(:order_date => :desc).page(params[:page]).per(20)
   end
 
   def export
     @orders = Order
-                .search(params, current_territory.id)
+                .search(params, current_territory.id, current_user)
                 .includes(
                   :status,
                   order_items: :nile_product
@@ -78,7 +78,7 @@ class OrdersController < ApplicationController
     @active_link = "canceled"
     params[:start_date] ||= Date.current.beginning_of_month
     params[:end_date]   ||= Date.current.end_of_month
-    @orders = Order.search_canceled(params, current_territory.id).page(params[:page]).per(20)
+    @orders = Order.search_canceled(params, current_territory.id, current_user).page(params[:page]).per(20)
   end
 
   def cancel
@@ -115,9 +115,21 @@ class OrdersController < ApplicationController
 
   # GET /orders/new
   def new
-    @order = Order.new(order_date: Date.today, departure_date: Date.today)
+    @order = Order.new(
+      order_date: Date.today,
+      departure_date: Date.today
+    )
+
     @order.order_items.build
-    @products = NileProduct.all
+
+    @products = if current_user.is_super?
+                  NileProduct.all
+                else
+                  NileProduct.where(
+                    store_id: current_user.store_id
+                  )
+                end
+
     @units = UnitOfMeasurement.all
   end
 

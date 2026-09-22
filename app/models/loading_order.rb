@@ -11,13 +11,19 @@ class LoadingOrder < ApplicationRecord
   before_validation :generate_order_number, on: :create
   after_create :create_inventory_transactions
   
-  def self.search(params, territory_id)
-
+  def self.search(params, territory_id, user)
     query = where(
       status_id: [6, 7],
       territory_id: territory_id
     )
 
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query.where(
+        store_id: user.store_id
+      )
+    end
+
     # Search filter
     if params[:query].present?
       search = "%#{sanitize_sql_like(params[:query])}%"
@@ -47,13 +53,19 @@ class LoadingOrder < ApplicationRecord
     query
   end
 
-  def self.search_pending(params, territory_id)
-
+  def self.search_pending(params, territory_id, user)
     query = where(
       status_id: [6],
       territory_id: territory_id
     )
 
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query.where(
+        store_id: user.store_id
+      )
+    end
+
     # Search filter
     if params[:query].present?
       search = "%#{sanitize_sql_like(params[:query])}%"
@@ -83,7 +95,8 @@ class LoadingOrder < ApplicationRecord
     query
   end
 
-  def self.pending_loading_summary(params, territory_id)
+  def self.pending_loading_summary(params, territory_id, user)
+
     query = LoadingOrderItem
       .joins(:loading_order, :nile_product)
       .where(
@@ -93,6 +106,22 @@ class LoadingOrder < ApplicationRecord
         }
       )
 
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query.where(
+        loading_orders: {
+          store_id: user.store_id
+        }
+      )
+
+      query = query.where(
+        nile_products: {
+          store_id: user.store_id
+        }
+      )
+    end
+
+    # Search by product name
     if params[:query].present?
       query = query.where(
         "nile_products.name LIKE ?",
@@ -100,6 +129,7 @@ class LoadingOrder < ApplicationRecord
       )
     end
 
+    # Start date
     if params[:start_date].present?
       query = query.where(
         "DATE(loading_orders.loading_date) >= ?",
@@ -107,6 +137,7 @@ class LoadingOrder < ApplicationRecord
       )
     end
 
+    # End date
     if params[:end_date].present?
       query = query.where(
         "DATE(loading_orders.loading_date) <= ?",
@@ -115,7 +146,11 @@ class LoadingOrder < ApplicationRecord
     end
 
     query
-      .group("nile_products.id", "nile_products.name")
+      .group(
+        "nile_products.id",
+        "nile_products.name",
+        "nile_products.product_number"
+      )
       .select(
         "nile_products.id AS nile_product_id",
         "nile_products.name AS product_name",

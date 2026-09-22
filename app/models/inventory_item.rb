@@ -14,26 +14,67 @@ class InventoryItem < ApplicationRecord
   #after_create :create_transactions
   before_destroy :remove_transactions
 
-  def self.search(params, territory_id)
+  def self.search(params, territory_id, user)
     query = joins(:inventory_transactions, :inventory, :nile_product)
       .where("inventories.territory_id = ?", territory_id)
 
-    if params[:query].present?
-      query = query.where("nile_products.name LIKE ?", "%#{sanitize_sql_like(params[:query])}%")
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query.where(
+        nile_products: {
+          store_id: user.store_id
+        }
+      )
     end
 
-    query.group('nile_products.id, nile_products.name,inventory_items.selling_price')
-        .select(
-          'nile_products.id  AS nile_product_id, nile_products.name, inventory_items.selling_price',
-          'SUM(CASE WHEN inventory_transactions.direction = "in" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_opening_stock',
-          'SUM(CASE WHEN inventory_transactions.direction = "in" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_in',
-          'SUM(CASE WHEN inventory_transactions.direction = "out" THEN inventory_transactions.transaction_quantity ELSE 0 END) AS total_out'
-        )
-        .order("nile_products.product_number ASC")
-        #select("nile_product_id, nile_products.name, SUM(quantity_received-quantity_sold) as openning_stock, SUM(quantity_received) as total_purchases, SUM(quantity_sold) as total_quantity_sold, SUM(breakages) as total_breakages, SUM(returns) as total_returns, SUM(nbl_return) as total_nbl_returns, SUM(transfers) as total_transfers, SUM(remaining_quantity*nile_products.selling_price) as total_closing_stock_value")
+    # Search by product name
+    if params[:query].present?
+      query = query.where(
+        "nile_products.name LIKE ?",
+        "%#{sanitize_sql_like(params[:query])}%"
+      )
+    end
+
+    query
+      .group(
+        "nile_products.id,
+        nile_products.name,
+        nile_products.product_number,
+        inventory_items.selling_price"
+      )
+      .select(
+        "nile_products.id AS nile_product_id,
+        nile_products.name,
+        inventory_items.selling_price",
+
+        'SUM(
+          CASE
+            WHEN inventory_transactions.direction = "in"
+            THEN inventory_transactions.transaction_quantity
+            ELSE 0
+          END
+        ) AS total_opening_stock',
+
+        'SUM(
+          CASE
+            WHEN inventory_transactions.direction = "in"
+            THEN inventory_transactions.transaction_quantity
+            ELSE 0
+          END
+        ) AS total_in',
+
+        'SUM(
+          CASE
+            WHEN inventory_transactions.direction = "out"
+            THEN inventory_transactions.transaction_quantity
+            ELSE 0
+          END
+        ) AS total_out'
+      )
+      .order("nile_products.product_number ASC")
   end
 
-  def self.product_summary(params, territory_id)
+  def self.product_summary(params, territory_id, user)
     start_date =
       params[:start_date].present? ?
         Date.parse(params[:start_date]).beginning_of_day :
@@ -51,6 +92,15 @@ class InventoryItem < ApplicationRecord
         territory_id
       )
 
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query.where(
+        nile_products: {
+          store_id: user.store_id
+        }
+      )
+    end
+
     # Search
     if params[:query].present?
       search = "%#{sanitize_sql_like(params[:query])}%"
@@ -62,7 +112,11 @@ class InventoryItem < ApplicationRecord
     end
 
     query
-      .group("nile_products.id, nile_products.name, nile_products.product_number")
+      .group(
+        "nile_products.id,
+        nile_products.name,
+        nile_products.product_number"
+      )
       .select(
         "nile_products.id",
         "nile_products.name AS product_name",

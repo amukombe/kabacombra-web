@@ -175,9 +175,19 @@ class InventoryItemsController < ApplicationController
         "
       )
 
+    # Restrict non-super users to their store
+    unless current_user.is_super?
+      @inventory_items = @inventory_items.where(
+        nile_products: {
+          store_id: current_user.store_id
+        }
+      )
+    end
+
     # Optional search
     if params[:query].present?
-      search = "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+      search = ActiveRecord::Base.sanitize_sql_like(params[:query])
+      search = "%#{search}%"
 
       @inventory_items = @inventory_items.where(
         "nile_products.name LIKE ?",
@@ -296,6 +306,15 @@ class InventoryItemsController < ApplicationController
         "
       )
 
+    # Restrict non-super users to their store
+    unless current_user.is_super?
+      @inventory_items = @inventory_items.where(
+        nile_products: {
+          store_id: current_user.store_id
+        }
+      )
+    end
+
     # Same search as index
     if params[:query].present?
       search = "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
@@ -372,14 +391,15 @@ class InventoryItemsController < ApplicationController
     @warehouses = current_territory.warehouses
 
     @inventory_items = InventoryItem
-      .product_summary(params, current_territory.id)
+      .product_summary(params, current_territory.id, current_user)
       .page(params[:page])
       .per(20)
   end
   def export_received_stock
     @inventory_items = InventoryItem.product_summary(
       params,
-      current_territory.id
+      current_territory.id,
+      current_user
     )
 
     package = Axlsx::Package.new

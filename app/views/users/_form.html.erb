@@ -53,9 +53,15 @@
     </div>
     
     <div class="flex items-center mt-[20px]">
-      <%= form.check_box :is_super, {class: "w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"}, true, false %>
-      <label for="default-checkbox" class="text-sm font-medium text-gray-900 ms-2 dark:text-gray-300">Is Super Admin</label>
-  </div>
+      <%= form.check_box :is_super,
+          {
+            class: "w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          } %>
+
+      <%= form.label :is_super,
+          "Is Super Admin",
+          class: "text-sm font-medium text-gray-900 ms-2 dark:text-gray-300" %>
+    </div>
   </div>
   <div class="flex justify-end gap-4 p-4 mx-auto">
     <div class="inline-flex">

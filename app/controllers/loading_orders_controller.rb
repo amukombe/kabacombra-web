@@ -7,12 +7,12 @@ class LoadingOrdersController < ApplicationController
     @active_sub_link = "loading_orders"
     params[:start_date] ||= Date.current.beginning_of_month
     params[:end_date]   ||= Date.current.end_of_month
-    @loading_orders = LoadingOrder.search(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
+    @loading_orders = LoadingOrder.search(params, current_territory.id, current_user).order(created_at: :desc).page(params[:page]).per(20)
   end
 
   def export
     @loading_orders = LoadingOrder
-                        .search(params, current_territory.id)
+                        .search(params, current_territory.id, current_user)
                         .order(created_at: :desc)
                         .includes(
                           :store,
@@ -63,12 +63,12 @@ class LoadingOrdersController < ApplicationController
     @active_link = "pending"
     params[:start_date] ||= Date.current.beginning_of_month
     params[:end_date]   ||= Date.current.end_of_month
-    @loading_orders = LoadingOrder.search_pending(params, current_territory.id).order(created_at: :desc).page(params[:page]).per(20)
+    @loading_orders = LoadingOrder.search_pending(params, current_territory.id, current_user).order(created_at: :desc).page(params[:page]).per(20)
   end
 
   def pending_export
     @loading_orders = LoadingOrder
-                        .search(params, current_territory.id)
+                        .search_pending(params, current_territory.id, current_user)
                         .order(created_at: :desc)
                         .includes(
                           :store,
@@ -124,8 +124,23 @@ class LoadingOrdersController < ApplicationController
     @start_date = params[:start_date].presence || Date.current
     @end_date   = params[:end_date].presence || Date.current
 
-    @products = NileProduct.order(:product_number)
+    # Products
+    @products = NileProduct
+      .order(:product_number)
 
+    # Restrict products for non-super users
+    unless current_user.is_super?
+      @products = @products.where(
+        store_id: current_user.store_id
+      )
+
+      # Also restrict the stores displayed in the report
+      @stores = @stores.where(
+        id: current_user.store_id
+      )
+    end
+
+    # Search products
     if params[:query].present?
       @products = @products.where(
         "name LIKE ?",
@@ -133,16 +148,35 @@ class LoadingOrdersController < ApplicationController
       )
     end
 
-    @products = @products.page(params[:page]).per(20)
+    @products = @products
+      .page(params[:page])
+      .per(20)
 
+    # Loading data
     query = LoadingOrderItem
-      .joins(:loading_order)
+      .joins(:loading_order, :nile_product)
       .where(
         loading_orders: {
           territory_id: current_territory.id
         }
       )
 
+    # Restrict loading data for non-super users
+    unless current_user.is_super?
+      query = query.where(
+        nile_products: {
+          store_id: current_user.store_id
+        }
+      )
+
+      query = query.where(
+        loading_orders: {
+          store_id: current_user.store_id
+        }
+      )
+    end
+
+    # Date filter
     query = query.where(
       "DATE(loading_orders.loading_date) BETWEEN ? AND ?",
       @start_date,
@@ -170,8 +204,22 @@ class LoadingOrdersController < ApplicationController
     @start_date = params[:start_date].presence || Date.current
     @end_date   = params[:end_date].presence || Date.current
 
-    @products = NileProduct.order(:product_number)
+    # Products
+    @products = NileProduct
+      .order(:product_number)
 
+    # Restrict non-super users to their store
+    unless current_user.is_super?
+      @stores = @stores.where(
+        id: current_user.store_id
+      )
+
+      @products = @products.where(
+        store_id: current_user.store_id
+      )
+    end
+
+    # Search
     if params[:query].present?
       @products = @products.where(
         "name LIKE ?",
@@ -179,14 +227,31 @@ class LoadingOrdersController < ApplicationController
       )
     end
 
+    # Loading data
     query = LoadingOrderItem
-      .joins(:loading_order)
+      .joins(:loading_order, :nile_product)
       .where(
         loading_orders: {
           territory_id: current_territory.id
         }
       )
 
+    # Restrict loading data for non-super users
+    unless current_user.is_super?
+      query = query.where(
+        nile_products: {
+          store_id: current_user.store_id
+        }
+      )
+
+      query = query.where(
+        loading_orders: {
+          store_id: current_user.store_id
+        }
+      )
+    end
+
+    # Date filter
     query = query.where(
       "DATE(loading_orders.loading_date) BETWEEN ? AND ?",
       @start_date,
@@ -207,10 +272,12 @@ class LoadingOrdersController < ApplicationController
       @report_data[product_id][store_id] = quantity
     end
 
+    # Excel
     package = Axlsx::Package.new
     workbook = package.workbook
 
     workbook.add_worksheet(name: "Loading Summary") do |sheet|
+
       headers = ["Product"]
       headers += @stores.map(&:name)
       headers << "Total"
@@ -218,17 +285,23 @@ class LoadingOrdersController < ApplicationController
       sheet.add_row headers
 
       @products.each do |product|
+
         row = [product.name]
         row_total = 0
 
         @stores.each do |store|
-          quantity = @report_data.dig(product.id, store.id).to_f
+
+          quantity = @report_data
+            .dig(product.id, store.id)
+            .to_f
 
           row_total += quantity
+
           row << quantity.to_i
         end
 
         row << row_total.to_i
+
         sheet.add_row row
       end
     end
@@ -242,7 +315,7 @@ class LoadingOrdersController < ApplicationController
 
   def pending_loading_summary
     @active_link = "pending"
-    @products = LoadingOrder.pending_loading_summary(params,current_territory.id).page(params[:page]).per(20)
+    @products = LoadingOrder.pending_loading_summary(params,current_territory.id, current_user).page(params[:page]).per(20)
   end
 
   # GET /loading_orders/1 or /loading_orders/1.json
@@ -253,12 +326,32 @@ class LoadingOrdersController < ApplicationController
   def new
     @active_link = "loading_orders"
     @active_sub_link = "loading_orders"
+
     @loading_order = LoadingOrder.new
-    @products = NileProduct.all
+
+    if current_user.is_super?
+      @products = NileProduct.all
+      @stores = Store.where(
+        territory_id: current_territory.id
+      )
+    else
+      @products = NileProduct.where(
+        store_id: current_user.store_id
+      )
+
+      @stores = Store.where(
+        id: current_user.store_id,
+        territory_id: current_territory.id
+      )
+
+      # Automatically assign the user's store
+      @loading_order.store_id = current_user.store_id
+    end
+
     @units = UnitOfMeasurement.all
     @employees = current_territory.employees
     @sale_types = SaleType.all
-    @stores = Store.where(territory_id: current_territory.id)
+
     @loading_order.loading_order_items.build
   end
 

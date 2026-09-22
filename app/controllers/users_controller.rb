@@ -31,20 +31,30 @@ class UsersController < ApplicationController
     @employee  = @user.employee #Employee.find(params[:employee_id])
   end
   def update
-    @employee  = @user.employee
-    if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+    @employee = @user.employee
+
+    if params[:user][:password].blank? &&
+      params[:user][:password_confirmation].blank?
+
       params[:user].delete(:password)
       params[:user].delete(:password_confirmation)
     end
-    respond_to do |format|
-      if @user.update(user_params)
-        @user.send_account_info_email
-        format.html{redirect_to users_path, notice: "User successfully updated" }
-        format.json{render :index, status: :cretated, location: @user}
-      else
-        format.html{render :edit, status: :unprocessable_entity}
-        format.json{render :json, status: :created, location: :unprocessable_entity}
-      end
+
+    Rails.logger.info "BEFORE UPDATE is_super: #{@user.is_super.inspect}"
+    Rails.logger.info "PARAM is_super: #{user_params[:is_super].inspect}"
+
+    if @user.update(user_params)
+
+      Rails.logger.info "AFTER UPDATE is_super: #{@user.is_super.inspect}"
+      Rails.logger.info "DB VALUE: #{User.find(@user.id).is_super.inspect}"
+
+      @user.send_account_info_email
+
+      redirect_to users_path, notice: "User successfully updated"
+    else
+      Rails.logger.info "ERRORS: #{@user.errors.full_messages.inspect}"
+
+      render :edit, status: :unprocessable_entity
     end
   end
 

@@ -8,19 +8,27 @@ class Order < ApplicationRecord
   has_one :beer_dispatch, dependent: :destroy
   accepts_nested_attributes_for :order_items, allow_destroy: true, reject_if: :all_blank
   before_validation :generate_order_number, on: :create
-  def self.search(params, territory_id)
+  
+  def self.search(params, territory_id, user)
 
     query = where(
       status_id: [1, 2],
       territory_id: territory_id
     )
 
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query.joins(order_items: :nile_product)
+                  .where(nile_products: { store_id: user.store_id })
+                  .distinct
+    end
+
     # Search by order number
     if params[:query].present?
       search = "%#{sanitize_sql_like(params[:query])}%"
 
       query = query.where(
-        "order_number LIKE ?",
+        "orders.order_number LIKE ?",
         search
       )
     end
@@ -28,7 +36,7 @@ class Order < ApplicationRecord
     # Start date filter
     if params[:start_date].present?
       query = query.where(
-        "DATE(created_at) >= ?",
+        "DATE(orders.created_at) >= ?",
         params[:start_date]
       )
     end
@@ -36,7 +44,7 @@ class Order < ApplicationRecord
     # End date filter
     if params[:end_date].present?
       query = query.where(
-        "DATE(created_at) <= ?",
+        "DATE(orders.created_at) <= ?",
         params[:end_date]
       )
     end
@@ -44,19 +52,26 @@ class Order < ApplicationRecord
     query
   end
 
-  def self.search_approved(params, territory_id)
-
+  def self.search_approved(params, territory_id, user)
     query = where(
       status_id: [15],
       territory_id: territory_id
     )
 
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query
+              .joins(order_items: :nile_product)
+              .where(nile_products: { store_id: user.store_id })
+              .distinct
+    end
+
     # Search by order number
     if params[:query].present?
       search = "%#{sanitize_sql_like(params[:query])}%"
 
       query = query.where(
-        "order_number LIKE ?",
+        "orders.order_number LIKE ?",
         search
       )
     end
@@ -64,7 +79,7 @@ class Order < ApplicationRecord
     # Start date filter
     if params[:start_date].present?
       query = query.where(
-        "DATE(created_at) >= ?",
+        "DATE(orders.created_at) >= ?",
         params[:start_date]
       )
     end
@@ -72,7 +87,7 @@ class Order < ApplicationRecord
     # End date filter
     if params[:end_date].present?
       query = query.where(
-        "DATE(created_at) <= ?",
+        "DATE(orders.created_at) <= ?",
         params[:end_date]
       )
     end
@@ -80,19 +95,26 @@ class Order < ApplicationRecord
     query
   end
 
-  def self.search_canceled(params, territory_id)
-
+  def self.search_canceled(params, territory_id, user)
     query = where(
       status_id: 5,
       territory_id: territory_id
     )
+
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query
+              .joins(order_items: :nile_product)
+              .where(nile_products: { store_id: user.store_id })
+              .distinct
+    end
 
     # Search by order number
     if params[:query].present?
       search = "%#{sanitize_sql_like(params[:query])}%"
 
       query = query.where(
-        "order_number LIKE ?",
+        "orders.order_number LIKE ?",
         search
       )
     end
@@ -100,7 +122,7 @@ class Order < ApplicationRecord
     # Start date filter
     if params[:start_date].present?
       query = query.where(
-        "DATE(created_at) >= ?",
+        "DATE(orders.created_at) >= ?",
         params[:start_date]
       )
     end
@@ -108,7 +130,7 @@ class Order < ApplicationRecord
     # End date filter
     if params[:end_date].present?
       query = query.where(
-        "DATE(created_at) <= ?",
+        "DATE(orders.created_at) <= ?",
         params[:end_date]
       )
     end

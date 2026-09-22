@@ -5,8 +5,8 @@ class Inventory < ApplicationRecord
   belongs_to :warehouse
   accepts_nested_attributes_for :inventory_items, allow_destroy: true, reject_if: :all_blank
   after_update :create_inventory_transactions_on_approval
-  def self.search(params, territory_id)
-
+  
+  def self.search(params, territory_id, user)
     query = joins(:beer_dispatch)
               .where(
                 territory_id: territory_id,
@@ -14,6 +14,14 @@ class Inventory < ApplicationRecord
                   status_id: [13]
                 }
               )
+
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query
+                .joins(inventory_items: :nile_product)
+                .where(nile_products: { store_id: user.store_id })
+                .distinct
+    end
 
     # Search
     if params[:query].present?
@@ -45,7 +53,7 @@ class Inventory < ApplicationRecord
     query
   end
 
-  def self.search_received(params, territory_id)
+ def self.search_received(params, territory_id, user)
 
     query = joins(beer_dispatch: :order)
               .where(
@@ -55,6 +63,23 @@ class Inventory < ApplicationRecord
                 }
               )
 
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query.where(
+        <<~SQL,
+          EXISTS (
+            SELECT 1
+            FROM inventory_items
+            INNER JOIN nile_products
+              ON nile_products.id = inventory_items.nile_product_id
+            WHERE inventory_items.inventory_id = inventories.id
+              AND nile_products.store_id = ?
+          )
+        SQL
+        user.store_id
+      )
+    end
+
     # Search filter
     if params[:query].present?
       search = "%#{sanitize_sql_like(params[:query])}%"
@@ -82,10 +107,13 @@ class Inventory < ApplicationRecord
       )
     end
 
-    query.order("orders.order_date DESC, orders.order_number DESC")
+    query.order(
+      "orders.order_date DESC,
+      orders.order_number DESC"
+    )
   end
 
-  def self.search_receive_order(params, territory_id)
+  def self.search_receive_order(params, territory_id, user)
 
     query = joins(beer_dispatch: :order)
               .where(
@@ -95,6 +123,23 @@ class Inventory < ApplicationRecord
                 }
               )
 
+    # Restrict non-super users to their store
+    unless user.is_super?
+      query = query.where(
+        <<~SQL,
+          EXISTS (
+            SELECT 1
+            FROM inventory_items
+            INNER JOIN nile_products
+              ON nile_products.id = inventory_items.nile_product_id
+            WHERE inventory_items.inventory_id = inventories.id
+              AND nile_products.store_id = ?
+          )
+        SQL
+        user.store_id
+      )
+    end
+
     # Search filter
     if params[:query].present?
       search = "%#{sanitize_sql_like(params[:query])}%"
@@ -122,7 +167,10 @@ class Inventory < ApplicationRecord
       )
     end
 
-    query.order("orders.order_date DESC, orders.order_number DESC")
+    query.order(
+      "orders.order_date DESC,
+      orders.order_number DESC"
+    )
   end
 
   def total_price
