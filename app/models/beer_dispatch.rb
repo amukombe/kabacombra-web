@@ -51,7 +51,10 @@ class BeerDispatch < ApplicationRecord
       )
     end
 
-    query
+    query.order(
+      loading_time: :desc,
+      "orders.order_number": :asc
+    )
   end
 
   def total_price
