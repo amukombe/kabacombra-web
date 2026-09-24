@@ -51,9 +51,11 @@ class BeerDispatch < ApplicationRecord
       )
     end
 
-    query.order(
-      loading_time: :desc,
-      "orders.order_number": :asc
+    query
+    .select("beer_dispatches.*, orders.order_number AS order_number")
+    .order(
+      "beer_dispatches.loading_time DESC",
+      "orders.order_number ASC"
     )
   end
 
