@@ -63,6 +63,14 @@ class BeerDispatch < ApplicationRecord
     dispatch_items.sum { |item| item.quantity_dispatched * item.order_item.unit_price }
   end  
 
+  def dispatch_received_date
+    if self.received_date.present?
+      self.received_date
+    else
+      self.loading_time
+    end
+  end
+
   private
   def generate_dispatch_number
     if self.dispatch_no.blank?

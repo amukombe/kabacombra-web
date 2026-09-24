@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_18_074440) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_24_114115) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -203,6 +203,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_18_074440) do
     t.string "driver_mobile"
     t.string "invoice_no"
     t.bigint "status_id"
+    t.datetime "received_date"
     t.index ["order_id"], name: "index_beer_dispatches_on_order_id"
     t.index ["status_id"], name: "index_beer_dispatches_on_status_id"
     t.index ["territory_id"], name: "index_beer_dispatches_on_territory_id"

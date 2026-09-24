@@ -296,6 +296,7 @@ class InventoriesController < ApplicationController
     respond_to do |format|
       if @inventory.save
         @dispatch.order.update(status_id: 4)
+        @dispatch.update(received_date: Time.now)
         format.html { redirect_to beer_dispatches_path, notice: "Inventory was successfully created." }
         format.json { render :show, status: :created, location: @inventory }
       else
