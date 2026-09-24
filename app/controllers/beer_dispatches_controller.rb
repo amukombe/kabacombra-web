@@ -116,7 +116,7 @@ class BeerDispatchesController < ApplicationController
     respond_to do |format|
       if @beer_dispatch.save
         @order.update(status_id: 3)
-        format.html { redirect_to orders_path, notice: "Beer dispatch was successfully created." }
+        format.html { redirect_to approved_orders_path, notice: "Beer dispatch was successfully created." }
         format.json { render :show, status: :created, location: @beer_dispatch }
       else
         format.html { render :new, status: :unprocessable_entity }

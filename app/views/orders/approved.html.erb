@@ -78,9 +78,11 @@
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Product Details.
                 </th>
+                <% if current_user.is_super? %>
                 <th scope="col" class="p-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-white">
                   Action
                 </th>
+                <%end%>
               </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
@@ -121,7 +123,7 @@
                     </tbody>
                   </table>
                 </td>
-                
+                <%if current_user.is_super? %>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="order-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=order.id%>" data-dropdown-placement="bottom">
                     <span class="flex-1 text-left ms-3 rtl:text-right whitespace-nowrap">Action</span>
@@ -151,6 +153,7 @@
                     </ul>
                 </div>
                 </td>
+                <%end%>
               </tr>
               <%= render "confirm_delete_modal", order: order%>
               <%= render "confirm_cancel_modal", order: order%>
