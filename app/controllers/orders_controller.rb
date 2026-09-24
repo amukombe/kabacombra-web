@@ -103,10 +103,9 @@ class OrdersController < ApplicationController
         approved_at: nil
       )
 
-      redirect_to canceled_orders_path,
-                  notice: "Order reversed successfully."
+      redirect_to approved_orders_path, notice: "Order reversed successfully."
     else
-      render :canceled, status: :unprocessable_entity, alert: "Failed to reverse order."
+      render :approved, status: :unprocessable_entity, alert: "Failed to reverse order."
     end
   end
   # GET /orders/1 or /orders/1.json

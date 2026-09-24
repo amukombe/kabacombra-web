@@ -90,7 +90,7 @@
               <tr class="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
                 <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
                   <div class="flex flex-col space-y-1">
-                    <span class="text-sm font-medium"><%= order.order_date&.strftime("%d %b, %Y") %></span>
+                    <span class="text-sm font-medium"><%= order.approved_at&.strftime("%d %b, %Y") %></span>
                     <span class="text-sm">Order #: <span class="font-normal"><%= order.order_number %></span></span>
                     <span class="text-xs">Route: <span class="font-normal"><%= order.description.upcase %></span></span>
                     <span class="text-xs">Sales Rep: <span class="font-xs"><%= order.user.employee.firstname.upcase if order.user %>, <i><%= order.user.employee.mobile if order.user %></i></span></span>
