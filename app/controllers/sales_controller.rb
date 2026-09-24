@@ -5,20 +5,31 @@ class SalesController < ApplicationController
   def index
     params[:start_date] ||= Date.current.to_s
     params[:end_date] ||= Date.current.to_s
-    @sales = Sale.search(params).page(params[:page]).per(20)
+    @sales = Sale.search(params, current_user).page(params[:page]).per(20)
     @active_link = "sales"
   end
 
   def sales_summary
     @active_link = "sales"
 
+    # Stores
     @stores = current_territory.stores.order(:name)
 
-    @products = NileProduct
-      .order(:product_number)
-      .page(params[:page])
-      .per(20)
+    # Products
+    @products = NileProduct.order(:product_number)
 
+    # Restrict non-super users to their store
+    unless current_user.is_super?
+      @stores = @stores.where(
+        id: current_user.store_id
+      )
+
+      @products = @products.where(
+        store_id: current_user.store_id
+      )
+    end
+
+    # Search products
     if params[:query].present?
       @products = @products.where(
         "name LIKE ?",
@@ -26,13 +37,34 @@ class SalesController < ApplicationController
       )
     end
 
+    # Pagination
+    @products = @products
+      .page(params[:page])
+      .per(20)
+
+    # Sales query
     query = SaleItem
-      .joins(:sale)
+      .joins(:sale, :nile_product)
       .where(
         sales: {
           territory_id: current_territory.id
         }
       )
+
+    # Restrict sales to the user's store
+    unless current_user.is_super?
+      query = query.where(
+        sales: {
+          store_id: current_user.store_id
+        }
+      )
+
+      query = query.where(
+        nile_products: {
+          store_id: current_user.store_id
+        }
+      )
+    end
 
     # Default to today if no dates selected
     if params[:start_date].blank? && params[:end_date].blank?
@@ -56,6 +88,7 @@ class SalesController < ApplicationController
       end
     end
 
+    # Group sales by product and store
     raw_data = query
       .group(
         :nile_product_id,

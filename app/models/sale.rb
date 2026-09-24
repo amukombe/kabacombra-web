@@ -47,8 +47,13 @@ class Sale < ApplicationRecord
   after_save :update_remaining_quantities
   before_destroy :restore_quantity
 
-  def self.search(params)
+  def self.search(params, user)
     query = all
+
+    # Store-level access control
+    unless user.is_super?
+      query = query.where(store_id: user.store_id)
+    end
 
     # Search
     if params[:query].present?
