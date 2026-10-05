@@ -5,6 +5,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   belongs_to :employee
+  has_many :user_stores, dependent: :destroy
+  has_many :stores, through: :user_stores
+  
   belongs_to :store, optional: true
   has_many :departments, through: :employee
   has_many :user_modules
