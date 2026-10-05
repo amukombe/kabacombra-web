@@ -105,6 +105,54 @@ class UsersController < ApplicationController
       end
     end
   end
+
+  def assign_store
+    @user = User.find(params[:id])
+
+    assigned_store_ids = @user.stores.pluck(:id)
+
+    @stores = Store
+      .where.not(id: assigned_store_ids)
+      .order(:name)
+  end
+
+  def update_stores
+    @user = User.find(params[:id])
+
+    store_ids = Array(params[:store_ids]).reject(&:blank?)
+
+    store_ids.each do |store_id|
+      UserStore.find_or_create_by!(
+        user_id: @user.id,
+        store_id: store_id
+      )
+    end
+
+    redirect_to users_path, notice: "Store(s) added successfully."
+  end
+
+  def remove_store
+    @user = User.find(params[:id])
+
+    if @user.user_stores.count <= 1
+      redirect_to users_path,
+                  alert: "A user must have at least one store."
+      return
+    end
+
+    user_store = @user.user_stores.find_by(store_id: params[:store_id])
+
+    if user_store
+      user_store.destroy
+
+      redirect_to users_path,
+                  notice: "Store removed successfully."
+    else
+      redirect_to users_path,
+                  alert: "Store assignment not found."
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

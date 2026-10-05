@@ -20,7 +20,7 @@ class BeerDispatch < ApplicationRecord
     unless user.is_super?
       query = query
                 .joins(order: { order_items: :nile_product })
-                .where(nile_products: { store_id: user.store_id })
+                .where(nile_products: { store_id: user.store_ids })
                 .distinct
     end
 

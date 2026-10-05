@@ -22,7 +22,7 @@ class InventoryItem < ApplicationRecord
     unless user.is_super?
       query = query.where(
         nile_products: {
-          store_id: user.store_id
+          store_id: user.store_ids
         }
       )
     end
@@ -96,7 +96,7 @@ class InventoryItem < ApplicationRecord
     unless user.is_super?
       query = query.where(
         nile_products: {
-          store_id: user.store_id
+          store_id: user.store_ids
         }
       )
     end

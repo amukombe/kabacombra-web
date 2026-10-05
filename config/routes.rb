@@ -294,6 +294,9 @@ Rails.application.routes.draw do
       get :assign_module
       patch :update_module
       delete :remove_module
+      get :assign_store
+      post :update_stores
+      delete :remove_store
     end
   end
   #devise_for :users, controllers: {

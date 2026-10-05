@@ -52,7 +52,7 @@ class Sale < ApplicationRecord
 
     # Store-level access control
     unless user.is_super?
-      query = query.where(store_id: user.store_id)
+      query = query.where(store_id: user.store_ids)
     end
 
     # Search

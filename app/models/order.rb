@@ -19,7 +19,7 @@ class Order < ApplicationRecord
     # Restrict non-super users to their store
     unless user.is_super?
       query = query.joins(order_items: :nile_product)
-                  .where(nile_products: { store_id: user.store_id })
+                  .where(nile_products: { store_id: user.store_ids })
                   .distinct
     end
 
@@ -62,7 +62,7 @@ class Order < ApplicationRecord
     unless user.is_super?
       query = query
               .joins(order_items: :nile_product)
-              .where(nile_products: { store_id: user.store_id })
+              .where(nile_products: { store_id: user.store_ids })
               .distinct
     end
 
@@ -105,7 +105,7 @@ class Order < ApplicationRecord
     unless user.is_super?
       query = query
               .joins(order_items: :nile_product)
-              .where(nile_products: { store_id: user.store_id })
+              .where(nile_products: { store_id: user.store_ids })
               .distinct
     end
 

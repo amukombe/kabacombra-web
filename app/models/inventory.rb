@@ -19,7 +19,7 @@ class Inventory < ApplicationRecord
     unless user.is_super?
       query = query
                 .joins(inventory_items: :nile_product)
-                .where(nile_products: { store_id: user.store_id })
+                .where(nile_products: { store_id: user.store_ids })
                 .distinct
     end
 
@@ -76,7 +76,7 @@ class Inventory < ApplicationRecord
               AND nile_products.store_id = ?
           )
         SQL
-        user.store_id
+        user.store_ids
       )
     end
 
@@ -136,7 +136,7 @@ class Inventory < ApplicationRecord
               AND nile_products.store_id = ?
           )
         SQL
-        user.store_id
+        user.store_ids
       )
     end
 

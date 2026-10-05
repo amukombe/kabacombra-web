@@ -20,7 +20,7 @@ class LoadingOrder < ApplicationRecord
     # Restrict non-super users to their store
     unless user.is_super?
       query = query.where(
-        store_id: user.store_id
+        store_id: user.store_ids
       )
     end
 
@@ -62,7 +62,7 @@ class LoadingOrder < ApplicationRecord
     # Restrict non-super users to their store
     unless user.is_super?
       query = query.where(
-        store_id: user.store_id
+        store_id: user.store_ids
       )
     end
 
@@ -110,13 +110,13 @@ class LoadingOrder < ApplicationRecord
     unless user.is_super?
       query = query.where(
         loading_orders: {
-          store_id: user.store_id
+          store_id: user.store_ids
         }
       )
 
       query = query.where(
         nile_products: {
-          store_id: user.store_id
+          store_id: user.store_ids
         }
       )
     end

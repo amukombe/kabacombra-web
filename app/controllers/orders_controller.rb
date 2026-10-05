@@ -125,7 +125,7 @@ class OrdersController < ApplicationController
                   NileProduct.all
                 else
                   NileProduct.where(
-                    store_id: current_user.store_id
+                    store_id: current_user.store_ids
                   )
                 end
 

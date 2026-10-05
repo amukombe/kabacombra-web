@@ -77,8 +77,39 @@
                     <%end%> 
                   <%end%>
                 </td>
-                <td class="p-4 text-sm font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                  <%= user.store&.name %>
+                <td class="p-4 text-sm font-normal text-gray-900 dark:text-white">
+                  <% if user.stores.any? %>
+
+                    <% user.stores.each do |store| %>
+
+                      <div class="flex items-center gap-2 mb-1">
+
+                        <span class="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded dark:bg-blue-900 dark:text-blue-300">
+                          <%= store.name %>
+                        </span>
+
+                        <%= button_to remove_store_user_path(user),
+                            method: :delete,
+                            params: { store_id: store.id },
+                            data: {
+                              turbo_confirm: "Remove #{store.name} from this user?"
+                            },
+                            class: "text-red-500 hover:text-red-700" do %>
+                          <i class="fas fa-times"></i>
+                        <% end %>
+
+                      </div>
+
+                    <% end %>
+
+                  <% else %>
+
+                    <span class="text-xs text-red-500">
+                      No store assigned
+                    </span>
+
+                  <% end %>
+
                 </td>
                 <td class="p-4 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
                   <button type="button" class="flex items-center gap-2 p-1 px-3 text-xs text-blue-800 bg-blue-200 rounded dark:text-blue-200 dark:bg-blue-800" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="action-dropdown-<%=user.id%>" data-dropdown-placement="bottom">
@@ -95,6 +126,13 @@
                         <%= link_to edit_user_path(user), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Edit<%end%>
                         <li>
                             <%= link_to assign_module_user_path(user), data:{turbo: false}, class:"block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>Assign Module<%end%>
+                        </li>
+                        <li>
+                          <%= link_to assign_store_user_path(user),
+                              data: { turbo: false },
+                              class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+                            Add Store
+                          <% end %>
                         </li>
                         <li>
                             <button data-modal-target="popup-modal-<%=user.id%>" data-modal-toggle="popup-modal-<%=user.id%>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" type="button">Delete</button>
