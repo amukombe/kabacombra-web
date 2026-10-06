@@ -32,9 +32,11 @@
         <span class="sr-only">Close modal</span>
       </button>
 
-      <!-- Content -->
-      <div class="p-6 text-center">
 
+      <!-- Content -->
+      <div class="p-6">
+
+        <!-- Icon -->
         <svg
           class="w-12 h-12 mx-auto mb-4 text-gray-400 dark:text-gray-200"
           aria-hidden="true"
@@ -51,36 +53,66 @@
 
         </svg>
 
-        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+
+        <!-- Confirmation message -->
+        <h3 class="mb-5 text-lg font-normal text-center text-gray-500 dark:text-gray-400">
+
           Are you sure you want to approve order
+
           <span class="font-semibold text-gray-800 dark:text-white">
             <%= order.order_number %>
           </span>?
+
         </h3>
 
-        <div class="flex justify-center gap-3">
 
-          <!-- Yes -->
-          <%= button_to approve_order_path(order),
-            method: :patch,
-            data: {
-              turbo: false
-            },
-            class: "text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" do %>
-            Yes, Approve
-          <% end %>
+        <!-- Approval Form -->
+        <%= form_with url: approve_order_path(order),
+                      method: :patch,
+                      local: true,
+                      data: { turbo: false } do |f| %>
 
-          <!-- No -->
-          <button
-            data-modal-hide="popup-modal-approve-<%= order.id %>"
-            type="button"
-            class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-            No, Cancel
-          </button>
+          <!-- Approved At -->
+          <div class="mb-5">
 
-        </div>
+            <%= f.label :approved_at,
+                        "Approved At",
+                        class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+
+            <%= f.datetime_local_field :approved_at,
+                value: Time.current.strftime("%Y-%m-%dT%H:%M"),
+                required: true,
+                class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" %>
+
+          </div>
+
+
+          <!-- Buttons -->
+          <div class="flex justify-center gap-3">
+
+            <!-- Yes, Approve -->
+            <%= f.submit "Yes, Approve",
+                class: "text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 cursor-pointer" %>
+
+
+            <!-- No, Cancel -->
+            <button
+              data-modal-hide="popup-modal-approve-<%= order.id %>"
+              type="button"
+              class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white">
+
+              No, Cancel
+
+            </button>
+
+          </div>
+
+        <% end %>
 
       </div>
+
     </div>
+
   </div>
+
 </div>

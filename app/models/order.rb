@@ -36,7 +36,7 @@ class Order < ApplicationRecord
     # Start date filter
     if params[:start_date].present?
       query = query.where(
-        "DATE(orders.created_at) >= ?",
+        "DATE(orders.order_date) >= ?",
         params[:start_date]
       )
     end
@@ -44,7 +44,7 @@ class Order < ApplicationRecord
     # End date filter
     if params[:end_date].present?
       query = query.where(
-        "DATE(orders.created_at) <= ?",
+        "DATE(orders.order_date) <= ?",
         params[:end_date]
       )
     end
@@ -79,7 +79,7 @@ class Order < ApplicationRecord
     # Start date filter
     if params[:start_date].present?
       query = query.where(
-        "DATE(orders.created_at) >= ?",
+        "DATE(orders.approved_at) >= ?",
         params[:start_date]
       )
     end
@@ -87,7 +87,7 @@ class Order < ApplicationRecord
     # End date filter
     if params[:end_date].present?
       query = query.where(
-        "DATE(orders.created_at) <= ?",
+        "DATE(orders.approved_at) <= ?",
         params[:end_date]
       )
     end

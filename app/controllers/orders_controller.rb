@@ -263,10 +263,17 @@ class OrdersController < ApplicationController
   def approve
     @order = Order.find(params[:id])
 
+    approved_at = params[:approved_at].present? ? Time.zone.parse(params[:approved_at]) : nil
+
+    if approved_at.nil?
+      redirect_to orders_path, alert: "Please enter the approval date and time."
+      return
+    end
+
     if @order.update(
       status_id: 15,
       approved_by_id: current_user.id,
-      approved_at: Time.current
+      approved_at: approved_at
     )
       redirect_to orders_path, notice: "Order #{@order.order_number} has been approved."
     else
