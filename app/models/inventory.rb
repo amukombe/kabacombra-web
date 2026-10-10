@@ -10,17 +10,15 @@ class Inventory < ApplicationRecord
     query = joins(:beer_dispatch)
               .where(
                 territory_id: territory_id,
-                beer_dispatches: {
-                  status_id: [13]
-                }
+                beer_dispatches: { status_id: [13] }
               )
 
-    # Restrict non-super users to their store
+    # Restrict non-super users to their assigned stores
     unless user.is_super?
       query = query
                 .joins(inventory_items: :nile_product)
                 .where(nile_products: { store_id: user.store_ids })
-                .distinct
+                .select("DISTINCT #{table_name}.*, beer_dispatches.received_date")
     end
 
     # Search
@@ -28,8 +26,8 @@ class Inventory < ApplicationRecord
       search = "%#{sanitize_sql_like(params[:query])}%"
 
       query = query.where(
-        "beer_dispatches.fdn_number LIKE :search
-        OR beer_dispatches.dispatch_no LIKE :search",
+        "beer_dispatches.fdn_number LIKE :search OR
+        beer_dispatches.dispatch_no LIKE :search",
         search: search
       )
     end
@@ -50,8 +48,8 @@ class Inventory < ApplicationRecord
       )
     end
 
-    query.order(
-      "beer_dispatches.received_date DESC")
+    # Sort by most recently received
+    query.order("beer_dispatches.received_date DESC")
   end
 
  def self.search_received(params, territory_id, user)
