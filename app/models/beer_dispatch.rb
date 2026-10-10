@@ -54,7 +54,8 @@ class BeerDispatch < ApplicationRecord
     query
     .select("beer_dispatches.*, orders.order_number AS order_number")
     .order(
-      "beer_dispatches.loading_time DESC"
+      "beer_dispatches.loading_time DESC",
+      "orders.order_number ASC"
     )
   end
 
@@ -63,7 +64,7 @@ class BeerDispatch < ApplicationRecord
   end  
 
   def dispatch_received_date
-    if self.received_date.present?
+    if self.received_date.present? && self.status_id==3
       self.received_date
     else
       self.loading_time
