@@ -37,7 +37,7 @@ class Inventory < ApplicationRecord
     # Start date
     if params[:start_date].present?
       query = query.where(
-        "DATE(beer_dispatches.loading_time) >= ?",
+        "DATE(beer_dispatches.received_date) >= ?",
         params[:start_date]
       )
     end
@@ -45,12 +45,13 @@ class Inventory < ApplicationRecord
     # End date
     if params[:end_date].present?
       query = query.where(
-        "DATE(beer_dispatches.loading_time) <= ?",
+        "DATE(beer_dispatches.received_date) <= ?",
         params[:end_date]
       )
     end
 
-    query
+    query.order(
+      "beer_dispatches.received_date DESC")
   end
 
  def self.search_received(params, territory_id, user)
