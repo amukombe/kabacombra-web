@@ -54,8 +54,7 @@ class BeerDispatch < ApplicationRecord
     query
     .select("beer_dispatches.*, orders.order_number AS order_number")
     .order(
-      "beer_dispatches.loading_time DESC",
-      "orders.order_number ASC"
+      "beer_dispatches.loading_time DESC"
     )
   end
 
