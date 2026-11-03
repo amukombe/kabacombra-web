@@ -4,15 +4,15 @@ class OrdersController < ApplicationController
   # GET /orders or /orders.json
   def index
     @active_link = "orders"
-    params[:start_date] ||= Date.current.beginning_of_month
-    params[:end_date]   ||= Date.current.end_of_month
+    #params[:start_date] ||= Date.current.beginning_of_month
+    #params[:end_date]   ||= Date.current.end_of_month
     @orders = Order.search(params, current_territory.id, current_user).order(:order_date => :desc).page(params[:page]).per(20)
   end
 
   def approved
     @active_link = "approved"
-    params[:start_date] ||= Date.current.beginning_of_month
-    params[:end_date]   ||= Date.current.end_of_month
+    #params[:start_date] ||= Date.current.beginning_of_month
+    #params[:end_date]   ||= Date.current.end_of_month
     @orders = Order.search_approved(params, current_territory.id, current_user).order(:order_date => :desc).page(params[:page]).per(20)
   end
 
