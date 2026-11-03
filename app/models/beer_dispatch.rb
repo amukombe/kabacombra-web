@@ -64,7 +64,7 @@ class BeerDispatch < ApplicationRecord
   end  
 
   def dispatch_received_date
-    if self.received_date.present? && self.status_id==3
+    if self.received_date.present? && [3, 4].include?(self.status_id)
       self.received_date
     else
       self.loading_time
