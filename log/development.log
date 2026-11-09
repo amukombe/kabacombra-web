@@ -434159,3 +434159,99 @@ Processing by InventoriesController#index as HTML
 Completed 200 OK in 216ms (Views: 47.8ms | ActiveRecord: 42.7ms (30 queries, 0 cached) | GC: 11.4ms)
 
 
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :role, {:staff=>0, :supplier=>1, :admin=>2}
+ (called from <class:User> at /home/david/kabacombra-web/app/models/user.rb:2)
+Started GET "/inventories?query=&start_date=2026-10-01&end_date=2026-10-30" for ::1 at 2026-11-03 16:42:12 +0300
+  [1m[36mActiveRecord::SchemaMigration Load (7.6ms)[0m  [1m[34mSELECT `schema_migrations`.`version` FROM `schema_migrations` ORDER BY `schema_migrations`.`version` ASC[0m
+Processing by InventoriesController#index as HTML
+  Parameters: {"query"=>"", "start_date"=>"2026-10-01", "end_date"=>"2026-10-30"}
+  [1m[36mUser Load (3.9ms)[0m  [1m[34mSELECT `users`.* FROM `users` WHERE `users`.`id` = 1 ORDER BY `users`.`id` ASC LIMIT 1[0m
+  [1m[36mTerritory Load (6.1ms)[0m  [1m[34mSELECT `territories`.* FROM `territories` WHERE `territories`.`id` = 1 LIMIT 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mDepartment Load (5.2ms)[0m  [1m[34mSELECT `departments`.* FROM `departments` WHERE `departments`.`id` = 5[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployeeTerritory Load (4.8ms)[0m  [1m[34mSELECT `employee_territories`.* FROM `employee_territories` WHERE `employee_territories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mEmployee Load (6.3ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` IN (1, 2, 3, 4)[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mStore Load (6.0ms)[0m  [1m[34mSELECT `stores`.* FROM `stores` WHERE `stores`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mWarehouse Load (3.5ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mCustomer Load (7.0ms)[0m  [1m[34mSELECT `customers`.* FROM `customers` WHERE `customers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventory Load (24.4ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` WHERE `inventories`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mInventoryTransaction Load (6.0ms)[0m  [1m[34mSELECT `inventory_transactions`.* FROM `inventory_transactions` WHERE `inventory_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorPayment Load (7.8ms)[0m  [1m[34mSELECT `vendor_payments`.* FROM `vendor_payments` WHERE `vendor_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mVendorAdjustiment Load (4.0ms)[0m  [1m[34mSELECT `vendor_adjustiments`.* FROM `vendor_adjustiments` WHERE `vendor_adjustiments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :payment_method, {:cash=>0, :cheque=>1, :mobile_money=>2, :bank_transfer=>3}
+ (called from <class:Payment> at /home/david/kabacombra-web/app/models/payment.rb:6)
+  [1m[36mPayment Load (5.5ms)[0m  [1m[34mSELECT `payments`.* FROM `payments` WHERE `payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankAccount Load (4.5ms)[0m  [1m[34mSELECT `bank_accounts`.* FROM `bank_accounts` WHERE `bank_accounts`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankDeposit Load (4.4ms)[0m  [1m[34mSELECT `bank_deposits`.* FROM `bank_deposits` WHERE `bank_deposits`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankWithdraw Load (5.7ms)[0m  [1m[34mSELECT `bank_withdraws`.* FROM `bank_withdraws` WHERE `bank_withdraws`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransfer Load (7.9ms)[0m  [1m[34mSELECT `bank_transfers`.* FROM `bank_transfers` WHERE `bank_transfers`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankTransaction Load (4.6ms)[0m  [1m[34mSELECT `bank_transactions`.* FROM `bank_transactions` WHERE `bank_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mFinancialTransaction Load (4.3ms)[0m  [1m[34mSELECT `financial_transactions`.* FROM `financial_transactions` WHERE `financial_transactions`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :mode_of_payment, {:cash=>"cash", :credit=>"credit"}
+ (called from <class:Sale> at /home/david/kabacombra-web/app/models/sale.rb:2)
+  [1m[36mSale Load (3.4ms)[0m  [1m[34mSELECT `sales`.* FROM `sales` WHERE `sales`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mBankReconciliation Load (4.6ms)[0m  [1m[34mSELECT `bank_reconciliations`.* FROM `bank_reconciliations` WHERE `bank_reconciliations`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  [1m[36mUserModule Load (3.2ms)[0m  [1m[34mSELECT `user_modules`.* FROM `user_modules` WHERE `user_modules`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+DEPRECATION WARNING: Defining enums with keyword arguments is deprecated and will be removed
+in Rails 8.0. Positional arguments should be used instead:
+
+enum :payment_method, {:cash=>0, :cheque=>1, :mobile_money=>2, :bank_transfer=>3}
+ (called from <class:CustomerPayment> at /home/david/kabacombra-web/app/models/customer_payment.rb:14)
+  [1m[36mCustomerPayment Load (2.8ms)[0m  [1m[34mSELECT `customer_payments`.* FROM `customer_payments` WHERE `customer_payments`.`territory_id` = 1[0m
+  ↳ app/controllers/application_controller.rb:15:in `current_territory'
+  Rendering layout layouts/application.html.erb
+  Rendering inventories/index.html.erb within layouts/application
+  Rendered shared/_order_nav.html.erb (Duration: 1.4ms | GC: 0.0ms)
+  [1m[36mInventory Load (7.3ms)[0m  [1m[34mSELECT `inventories`.* FROM `inventories` INNER JOIN `beer_dispatches` ON `beer_dispatches`.`id` = `inventories`.`beer_dispatch_id` WHERE `inventories`.`territory_id` = 1 AND `beer_dispatches`.`status_id` = 13 AND (DATE(beer_dispatches.received_date) >= '2026-10-01') AND (DATE(beer_dispatches.received_date) <= '2026-10-30') ORDER BY beer_dispatches.received_date DESC LIMIT 20 OFFSET 0[0m
+  ↳ app/views/inventories/index.html.erb:83:in `each_with_index'
+  [1m[36mBeerDispatch Load (1.9ms)[0m  [1m[34mSELECT `beer_dispatches`.* FROM `beer_dispatches` WHERE `beer_dispatches`.`id` = 57 LIMIT 1[0m
+  ↳ app/views/inventories/index.html.erb:87
+  [1m[36mOrder Load (2.2ms)[0m  [1m[34mSELECT `orders`.* FROM `orders` WHERE `orders`.`id` = 55 LIMIT 1[0m
+  ↳ app/views/inventories/index.html.erb:87
+  [1m[36mWarehouse Load (0.8ms)[0m  [1m[34mSELECT `warehouses`.* FROM `warehouses` WHERE `warehouses`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/inventories/index.html.erb:91
+  [1m[36mInventoryItem Load (7.0ms)[0m  [1m[34mSELECT `inventory_items`.* FROM `inventory_items` WHERE `inventory_items`.`inventory_id` = 78[0m
+  ↳ app/views/inventories/index.html.erb:110:in `each_with_index'
+  [1m[36mNileProduct Load (3.3ms)[0m  [1m[34mSELECT `nile_products`.* FROM `nile_products` WHERE `nile_products`.`id` = 10 LIMIT 1[0m
+  ↳ app/views/inventories/index.html.erb:112
+  [1m[36mDispatchItem Load (4.4ms)[0m  [1m[34mSELECT `dispatch_items`.* FROM `dispatch_items` WHERE `dispatch_items`.`id` = 84 LIMIT 1[0m
+  ↳ app/views/inventories/index.html.erb:113
+  Rendered inventories/_confirm_delete_modal.html.erb (Duration: 11.4ms | GC: 0.0ms)
+  Rendered inventories/_pagination.html.erb (Duration: 7.2ms | GC: 0.0ms)
+  Rendered inventories/index.html.erb within layouts/application (Duration: 286.4ms | GC: 40.7ms)
+  [1m[36mEmployee Load (0.8ms)[0m  [1m[34mSELECT `employees`.* FROM `employees` WHERE `employees`.`id` = 1 LIMIT 1[0m
+  ↳ app/views/layouts/application.html.erb:255
+  Rendered dashboard/_aside_super_admin.html.erb (Duration: 1.2ms | GC: 0.0ms)
+  Rendered layout layouts/application.html.erb (Duration: 1387.7ms | GC: 183.9ms)
+Completed 200 OK in 2868ms (Views: 1343.2ms | ActiveRecord: 546.2ms (31 queries, 0 cached) | GC: 260.1ms)
+
+
