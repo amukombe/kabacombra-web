@@ -116,7 +116,7 @@
                 <tr class="border-b dark:border-gray-700 hover:bg-gray-50">
                 
                 <!-- Index -->
-                <td class="p-3 text-sm"><%= index + 1 %></td>
+                <td class="p-3 text-sm"><%= (@inventory_items.current_page - 1) * @inventory_items.limit_value + index + 1 %></td>
 
                 <!-- Product -->
                 <td class="p-3 text-sm font-semibold">
